@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+        DTSTART:2018-03-31 12:15:00-04:56
+        SUMMARY:Python meeting about calendaring
+        BEGIN:VEVENT
+                SUMMARY:Python meeting about calendaring
+                DTSTART;TZID=America/New_York;VALUE=DATE-TIME:20180331T121500
+                DTSTART;TZID=America/New_York;VALUE=DATE-TIME:20180331T115000
+                DTEND;TZID=America/New_York;VALUE=DATE-TIME:20180331T131500
+                DTSTAMP;VALUE=DATE-TIME:20180331T050600Z
+                UID:42
+                DESCRIPTION:Python meeting about calendaring
+                LOCATION:3.B6
+                ORGANIZER;CN="Frederic Jacob";ROLE=Organizer:MAILTO:fjacob@matrox.com
+                X-MICROSOFT-CDO-BUSYSTATUS:BUSY
+                BEGIN:VALARM
+                        ACTION:DISPLAY
+                        DESCRIPTION:test
+                        TRIGGER:-PT0M
+                END:VALARM
+        END:VEVENT
+END:VCALENDAR
