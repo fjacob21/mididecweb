@@ -35,3 +35,9 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+*.pyc
+
+*.ipynb_checkpoints
+*.pytest_cache
+.DS_Store
