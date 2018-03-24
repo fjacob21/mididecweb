@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from flask import Flask, jsonify, abort, request
+from attendee import Attendee
 from events import Events
 from event import Event
 from datetime import datetime, timedelta
@@ -13,7 +14,7 @@ events = Events()
 def generate_event():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
-    return Event("test", "test", start, dur, 'test', 'test', 'test@test.com', 'test')
+    return Event("test", "test", 1, start, dur, 'test', 'test', 'test@test.com', 'test')
 
 
 events.add(generate_event())
@@ -35,13 +36,41 @@ def get_event(uid):
     return jsonify({'event': e.json})
 
 
+@application.route(api + 'events/<uid>/attendees')
+def get_event_attendeesl(uid):
+    e = events.get(uid)
+    if not e:
+        abort(400)
+    result = []
+    for a in e.attendees:
+        result.append(a.json)
+    return jsonify({'attendees': result})
+
+
+@application.route(api + 'events/<uid>/waitings')
+def get_event_waiting(uid):
+    e = events.get(uid)
+    if not e:
+        abort(400)
+    result = []
+    for a in e.waiting_attendees:
+        result.append(a.json)
+    return jsonify({'waitings': result})
+
+
 @application.route(api + 'events/<uid>/ical')
 def get_event_ical(uid):
+    e = events.get(uid)
+    if not e:
+        abort(400)
     return jsonify({'event': {}})
 
 
 @application.route(api + 'events/<uid>/sendemails', methods=['POST'])
 def send_event_emails(uid):
+    e = events.get(uid)
+    if not e:
+        abort(400)
     return jsonify({'event': {}})
 
 
@@ -55,6 +84,9 @@ def add_event():
 
     title = request.json["title"]
     desc = request.json["desc"]
+    max_attendee = None
+    if "max_attendee" in request.json:
+        max_attendee = request.json["max_attendee"]
     start = None
     if "start" in request.json:
         start = request.json["start"]
@@ -72,7 +104,7 @@ def add_event():
     organizer_email = ''
     if "organizer_email" in request.json:
         organizer_email = request.json["organizer_email"]
-    e = Event(title, desc, start, duration, location, organizer_name, organizer_email)
+    e = Event(title, desc, max_attendee, start, duration, location, organizer_name, organizer_email)
     events.add(e)
     return jsonify({'result': True, 'event': e.json})
 
@@ -88,9 +120,44 @@ def rm_event(uid):
 
 @application.route(api + 'events/<uid>/register', methods=['POST'])
 def register_event(uid):
+    ev = events.get(uid)
+    if not ev:
+        abort(400)
     if not request.json:
         abort(400)
-    return jsonify({'result': True})
+    if "name" not in request.json or "email" not in request.json:
+        abort(400)
+
+    name = request.json["name"]
+    email = request.json["email"]
+    phone = ''
+    if "phone" in request.json:
+        phone = request.json["phone"]
+    sendremindemail = False
+    if "sendremindemail" in request.json:
+        sendremindemail = request.json["sendremindemail"]
+    sendremindsms = False
+    if "sendremindsms" in request.json:
+        sendremindsms = request.json["sendremindsms"]
+    a = Attendee(name, email, phone, sendremindemail, sendremindsms)
+    res = ev.register_attendee(a)
+    return jsonify({'result': res})
+
+
+@application.route(api + 'events/<uid>/cancel_registration', methods=['POST'])
+def cancel_registration(uid):
+    ev = events.get(uid)
+    if not ev:
+        abort(400)
+    if not request.json:
+        abort(400)
+    if "email" not in request.json:
+        abort(400)
+    email = request.json["email"]
+    a = ev.cancel_registration(email)
+    if a:
+        return jsonify({'promotee': a.json})
+    return jsonify({'promotee': None})
 
 
 @application.route(api + 'mailinglist')

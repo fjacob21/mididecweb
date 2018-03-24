@@ -7,7 +7,7 @@ from src.events import Events
 def generate_event():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
-    return Event("test", "test", start, dur, 'test', 'test', 'test@test.com', 'test')
+    return Event("test", "test", 20, start, dur, 'test', 'test', 'test@test.com', 'test')
 
 
 def test_add_event():
