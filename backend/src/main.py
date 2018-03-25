@@ -3,12 +3,15 @@ from flask import Flask, jsonify, abort, request
 from attendee import Attendee
 from events import Events
 from event import Event
+from mailinglist import MailingList
+from mailinglist_member import MailingListMember
 from datetime import datetime, timedelta
 import pytz
 
 application = Flask(__name__, static_url_path='')
 api = '/mididec/api/v1.0/'
 events = Events()
+mailinglist = MailingList()
 
 
 def generate_event():
@@ -162,13 +165,43 @@ def cancel_registration(uid):
 
 @application.route(api + 'mailinglist')
 def get_mailinglist():
-    return jsonify({'mailinglist': []})
+    result = []
+    for m in mailinglist.members:
+        result.append(m.json)
+    return jsonify({'mailinglist': result})
 
 
 @application.route(api + 'mailinglist/register', methods=['POST'])
 def register_mailinglist():
     if not request.json:
         abort(400)
+    if "name" not in request.json or "email" not in request.json:
+        abort(400)
+
+    name = request.json["name"]
+    email = request.json["email"]
+    phone = ''
+    if "phone" in request.json:
+        phone = request.json["phone"]
+    useemail = True
+    if "useemail" in request.json:
+        useemail = request.json["useemail"]
+    usesms = False
+    if "usesms" in request.json:
+        usesms = request.json["usesms"]
+    m = MailingListMember(name, email, phone, useemail, usesms)
+    res = mailinglist.register(m)
+    return jsonify({'result': res})
+
+
+@application.route(api + 'mailinglist/unregister', methods=['POST'])
+def unregister_mailinglist():
+    if not request.json:
+        abort(400)
+    if "email" not in request.json:
+        abort(400)
+    email = request.json["email"]
+    mailinglist.unregister(email)
     return jsonify({'result': True})
 
 
