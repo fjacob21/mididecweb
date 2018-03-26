@@ -1,8 +1,9 @@
 #!/usr/bin/python
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, Response
 from attendee import Attendee
 from events import Events
 from event import Event
+from icalgenerator import iCalGenerator
 from mailinglist import MailingList
 from mailinglist_member import MailingListMember
 from datetime import datetime, timedelta
@@ -66,7 +67,11 @@ def get_event_ical(uid):
     e = events.get(uid)
     if not e:
         abort(400)
-    return jsonify({'event': {}})
+    return Response(
+        iCalGenerator(e).generate(),
+        mimetype="text/csv",
+        headers={"Content-disposition":
+                 "attachment; filename=event.ics"})
 
 
 @application.route(api + 'events/<uid>/sendemails', methods=['POST'])
