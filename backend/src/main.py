@@ -7,6 +7,7 @@ from icalgenerator import iCalGenerator
 from mailinglist import MailingList
 from mailinglist_member import MailingListMember
 from email_sender import EmailSender
+from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
 import pytz
@@ -169,16 +170,23 @@ def publish_event(uid):
         abort(400)
     if not request.json:
         abort(400)
-    if "usr" not in request.json or "psw" not in request.json:
+    if ("usr" not in request.json or "psw" not in request.json or
+       'sid' not in request.json or 'token' not in request.json):
         abort(405)
     usr = request.json["usr"]
     psw = request.json["psw"]
+    sid = request.json["sid"]
+    token = request.json["token"]
     body = EventTextGenerator(ev, False).generate()
     res = True
     for m in mailinglist.members:
         if m.useemail and m.email:
             sender = EmailSender(usr, psw,
                                  m.email, ev.title, body)
+            res = sender.send()
+        if m.usesms and m.phone:
+            sender = SmsSender(sid, token,
+                               m.phone, ev.title, body)
             res = sender.send()
     return jsonify({'result': res})
 
