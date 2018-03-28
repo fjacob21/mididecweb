@@ -10,7 +10,10 @@ class EventTextGenerator():
         self._short = short
         self._startdt = self.generate_datetime(self._event.start)
         self._enddt = self.generate_datetime(self._event.end)
-        locale.setlocale(locale.LC_ALL, 'fr_CA')
+        try:
+            locale.setlocale(locale.LC_ALL, 'fr_CA')
+        except Exception:
+            pass
 
     def generate(self):
         if self._short:
