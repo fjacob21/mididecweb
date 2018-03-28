@@ -6,6 +6,8 @@ from event import Event
 from icalgenerator import iCalGenerator
 from mailinglist import MailingList
 from mailinglist_member import MailingListMember
+from email_sender import EmailSender
+from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
 import pytz
 
@@ -72,14 +74,6 @@ def get_event_ical(uid):
         mimetype="text/csv",
         headers={"Content-disposition":
                  "attachment; filename=event.ics"})
-
-
-@application.route(api + 'events/<uid>/sendemails', methods=['POST'])
-def send_event_emails(uid):
-    e = events.get(uid)
-    if not e:
-        abort(400)
-    return jsonify({'event': {}})
 
 
 @application.route(api + 'events', methods=['POST'])
@@ -166,6 +160,27 @@ def cancel_registration(uid):
     if a:
         return jsonify({'promotee': a.json})
     return jsonify({'promotee': None})
+
+
+@application.route(api + 'events/<uid>/publish', methods=['POST'])
+def publish_event(uid):
+    ev = events.get(uid)
+    if not ev:
+        abort(400)
+    if not request.json:
+        abort(400)
+    if "usr" not in request.json or "psw" not in request.json:
+        abort(405)
+    usr = request.json["usr"]
+    psw = request.json["psw"]
+    body = EventTextGenerator(ev, False).generate()
+    res = True
+    for m in mailinglist.members:
+        if m.useemail and m.email:
+            sender = EmailSender(usr, psw,
+                                 m.email, ev.title, body)
+            res = sender.send()
+    return jsonify({'result': res})
 
 
 @application.route(api + 'mailinglist')
