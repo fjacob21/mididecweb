@@ -11,7 +11,6 @@ from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
 from store import Store
-import pytz
 
 store = Store()
 store.connect()
