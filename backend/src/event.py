@@ -101,7 +101,6 @@ class Event():
             self._attendees.append(attendee)
             return ATTENDEE_LIST
         self._waitinglist.append(attendee)
-        print('Add waiting')
         return WAITING_LIST
 
     def cancel_registration(self, email):

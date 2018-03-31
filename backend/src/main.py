@@ -1,30 +1,34 @@
 #!/usr/bin/python
 from flask import Flask, jsonify, abort, request, Response
 from attendee import Attendee
-from events import Events
+# from events import Events
 from event import Event
 from icalgenerator import iCalGenerator
-from mailinglist import MailingList
+# from mailinglist import MailingList
 from mailinglist_member import MailingListMember
 from email_sender import EmailSender
 from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
-import pytz
+from store import Store
 
+store = Store()
+store.connect()
 application = Flask(__name__, static_url_path='')
 api = '/mididec/api/v1.0/'
-events = Events()
-mailinglist = MailingList()
+events = store.restore_events()
+mailinglist = store.restore_mailinglist()
+store.close()
 
 
-def generate_event():
-    start = datetime.now(pytz.timezone("America/New_York"))
-    dur = timedelta(hours=1)
-    return Event("test", "test", 1, start, dur, 'test', 'test', 'test@test.com', 'test')
+@application.before_request
+def before_request():
+    store.connect()
 
 
-events.add(generate_event())
+@application.teardown_request
+def teardown_request(exception):
+    store.close()
 
 
 @application.route(api + 'events')
@@ -44,7 +48,7 @@ def get_event(uid):
 
 
 @application.route(api + 'events/<uid>/attendees')
-def get_event_attendeesl(uid):
+def get_event_attendees(uid):
     e = events.get(uid)
     if not e:
         abort(400)
@@ -103,21 +107,27 @@ def add_event():
         location = request.json["location"]
     organizer_name = ''
     if "organizer_name" in request.json:
-        organizer_name = request.json["deorganizer_namesc"]
+        organizer_name = request.json["organizer_name"]
     organizer_email = ''
     if "organizer_email" in request.json:
         organizer_email = request.json["organizer_email"]
-    e = Event(title, desc, max_attendee, start, duration, location, organizer_name, organizer_email)
+    uid = ''
+    if "uid" in request.json:
+        uid = request.json["uid"]
+    e = Event(title, desc, max_attendee, start, duration, location, organizer_name, organizer_email, uid)
     events.add(e)
+    store.store_events(events)
     return jsonify({'result': True, 'event': e.json})
 
 
 @application.route(api + 'events/<uid>', methods=['DELETE'])
 def rm_event(uid):
     ev = events.get(uid)
+    print(uid, ev)
     if not ev:
         abort(400)
     events.remove(uid)
+    store.store_events(events)
     return jsonify({'result': True})
 
 
@@ -144,6 +154,7 @@ def register_event(uid):
         sendremindsms = request.json["sendremindsms"]
     a = Attendee(name, email, phone, sendremindemail, sendremindsms)
     res = ev.register_attendee(a)
+    store.store_events(events)
     return jsonify({'result': res})
 
 
@@ -158,6 +169,7 @@ def cancel_registration(uid):
         abort(400)
     email = request.json["email"]
     a = ev.cancel_registration(email)
+    store.store_events(events)
     if a:
         return jsonify({'promotee': a.json})
     return jsonify({'promotee': None})
@@ -219,6 +231,7 @@ def register_mailinglist():
         usesms = request.json["usesms"]
     m = MailingListMember(name, email, phone, useemail, usesms)
     res = mailinglist.register(m)
+    store.store_mailinglist(mailinglist)
     return jsonify({'result': res})
 
 
@@ -230,6 +243,7 @@ def unregister_mailinglist():
         abort(400)
     email = request.json["email"]
     mailinglist.unregister(email)
+    store.store_mailinglist(mailinglist)
     return jsonify({'result': True})
 
 

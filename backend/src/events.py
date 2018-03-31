@@ -23,6 +23,7 @@ class Events():
 
     def get(self, uid):
         for event in self._events:
+            print(event.uid)
             if event.uid == uid:
                 return event
         return None
