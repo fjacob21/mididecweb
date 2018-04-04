@@ -8,7 +8,8 @@ class App extends React.Component{
         }
 
         componentDidMount(){
-                this.context.router.push('/home');
+                //this.context.router.push('/home');
+                //history.push('/home');
         }
 
         componentWillUnmount(){
