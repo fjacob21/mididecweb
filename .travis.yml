@@ -21,7 +21,8 @@ matrix:
       cache:
         yarn: true
         directories:
-          - "node_modules"
+          - "frontend"
+          - "frontend/node_modules"
 
       script:
         - yarn run test
