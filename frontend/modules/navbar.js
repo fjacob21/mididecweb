@@ -48,7 +48,7 @@ class Navbar extends React.Component{
         }
 }
 
-Navbar.contextTypes = {
-  router: PropTypes.object.isRequired
-};
+// Navbar.contextTypes = {
+//   router: PropTypes.object.isRequired
+// };
 module.exports = Navbar;
