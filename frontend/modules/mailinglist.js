@@ -1,16 +1,16 @@
 import React from 'react'
 
-class Home extends React.Component{
+class MailingList extends React.Component{
         constructor(props) {
                 super(props);
         }
 
         render(){
                 return (
-                        <div className='home'>
-                                <div> Home </div>
+                        <div className='mailinglist'>
+                                <div> MailingList </div>
                         </div>)
         }
 }
 
-module.exports = Home;
+module.exports = MailingList;
