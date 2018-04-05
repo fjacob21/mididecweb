@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from './navbar'
 
 class Events extends React.Component{
         constructor(props) {
@@ -9,7 +8,7 @@ class Events extends React.Component{
         render(){
                 return (
                         <div className='event'>
-                                <div> {this.props.match.params.id} </div>
+                                <div> Event:{this.props.match.params.id} </div>
                         </div>)
         }
 }

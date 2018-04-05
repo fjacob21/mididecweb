@@ -4,14 +4,15 @@ import { hashHistory } from 'react-router'
 import { HashRouter , Link, Route } from 'react-router-dom'
 import Home from './home'
 import Events from './events'
+import MailingList from './mailinglist'
 import App from './app'
 
 render((
   <HashRouter >
-  <App>
-    <Link to="/about">About</Link>
-    <Route path="/about" component={Home} />
-    <Route path="/events/:id" component={Events} />
-  </App>
+    <App>
+      <Route exact path="/" component={Home} />
+      <Route path="/events/:id" component={Events} />
+      <Route path="/mailinglist" component={MailingList} />
+    </App>
   </HashRouter >
 ), document.getElementById('app'))
