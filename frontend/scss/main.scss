@@ -15,6 +15,9 @@ html, body {
         width:100vw;
 }
 
+.app {
+        height: 100%;
+}
 .home {
         background-color: "blue";
 }
@@ -116,4 +119,122 @@ html, body {
 
 .btselect{
         background-color: red;
+}
+
+.content {
+        height: 100%;
+        display: flex;
+}
+.event{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        // margin: 50px;
+
+        .head {
+                display: flex;
+                flex-direction: column;
+                margin-top: 20px;
+                margin-left: 20px;
+                .start{
+                        font-size: 15px;
+                        display: flex;
+                        margin: 5px;
+                }
+
+                .title{
+                        font-size: 50px;
+                        display: flex;
+                        margin: 5px;
+                }
+                .organizer{
+                        font-size: 15px;
+                        display: flex;
+                        margin: 20px;
+                }
+        }
+
+        .body {
+                padding-top: 20px;
+                padding-left: 20px;
+                background-color: #f6f7f8;
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                height: 100%;
+
+                .detail{
+                        display: flex;
+                        flex-direction: column;
+                        width: 60%;
+                        padding-left: 30px;
+                        padding-right: 30px;
+
+                        .detaillabel{
+                                font-size: 20px;
+                                display: flex;
+                        }
+
+                        .description{
+                                font-size: 15px;
+                                display: flex;
+                        }
+                }
+
+                .info{
+                        display: flex;
+                        flex-direction: column;
+                        background-color: white;
+                        margin: 5px;
+                        width: 30%;
+                        height: 200px;
+                        border-radius: 10px;
+
+                        .duration{
+                                font-size: 15px;
+                                display: flex;
+                                flex-direction: row;
+                                margin: 5px;
+                                align-items: center;
+
+                                .timeicon{
+                                        width: 40px;
+                                        height: 40px;
+                                        margin: 10px;
+                                }
+                                .timetext{
+                                        display: flex;
+                                        flex-direction: column;
+                                        .date{
+
+                                        }
+                                        .time{
+
+                                        }
+                                }
+                        }
+
+                        .location{
+                                font-size: 15px;
+                                display: flex;
+                                flex-direction: row;
+                                margin: 5px;
+                                align-items: center;
+
+                                .locationicon{
+                                        width: 40px;
+                                        height: 40px;
+                                        margin: 10px;
+                                }
+                                .locationtext{
+                                        display: flex;
+                                        flex-direction: column;
+                                        text-align: center;
+                                        vertical-align: middle;
+                                }
+                        }
+                }
+        }
+
 }

@@ -144,4 +144,4 @@ class Event():
         result['organizer_name'] = self.organizer_name
         result['organizer_email'] = self.organizer_email
 
-        return json.dumps(result)
+        return result

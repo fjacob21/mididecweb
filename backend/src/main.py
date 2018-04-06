@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from flask import Flask, jsonify, abort, request, Response
+from flask import Flask, jsonify, abort, request, Response, send_from_directory, redirect
 from attendee import Attendee
 # from events import Events
 from event import Event
@@ -245,6 +245,16 @@ def unregister_mailinglist():
     mailinglist.unregister(email)
     store.store_mailinglist(mailinglist)
     return jsonify({'result': True})
+
+
+@application.route('/html/<path:path>')
+def send_js(path):
+    return send_from_directory('../../frontend/', path)
+
+
+@application.route('/')
+def root():
+    return redirect('/html/index.html')
 
 
 if __name__ == '__main__':
