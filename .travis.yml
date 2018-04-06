@@ -1,9 +1,27 @@
-language: python
-python:
-  - "3.5"
-# command to install dependencies
-install:
-  - pip install -r requirements.txt
-# command to run tests
-script:
-  - ./backend/test.sh
+matrix:
+  include:
+    - language: python
+      python:
+        - "3.5"
+      # command to install dependencies
+      install:
+        - pip install -r requirements.txt
+      # command to run tests
+      script:
+        - ./backend/test.sh
+
+    - language: node_js
+      node_js:
+        - "8"
+      sudo: false
+
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash
+        - export PATH="$HOME/.yarn/bin:$PATH"
+      cache:
+        yarn: true
+        directories:
+          - "node_modules"
+
+      script:
+        - yarn run test

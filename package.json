@@ -2,15 +2,15 @@
   "name": "mididecweb",
   "version": "1.0.0",
   "description": "",
-  "main": "js/main.js",
+  "main": "frontend/js/main.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "jest modules/tests/",
+    "test": "jest frontend/modules/tests/",
     "build": "node_modules/webpack/bin/webpack.js",
     "watch": "node_modules/webpack/bin/webpack.js -w",
-    "build-css": "node-sass --include-path scss scss/main.scss css/main.css",
-    "build-css-watch": "node-sass --watch --include-path scss scss/main.scss css/main.css",
-    "dev": "node_modules/webpack/bin/webpack.js -w  & node-sass --watch --include-path scss scss/main.scss css/main.css"
+    "build-css": "node-sass --include-path frontend/scss frontend/scss/main.scss frontend/css/main.css",
+    "build-css-watch": "node-sass --watch --include-path frontend/scss frontend/scss/main.scss frontend/css/main.css",
+    "dev": "node_modules/webpack/bin/webpack.js -w  & node-sass --watch --include-path frontend/scss frontend/scss/main.scss frontend/css/main.css"
   },
   "author": "",
   "license": "ISC",
