@@ -1,10 +1,14 @@
 import React , { Component, PropTypes } from 'react'
 import { browserHistory} from 'react-router'
+import createHistory from "history/createHashHistory"
 
+const history = createHistory();
 class Navbar extends React.Component{
         constructor(props) {
                 super(props);
                 this.state = {color: "#FF0000"};
+                this.onHome = this.onHome.bind(this);
+                this.onMailingList = this.onMailingList.bind(this);
         }
 
         componentDidMount(){
@@ -13,42 +17,24 @@ class Navbar extends React.Component{
         componentWillUnmount(){
         }
 
-        onCreate(event){
+        onHome(event){
                 event.preventDefault();
-                //this.context.router.push(this.props.prev)
+                history.replace("/");
         }
 
-        onInvite(event){
+        onMailingList(event){
                 event.preventDefault();
-                //this.context.router.push("/")
-        }
-
-        onMsg(event){
-                event.preventDefault();
-        }
-
-        onAlert(event){
-                event.preventDefault();
-        }
-
-        onProfile(event){
-                event.preventDefault();
+                history.replace("/mailinglist");
         }
 
         render(){
                 return (
                         <div className='navbar'>
-                                <div className='create-link' onClick={this.onCreate.bind(this)}>Create</div>
-                                <div className='invite-link' onClick={this.onInvite.bind(this)}>Invite</div>
-                                <img className='logo' src='res/drawables/mididec.png' />
-                                <div className='msg-icon material-icons' onClick={this.onMsg.bind(this)}>message</div>
-                                <div className='alert-icon material-icons' onClick={this.onAlert.bind(this)}>notifications_none</div>
-                                <div className='profile-icon material-icons' onClick={this.onMsg.bind(this)}>face</div>
+                                <div id='lhome' className='create-link' onClick={this.onHome}>Home</div>
+                                <img id='lhomeicon' className='logo' src='res/drawables/mididec.png' onClick={this.onHome}/>
+                                <div id='lmailinglist' className='create-link' onClick={this.onMailingList}>Mailing List</div>
                         </div>)
         }
 }
 
-// Navbar.contextTypes = {
-//   router: PropTypes.object.isRequired
-// };
 module.exports = Navbar;

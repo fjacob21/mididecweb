@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Link changes the class when hovered 1`] = `
+<div
+  className="navbar"
+>
+  <div
+    className="create-link"
+    id="lhome"
+    onClick={[Function]}
+  >
+    Home
+  </div>
+  <img
+    className="logo"
+    id="lhomeicon"
+    onClick={[Function]}
+    src="res/drawables/mididec.png"
+  />
+  <div
+    className="create-link"
+    id="lmailinglist"
+    onClick={[Function]}
+  >
+    Mailing List
+  </div>
+</div>
+`;
