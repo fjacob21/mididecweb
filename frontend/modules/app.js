@@ -8,8 +8,6 @@ class App extends React.Component{
         }
 
         componentDidMount(){
-                //this.context.router.push('/home');
-                //history.push('/home');
         }
 
         componentWillUnmount(){
@@ -24,7 +22,4 @@ class App extends React.Component{
         }
 }
 
-App.contextTypes = {
-  router: PropTypes.object.isRequired
-};
 module.exports = App;
