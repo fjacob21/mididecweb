@@ -19,3 +19,7 @@ def test_generate_ical():
     assert type(ical) == str
     cal = Calendar.from_ical(ical)
     assert cal.to_ical().decode() == ical
+    assert cal.get('DTSTART').dt.strftime("%Y-%m-%dT%H:%M:%SZ") == e.start
+    ev = cal.subcomponents[0]
+    assert ev.get('DTSTART').dt.strftime("%Y-%m-%dT%H:%M:%SZ") == e.start
+    assert ev.get('DTEND').dt.strftime("%Y-%m-%dT%H:%M:%SZ") == e.end
