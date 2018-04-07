@@ -51,8 +51,8 @@ class iCalGenerator():
         alarm.add('TRIGGER', timedelta(minutes=-15))
         return alarm
 
-    def generate_datetime(self, dt):
-        dt = datetime.strptime(self._event.start,
+    def generate_datetime(self, dts):
+        dt = datetime.strptime(dts,
                                "%Y-%m-%dT%H:%M:%SZ")
-        return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, 0,
+        return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second,
                         tzinfo=pytz.timezone("America/New_York"))
