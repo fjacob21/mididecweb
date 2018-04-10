@@ -6,6 +6,7 @@ import Home from './home'
 import Events from './events'
 import MailingList from './mailinglist'
 import App from './app'
+import 'bootstrap/dist/css/bootstrap.css';
 
 render((
   <HashRouter >

@@ -1,11 +1,12 @@
 import React from 'react'
+import jquery from 'jquery'
 
 class Events extends React.Component{
         constructor(props) {
                 super(props);
                 console.debug('Start');
                 this.state = {event: null, invalid: true};
-                $.ajax({
+                jquery.ajax({
                 type: 'GET',
                 url: "/mididec/api/v1.0/events/"+ this.props.match.params.id,
                 success: this.success.bind(this),
