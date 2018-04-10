@@ -4,25 +4,56 @@ exports[`Link changes the class when hovered 1`] = `
 <div
   className="navbar"
 >
-  <div
-    className="create-link"
-    id="lhome"
-    onClick={[Function]}
+  <nav
+    className="navbar navbar-expand-md navbar-light bg-light"
   >
-    Home
-  </div>
-  <img
-    className="logo"
-    id="lhomeicon"
-    onClick={[Function]}
-    src="res/drawables/mididec.png"
-  />
-  <div
-    className="create-link"
-    id="lmailinglist"
-    onClick={[Function]}
-  >
-    Mailing List
-  </div>
+    <a
+      className="navbar-brand"
+    >
+      <img
+        className="logo"
+        onClick={[Function]}
+        src="res/drawables/mididec.png"
+      />
+    </a>
+    <button
+      className="navbar-toggler"
+      onClick={[Function]}
+      type="button"
+    >
+      <span
+        className="navbar-toggler-icon"
+      />
+    </button>
+    <div
+      className="collapse navbar-collapse"
+      style={Object {}}
+    >
+      <ul
+        className="ml-auto navbar-nav"
+      >
+        <li
+          className="nav-item"
+        >
+          <a
+            className="home-link nav-link"
+            onClick={[Function]}
+          >
+            Home
+          </a>
+        </li>
+        <li
+          className="nav-item"
+        >
+          <a
+            className="mailinglist-link nav-link"
+            onClick={[Function]}
+          >
+            Mailing List
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 </div>
 `;
