@@ -1,0 +1,26 @@
+import 'full-icu'
+
+class DateFormater {
+  constructor(date) {
+    if (typeof date == 'string')
+      this._date = new Date(date)
+    else if (date.constructor.name == "Date")
+      this._date = date
+  }
+
+  getDate(){
+    return this._date
+  }
+
+  getDateText(){
+    var dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return this._date.toLocaleDateString('fr-CA', dateOptions);
+  }
+
+  getTimeText(){
+    var timeOptions = { hour: 'numeric', minute: 'numeric', second: undefined};
+    return this._date.toLocaleTimeString('fr-CA', timeOptions).replace(/ /g, '');
+  }
+}
+
+module.exports = DateFormater;
