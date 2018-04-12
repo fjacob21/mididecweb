@@ -17,7 +17,7 @@ html, body {
         height: 100%;
 }
 .home {
-        background-color: "blue";
+        width: 100%;
 }
 
 .navs {
@@ -27,6 +27,34 @@ html, body {
 
 .event-detail-link {
         cursor:pointer;
+}
+
+.home-card {
+    margin-bottom: 10px;
+}
+
+.nothing-label {
+        margin: 5px;
+}
+
+.event-summary {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+
+        .es-title{
+            display: flex;
+            font-size: medium;
+            font-weight: bolder;
+        }
+        .es-start-long{
+            display: flex;
+        }
+        .es-detail{
+            display: flex;
+            color: gray;
+        }
 }
 
 .navbars {

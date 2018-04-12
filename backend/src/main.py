@@ -21,6 +21,13 @@ mailinglist = store.restore_mailinglist()
 store.close()
 
 
+@application.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
+
+
 @application.before_request
 def before_request():
     store.connect()

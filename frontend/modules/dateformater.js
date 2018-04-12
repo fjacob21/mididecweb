@@ -1,4 +1,3 @@
-import 'full-icu'
 
 class DateFormater {
   constructor(date) {
@@ -14,6 +13,11 @@ class DateFormater {
 
   getDateText(){
     var dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'};
+    return this._date.toLocaleDateString('fr-CA', dateOptions);
+  }
+
+  getShortDateText(){
+    var dateOptions = { weekday: undefined, year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC'};
     return this._date.toLocaleDateString('fr-CA', dateOptions);
   }
 

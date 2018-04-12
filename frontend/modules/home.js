@@ -1,6 +1,7 @@
 import React from 'react'
 import jquery from 'jquery'
-import { Table, NavLink } from 'reactstrap';
+import EventSummary from './eventsummary'
+import { Table, NavLink, Card, CardTitle, CardText, Button } from 'reactstrap';
 import createHistory from "history/createHashHistory"
 
 const history = createHistory();
@@ -35,27 +36,31 @@ class Home extends React.Component{
         }
 
         render(){
-                const listItems = this.state.events.map((event) =>
-                        <tr>
-                          <th>{event.title}</th>
-                          <td>{event.start}</td>
-                          <td><div className='event-detail-link' onClick={(e) => this.onEventDetails(event.uid)}>Détails</div></td>
-                        </tr>
-                  );
+                const n = new Date();
+                const next = this.state.events.filter(event => new Date(event.start) >= n);
+                const prev = this.state.events.filter(event => new Date(event.start) < n);
+                var nextItems = <div className='nothing-label'>Aucun</div>;
+                if(next.length > 0) {
+                    nextItems = next.map((event) =>
+                            <EventSummary event={event} />
+                      );
+                }
+                var prevItems = <div className='nothing-label'>Aucun</div>;
+                if(prev.length > 0) {
+                    prevItems = prev.map((event) =>
+                          <EventSummary event={event} />
+                    );
+                }
                 return (
                         <div className='home'>
-                                <Table>
-                                        <thead>
-                                          <tr>
-                                            <th>Titre</th>
-                                            <th>Date</th>
-                                            <th></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {listItems}
-                                        </tbody>
-                                </Table>
+                            <Card body className='home-card'>
+                                <CardTitle>Prochaines rencontres</CardTitle>
+                                {nextItems}
+                            </Card>
+                            <Card body className='home-card'>
+                                <CardTitle>Rencontres précédentes</CardTitle>
+                                {prevItems}
+                            </Card>
                         </div>)
         }
 }
