@@ -1,11 +1,7 @@
 import React from 'react'
 import jquery from 'jquery'
-<<<<<<< HEAD
 import EventSummary from './eventsummary'
 import { Table, NavLink, Card, CardTitle, CardText, Button } from 'reactstrap';
-=======
-import { Table, NavLink } from 'reactstrap';
->>>>>>> e13f8e5b4c826787d73de1fae316b8532bfb1eb9
 import createHistory from "history/createHashHistory"
 
 const history = createHistory();
