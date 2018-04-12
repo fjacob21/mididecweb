@@ -1,14 +1,66 @@
 import React from 'react'
+import jquery from 'jquery'
+import EventSummary from './eventsummary'
+import { Table, NavLink, Card, CardTitle, CardText, Button } from 'reactstrap';
+import createHistory from "history/createHashHistory"
+
+const history = createHistory();
 
 class Home extends React.Component{
         constructor(props) {
                 super(props);
+                this.state = {events: [], invalid: true};
+                jquery.ajax({
+                type: 'GET',
+                url: "/mididec/api/v1.0/events",
+                success: this.success.bind(this),
+                error: this.error.bind(this),
+                contentType: "application/json",
+                dataType: 'json'
+                });
+        }
+
+        success(data){
+                this.state.events = data.events;
+                this.state.invalid = false;
+                this.setState(this.state);
+        }
+
+        error(){
+
+        }
+
+        onEventDetails(uid){
+                console.log(uid);
+                history.push("/events/"+uid);
         }
 
         render(){
+                const n = new Date();
+                const next = this.state.events.filter(event => new Date(event.start) >= n);
+                const prev = this.state.events.filter(event => new Date(event.start) < n);
+                var nextItems = <div className='nothing-label'>Aucun</div>;
+                if(next.length > 0) {
+                    nextItems = next.map((event) =>
+                            <EventSummary event={event} />
+                      );
+                }
+                var prevItems = <div className='nothing-label'>Aucun</div>;
+                if(prev.length > 0) {
+                    prevItems = prev.map((event) =>
+                          <EventSummary event={event} />
+                    );
+                }
                 return (
                         <div className='home'>
-                                <div> Home </div>
+                            <Card body className='home-card'>
+                                <CardTitle>Prochaines rencontres</CardTitle>
+                                {nextItems}
+                            </Card>
+                            <Card body className='home-card'>
+                                <CardTitle>Rencontres précédentes</CardTitle>
+                                {prevItems}
+                            </Card>
                         </div>)
         }
 }

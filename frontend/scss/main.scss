@@ -17,12 +17,16 @@ html, body {
         height: 100%;
 }
 .home {
-        background-color: "blue";
+        width: 100%;
 }
 
 .navs {
   width: 100%;
   background-color: #002a5c;
+}
+
+.event-detail-link {
+        cursor:pointer;
 }
 
 .navbars {

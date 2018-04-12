@@ -13,7 +13,9 @@ test('A class to format a Date', () => {
   expect(dateform2.getDate().constructor.name).toBe('Date');
   expect(dateform1.getTimeText()).toBe('23h20');
   expect(dateform1.getDateText()).toBe('jeudi 5 avril 2018');
+  expect(dateform1.getShortDateText()).toBe('2018-04-05');
   expect(dateform2.getTimeText()).toBe('23h20');
   expect(dateform2.getDateText()).toBe('jeudi 5 avril 2018');
+  expect(dateform2.getShortDateText()).toBe('2018-04-05');
 
 });
