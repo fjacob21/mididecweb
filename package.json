@@ -5,7 +5,7 @@
   "main": "frontend/js/main.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "NODE_ICU_DATA='node_modules/full-icu/icudt60l.dat' jest frontend/modules/tests/",
+    "test": "NODE_ICU_DATA=$(ls node_modules/full-icu/icudt*l.dat) jest frontend/modules/tests/",
     "build": "node_modules/webpack/bin/webpack.js",
     "watch": "node_modules/webpack/bin/webpack.js -w",
     "build-css": "node-sass --include-path frontend/scss frontend/scss/main.scss frontend/css/main.css",
