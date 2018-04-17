@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
-from src.event import Event, WAITING_LIST, ATTENDEE_LIST, ALREADY_WAITING_LIST
+from src.event import Event, WAITING_LIST, ATTENDEE_LIST, ALREADY_ATTENDEE_LIST
 from src.attendee import Attendee
 
 
@@ -59,7 +59,7 @@ def test_double_register_attendee():
     assert len(e.attendees) == 1
     assert e.attendees[0] == a
     assert res1 == ATTENDEE_LIST
-    assert res2 == ALREADY_WAITING_LIST
+    assert res2 == ALREADY_ATTENDEE_LIST
 
 
 def test_max_attendee():
