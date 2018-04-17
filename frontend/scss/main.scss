@@ -50,6 +50,10 @@ html, body {
         }
 }
 
+.required {
+        color: red;
+}
+
 .content {
         height: 100%;
         display: flex;
@@ -71,14 +75,19 @@ html, body {
         .title{
                 font-size: 2em;
                 display: flex;
-                margin-bottom: 10px;
+                margin-bottom: 10%;
+        }
+
+        .register {
+                display: flex;
+                margin-bottom: 10%
         }
 
         .detail{
                 display: flex;
                 flex-direction: column;
                 width: 100%;
-                margin-bottom: 10px;
+                margin-bottom: 10%;
 
                 .detaillabel{
                         font-size: 1.5em;
@@ -95,7 +104,7 @@ html, body {
                 font-size: 1em;
                 display: flex;
                 flex-direction: row;
-                margin-bottom: 10px;
+                margin-bottom: 10%;
                 align-items: center;
 
                 .timeicon{
@@ -146,24 +155,36 @@ html, body {
 
         .head {
                 display: flex;
-                flex-direction: column;
-                margin-top: 20px;
+                flex-direction: row;
+                //margin-top: 20px;
                 margin-left: 20px;
-                .start{
-                        font-size: 15px;
-                        display: flex;
-                        margin: 5px;
-                }
+                height: 100%;
+                max-height: 150px;
 
-                .title{
-                        font-size: 50px;
+                .head-info {
                         display: flex;
-                        margin: 5px;
+                        flex-direction: column;
+                        margin-right: 20px;
+
+                        .start{
+                                font-size: 1em;
+                                display: flex;
+                                //margin: 5px;
+                        }
+
+                        .title{
+                                font-size: 2em;
+                                display: flex;
+                                //margin: 5px;
+                        }
+                        .organizer{
+                                font-size: 1em;
+                                display: flex;
+                                //margin: 20px;
+                        }
                 }
-                .organizer{
-                        font-size: 15px;
-                        display: flex;
-                        margin: 20px;
+                .head-register {
+                        padding-left: 30px;
                 }
         }
 

@@ -16,6 +16,10 @@ class Events extends React.Component{
                 contentType: "application/json",
                 dataType: 'json'
                 });
+
+                this.onRegister = this.onRegister.bind(this);
+                this.registerSuccess = this.registerSuccess.bind(this);
+                this.registerError = this.registerError.bind(this);
         }
 
         success(data){
@@ -28,12 +32,53 @@ class Events extends React.Component{
 
         }
 
+        onRegister(userinfo){
+                var data = {
+                        name: userinfo.name,
+                        email: userinfo.email,
+                        phone: userinfo.phone,
+                        sendremindemail: userinfo.useEmail,
+                        sendremindsms: userinfo.useSms
+                };
+                jquery.ajax({
+                type: 'POST',
+                url: "/mididec/api/v1.0/events/"+ this.props.match.params.id + "/register",
+                data: JSON.stringify (data),
+                success: this.registerSuccess,
+                error: this.registerError,
+                contentType: "application/json",
+                dataType: 'json'
+                });
+        }
+
+        registerSuccess(data){
+                switch(data.result){
+                case 1:
+                        console.debug('Registered');
+                break;
+                case 2:
+                        console.debug('Already Registered');
+                break;
+                case 3:
+                        console.debug('Added on the waiting list');
+                break;
+                case 4:
+                        console.debug('Already Added on the waiting list');
+                break;
+                };
+
+        }
+
+        registerError(data){
+                console.error('Not Registered', data);
+        }
+
         render(){
                 if (this.state.event != null) {
                         return (
                                 <div className='events'>
-                                        <EventSmall event={this.state.event} />
-                                        <EventBig event={this.state.event} />
+                                        <EventSmall event={this.state.event} onRegister={this.onRegister}/>
+                                        <EventBig event={this.state.event} onRegister={this.onRegister}/>
                                 </div>
                         );
                 }
