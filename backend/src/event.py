@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
-import json
 import hashlib
 import pytz
 import random
 
 ATTENDEE_LIST = 1
-WAITING_LIST = 2
+ALREADY_ATTENDEE_LIST = 2
+WAITING_LIST = 3
+ALREADY_WAITING_LIST = 4
 
 
 class Event():
@@ -93,10 +94,10 @@ class Event():
     def register_attendee(self, attendee):
         aidx = self.find_attendee(attendee.email)
         if aidx != -1:
-            return ATTENDEE_LIST
+            return ALREADY_ATTENDEE_LIST
         widx = self.find_waiting(attendee.email)
         if widx != -1:
-            return WAITING_LIST
+            return ALREADY_WAITING_LIST
         if len(self._attendees) < self._max_attendee:
             self._attendees.append(attendee)
             return ATTENDEE_LIST

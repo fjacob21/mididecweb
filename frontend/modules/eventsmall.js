@@ -1,11 +1,48 @@
 import React from 'react'
 import DateFormater from './dateformater'
+import UserInfo from './userinfo'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class EventSmall extends React.Component{
         constructor(props) {
                 super(props);
+                this.state = {
+                      valid: false,
+                      modal: false,
+                      userinfo: null
+                };
                 this._start = new DateFormater(this.props.event.start);
                 this._end = new DateFormater(this.props.event.end);
+                this.toggle = this.toggle.bind(this);
+                this.onCancel = this.onCancel.bind(this);
+                this.onRegister = this.onRegister.bind(this);
+                this.onUserInfoChange = this.onUserInfoChange.bind(this);
+        }
+
+        toggle() {
+                this.state.modal = !this.state.modal;
+                this.setState(this.state);
+        }
+
+        onCancel() {
+                this.state.modal = false;
+                this.setState(this.state);
+        }
+
+        onRegister(){
+                this.state.modal = false;
+                this.setState(this.state);
+                this.props.onRegister(this.state.userinfo);
+        }
+
+        onUserInfoChange(obj, userinfo){
+                this.state.userinfo = obj;
+                this.state.valid = false;
+                var at = obj.email.indexOf('@');
+                var dot = obj.email.indexOf('.');
+                if (obj.name != '' && obj.email != '' && at != -1 && dot != -1 && at < dot && dot+1 < obj.email.length )
+                        this.state.valid = true;
+                this.setState(this.state);
         }
 
         render(){
@@ -21,6 +58,9 @@ class EventSmall extends React.Component{
                                         <div className='detaillabel'> Détail </div>
                                         <div className='description'>{this.props.event.description} </div>
                                 </div>
+                                <div className='register'>
+                                        <Button color="success" onClick={this.toggle}>S'inscrire</Button>
+                                </div>
                                 <div className='duration'>
                                         <img className='timeicon' src='res/drawables/time-icon.png'></img>
                                         <div className='timetext'>
@@ -35,6 +75,16 @@ class EventSmall extends React.Component{
                                                 {this.props.event.location}
                                         </div>
                                 </div>
+                                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                                        <ModalHeader toggle={this.toggle}>Informations</ModalHeader>
+                                        <ModalBody>
+                                            <UserInfo onInfoChange={this.onUserInfoChange}/>
+                                        </ModalBody>
+                                        <ModalFooter>
+                                                <Button color="primary" onClick={this.onRegister} disabled={!this.state.valid}>S'inscrire</Button>{' '}
+                                                <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
+                                        </ModalFooter>
+                                </Modal>
                         </div>);
         }
 }

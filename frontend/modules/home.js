@@ -42,13 +42,13 @@ class Home extends React.Component{
                 var nextItems = <div className='nothing-label'>Aucun</div>;
                 if(next.length > 0) {
                     nextItems = next.map((event) =>
-                            <EventSummary event={event} />
+                            <EventSummary key={event.uid} event={event} />
                       );
                 }
                 var prevItems = <div className='nothing-label'>Aucun</div>;
                 if(prev.length > 0) {
                     prevItems = prev.map((event) =>
-                          <EventSummary event={event} />
+                          <EventSummary key={event.uid} event={event} />
                     );
                 }
                 return (
