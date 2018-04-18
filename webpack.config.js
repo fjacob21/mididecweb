@@ -18,7 +18,7 @@ module.exports = {
              comments: false,
              compress: {
                warnings: false,
-               drop_console: false,
+               drop_console: true,
                screw_ie8: true
              },
              mangle: {
