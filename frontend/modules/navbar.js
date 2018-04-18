@@ -51,7 +51,7 @@ class Navbar extends React.Component{
         render(){
                 return (
                         <div className='navbars'>
-                        <NB className='navs'  dark expand="md">
+                        <NB className='navs'  dark expand="md" fixed={'top'}>
                           <NavbarBrand ><img className='logo' src='res/drawables/mididec.png' onClick={this.onHome}/></NavbarBrand>
                           <NavbarToggler onClick={this.toggle} />
                           <Collapse isOpen={this.state.isOpen} navbar>

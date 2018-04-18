@@ -5,7 +5,7 @@ exports[`Link changes the class when hovered 1`] = `
   className="navbars"
 >
   <nav
-    className="navs navbar navbar-expand-md navbar-dark"
+    className="navs navbar navbar-expand-md navbar-dark fixed-top"
   >
     <a
       className="navbar-brand"

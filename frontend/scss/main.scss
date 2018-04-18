@@ -57,7 +57,9 @@ html, body {
 .content {
         height: 100%;
         display: flex;
-        padding: 0.5rem 1rem;
+        //padding: 0.5rem 1rem;
+        padding-top: 100px;
+        padding-left: 1rem;
 }
 
 .events {
