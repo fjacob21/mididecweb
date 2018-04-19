@@ -59,8 +59,8 @@ class Events extends React.Component{
                         name: userinfo.name,
                         email: userinfo.email,
                         phone: userinfo.phone,
-                        sendremindemail: userinfo.useEmail,
-                        sendremindsms: userinfo.useSms
+                        useemail: userinfo.useEmail,
+                        usesms: userinfo.useSms
                 };
                 jquery.ajax({
                 type: 'POST',

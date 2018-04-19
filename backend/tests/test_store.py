@@ -57,10 +57,10 @@ def test_store_events():
     assert a2.email == ra2.email
     assert a1.phone == ra1.phone
     assert a2.phone == ra2.phone
-    assert a1.sendremindemail == ra1.sendremindemail
-    assert a2.sendremindemail == ra2.sendremindemail
-    assert a1.sendremindsms == ra1.sendremindsms
-    assert a2.sendremindsms == ra2.sendremindsms
+    assert a1.useemail == ra1.useemail
+    assert a2.useemail == ra2.useemail
+    assert a1.usesms == ra1.usesms
+    assert a2.usesms == ra2.usesms
 
 
 def test_store_mailinglist():

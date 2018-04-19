@@ -6,5 +6,5 @@ def test_attendee():
     assert a.name == "test"
     assert a.email == "test@test.com"
     assert a.phone == "1234567890"
-    assert a.sendremindemail is True
-    assert a.sendremindsms is True
+    assert a.useemail is True
+    assert a.usesms is True

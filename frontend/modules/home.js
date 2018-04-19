@@ -9,7 +9,7 @@ const history = createHistory();
 class Home extends React.Component{
         constructor(props) {
                 super(props);
-                this.state = {events: [], invalid: true};
+                this.state = {events: {count:0, events:[]}, invalid: true};
                 jquery.ajax({
                 type: 'GET',
                 url: "/mididec/api/v1.0/events",
@@ -37,8 +37,8 @@ class Home extends React.Component{
 
         render(){
                 const n = new Date();
-                const next = this.state.events.filter(event => new Date(event.start) >= n);
-                const prev = this.state.events.filter(event => new Date(event.start) < n);
+                const next = this.state.events.events.filter(event => new Date(event.start) >= n);
+                const prev = this.state.events.events.filter(event => new Date(event.start) < n);
                 var nextItems = <div className='nothing-label'>Aucun</div>;
                 if(next.length > 0) {
                     nextItems = next.map((event) =>

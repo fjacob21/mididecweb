@@ -135,8 +135,8 @@ class Store():
         sql += '"' + attendee.name + '", '
         sql += '"' + attendee.email + '", '
         sql += '"' + attendee.phone + '", '
-        sql += '"' + str(attendee.sendremindemail) + '", '
-        sql += '"' + str(attendee.sendremindsms) + '") '
+        sql += '"' + str(attendee.useemail) + '", '
+        sql += '"' + str(attendee.usesms) + '") '
         self._conn.execute(sql)
         self._conn.commit()
 
@@ -146,8 +146,8 @@ class Store():
         sql += '"' + attendee.name + '", '
         sql += '"' + attendee.email + '", '
         sql += '"' + attendee.phone + '", '
-        sql += '"' + str(attendee.sendremindemail) + '", '
-        sql += '"' + str(attendee.sendremindsms) + '") '
+        sql += '"' + str(attendee.useemail) + '", '
+        sql += '"' + str(attendee.usesms) + '") '
         self._conn.execute(sql)
         self._conn.commit()
 

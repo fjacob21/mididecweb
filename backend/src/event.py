@@ -131,18 +131,3 @@ class Event():
             if self._waitinglist[i].email == email:
                 return i
         return -1
-
-    @property
-    def json(self):
-        result = {}
-        result['uid'] = self.uid
-        result['title'] = self.title
-        result['description'] = self.description
-        result['start'] = self.start
-        result['duration'] = self.duration
-        result['end'] = self.end
-        result['location'] = self.location
-        result['organizer_name'] = self.organizer_name
-        result['organizer_email'] = self.organizer_email
-
-        return result

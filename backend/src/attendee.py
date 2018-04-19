@@ -1,14 +1,13 @@
-import json
 
 
 class Attendee():
 
-    def __init__(self, name, email, phone, sendremindemail, sendremindsms):
+    def __init__(self, name, email, phone, useemail, usesms):
         self._name = name
         self._email = email
         self._phone = phone
-        self._sendremindemail = sendremindemail
-        self._sendremindsms = sendremindsms
+        self._useemail = useemail
+        self._usesms = usesms
 
     @property
     def name(self):
@@ -23,20 +22,9 @@ class Attendee():
         return self._phone
 
     @property
-    def sendremindemail(self):
-        return self._sendremindemail
+    def useemail(self):
+        return self._useemail
 
     @property
-    def sendremindsms(self):
-        return self._sendremindsms
-
-    @property
-    def json(self):
-        result = {}
-        result['name'] = self.name
-        result['email'] = self.email
-        result['phone'] = self.phone
-        result['sendremindemail'] = self.sendremindemail
-        result['sendremindsms'] = self.sendremindsms
-
-        return json.dumps(result)
+    def usesms(self):
+        return self._usesms
