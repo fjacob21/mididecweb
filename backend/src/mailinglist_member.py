@@ -29,14 +29,3 @@ class MailingListMember():
     @property
     def usesms(self):
         return self._usesms
-
-    @property
-    def json(self):
-        result = {}
-        result['name'] = self.name
-        result['email'] = self.email
-        result['phone'] = self.phone
-        result['useemail'] = self.useemail
-        result['usesms'] = self.usesms
-
-        return json.dumps(result)

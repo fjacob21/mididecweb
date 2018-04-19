@@ -11,6 +11,7 @@ from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
 from store import Store
+from codec import UserJsonEncoder, EventJsonEncoder, EventsJsonEncoder
 
 store = Store()
 store.connect()
@@ -40,10 +41,7 @@ def teardown_request(exception):
 
 @application.route(api + 'events')
 def get_events():
-    result = []
-    for ev in events.list:
-        result.append(ev.json)
-    return jsonify({'events': result})
+    return jsonify({'events': EventsJsonEncoder(events).encode('dict')})
 
 
 @application.route(api + 'events/<uid>')
@@ -51,7 +49,7 @@ def get_event(uid):
     e = events.get(uid)
     if not e:
         abort(400)
-    return jsonify({'event': e.json})
+    return jsonify({'event': EventJsonEncoder(e).encode('dict')})
 
 
 @application.route(api + 'events/<uid>/attendees')
@@ -61,7 +59,7 @@ def get_event_attendees(uid):
         abort(400)
     result = []
     for a in e.attendees:
-        result.append(a.json)
+        result.append(UserJsonEncoder(a).encode('dict'))
     return jsonify({'attendees': result})
 
 
@@ -72,7 +70,7 @@ def get_event_waiting(uid):
         abort(400)
     result = []
     for a in e.waiting_attendees:
-        result.append(a.json)
+        result.append(UserJsonEncoder(a).encode('dict'))
     return jsonify({'waitings': result})
 
 
@@ -153,13 +151,13 @@ def register_event(uid):
     phone = ''
     if "phone" in request.json:
         phone = request.json["phone"]
-    sendremindemail = False
-    if "sendremindemail" in request.json:
-        sendremindemail = request.json["sendremindemail"]
-    sendremindsms = False
-    if "sendremindsms" in request.json:
-        sendremindsms = request.json["sendremindsms"]
-    a = Attendee(name, email, phone, sendremindemail, sendremindsms)
+    useemail = False
+    if "useemail" in request.json:
+        useemail = request.json["useemail"]
+    usesms = False
+    if "usesms" in request.json:
+        usesms = request.json["usesms"]
+    a = Attendee(name, email, phone, useemail, usesms)
     res = ev.register_attendee(a)
     store.store_events(events)
     return jsonify({'result': res})
@@ -214,7 +212,7 @@ def publish_event(uid):
 def get_mailinglist():
     result = []
     for m in mailinglist.members:
-        result.append(m.json)
+        result.append(UserJsonEncoder(m).encode())
     return jsonify({'mailinglist': result})
 
 
