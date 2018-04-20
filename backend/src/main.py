@@ -122,7 +122,7 @@ def add_event():
     e = Event(title, desc, max_attendee, start, duration, location, organizer_name, organizer_email, uid)
     events.add(e)
     store.store_events(events)
-    return jsonify({'result': True, 'event': e.json})
+    return jsonify({'result': True, 'event': EventJsonEncoder(e).encode('dict')})
 
 
 @application.route(api + 'events/<uid>', methods=['DELETE'])
