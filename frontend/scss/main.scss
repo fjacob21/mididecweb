@@ -60,6 +60,17 @@ html, body {
         padding: 0.5rem 1rem;
 }
 
+.createevent {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .form {
+            max-width: 400px;
+        }
+}
+
 .events {
         width: 100%;
         height: 100%;
