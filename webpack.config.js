@@ -9,9 +9,9 @@ module.exports = {
   plugins: [
  new webpack.DefinePlugin({
   'process.env': {
-    'NODE_ENV': JSON.stringify('debug')
+    'NODE_ENV': JSON.stringify('production')
   }
-})/*,
+ }),
  new webpack.optimize.UglifyJsPlugin({
          sourcemap: true,
              beautify: false,
@@ -32,7 +32,7 @@ module.exports = {
                comments: false,
                screw_ie8: true
              }
-})*/
+})
  ],
   module: {
 
