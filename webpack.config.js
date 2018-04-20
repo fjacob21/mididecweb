@@ -9,16 +9,16 @@ module.exports = {
   plugins: [
  new webpack.DefinePlugin({
   'process.env': {
-    'NODE_ENV': JSON.stringify('production')
+    'NODE_ENV': JSON.stringify('debug')
   }
- }),
+})/*,
  new webpack.optimize.UglifyJsPlugin({
          sourcemap: true,
              beautify: false,
              comments: false,
              compress: {
                warnings: false,
-               drop_console: true,
+               drop_console: false,
                screw_ie8: true
              },
              mangle: {
@@ -32,7 +32,7 @@ module.exports = {
                comments: false,
                screw_ie8: true
              }
-})
+})*/
  ],
   module: {
 
