@@ -234,6 +234,8 @@ def register_mailinglist():
     usesms = False
     if "usesms" in request.json:
         usesms = request.json["usesms"]
+    if mailinglist.find_member(email) != -1:
+        abort(400)
     m = MailingListMember(name, email, phone, useemail, usesms)
     res = mailinglist.register(m)
     store.store_mailinglist(mailinglist)
@@ -247,6 +249,8 @@ def unregister_mailinglist():
     if "email" not in request.json:
         abort(400)
     email = request.json["email"]
+    if mailinglist.find_member(email) == -1:
+        abort(400)
     mailinglist.unregister(email)
     store.store_mailinglist(mailinglist)
     return jsonify({'result': True})
