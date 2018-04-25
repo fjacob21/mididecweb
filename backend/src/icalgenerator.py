@@ -28,7 +28,7 @@ class iCalGenerator():
 
     def generate_event(self):
         event = Event()
-        event['uid'] = self._event.uid
+        event['uid'] = self._event.event_id
         event.add('summary', self._event.title)
         event.add('description', self._event.description)
         event.add('X-MICROSOFT-CDO-BUSYSTATUS', 'BUSY')

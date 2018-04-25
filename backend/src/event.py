@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from user import User
 
 ATTENDEE_LIST = 1
 ALREADY_ATTENDEE_LIST = 2
@@ -61,53 +62,59 @@ class Event():
     def __eq__(self, value):
         return self.get_data() == value.get_data()
 
-    # @property
-    # def attendees(self):
-    #     attendees = self.store.attendees.get_all(self._event_id)
-    #     for
-    #     return self._attendees
-    #
-    # @property
-    # def waiting_attendees(self):
-    #     return self._waitinglist
-    #
-    # def register_attendee(self, attendee):
-    #     aidx = self.find_attendee(attendee.email)
-    #     if aidx != -1:
-    #         return ALREADY_ATTENDEE_LIST
-    #     widx = self.find_waiting(attendee.email)
-    #     if widx != -1:
-    #         return ALREADY_WAITING_LIST
-    #     if len(self._attendees) < self._max_attendee:
-    #         self._attendees.append(attendee)
-    #         return ATTENDEE_LIST
-    #     self._waitinglist.append(attendee)
-    #     return WAITING_LIST
-    #
-    # def cancel_registration(self, email):
-    #     aidx = self.find_attendee(email)
-    #     widx = self.find_waiting(email)
-    #     if aidx == -1 and widx == -1:
-    #         return None
-    #     if aidx != -1:
-    #         del self._attendees[aidx]
-    #         if len(self._waitinglist):
-    #             attendee = self._waitinglist[0]
-    #             del self._waitinglist[0]
-    #             self.register_attendee(attendee)
-    #             return attendee
-    #     else:
-    #         del self._waitinglist[widx]
-    #         return None
-    #
-    # def find_attendee(self, email):
-    #     for i in range(len(self._attendees)):
-    #         if self._attendees[i].email == email:
-    #             return i
-    #     return -1
-    #
-    # def find_waiting(self, email):
-    #     for i in range(len(self._waitinglist)):
-    #         if self._waitinglist[i].email == email:
-    #             return i
-    #     return -1
+    @property
+    def attendees(self):
+        result = []
+        attendees = self._store.attendees.get_all(self._event_id)
+        for attendee in attendees:
+            result.append(User(self._store, attendee['user_id']))
+        return result
+
+    @property
+    def waiting_attendees(self):
+        result = []
+        waitings = self._store.waitings.get_all(self._event_id)
+        for attendee in waitings:
+            result.append(User(self._store, attendee['user_id']))
+        return result
+
+    def register_attendee(self, user):
+        aidx = self.find_attendee(user.email)
+        if aidx != -1:
+            return ALREADY_ATTENDEE_LIST
+        widx = self.find_waiting(user.email)
+        if widx != -1:
+            return ALREADY_WAITING_LIST
+        if len(self.attendees) < self.max_attendee:
+            self._store.attendees.add(user.user_id, self.event_id)
+            return ATTENDEE_LIST
+        self._store.waitings.add(user.user_id, self.event_id)
+        return WAITING_LIST
+
+    def cancel_registration(self, email):
+        aidx = self.find_attendee(email)
+        widx = self.find_waiting(email)
+        if aidx == -1 and widx == -1:
+            return None
+        if aidx != -1:
+            self._store.attendees.delete(self.attendees[aidx].user_id, self._event_id)
+            if len(self.waiting_attendees):
+                attendee = self.waiting_attendees[0]
+                self._store.waitings.delete(self.waiting_attendees[0].user_id, self._event_id)
+                self.register_attendee(attendee)
+                return attendee
+        else:
+            self._store.waitings.delete(self.waiting_attendees[widx].user_id, self._event_id)
+            return None
+
+    def find_attendee(self, email):
+        for i in range(len(self.attendees)):
+            if self.attendees[i].email == email:
+                return i
+        return -1
+
+    def find_waiting(self, email):
+        for i in range(len(self.waiting_attendees)):
+            if self.waiting_attendees[i].email == email:
+                return i
+        return -1

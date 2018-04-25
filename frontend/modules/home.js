@@ -30,9 +30,9 @@ class Home extends React.Component{
 
         }
 
-        onEventDetails(uid){
-                console.log(uid);
-                history.push("/events/"+uid);
+        onEventDetails(event_id){
+                console.log(event_id);
+                history.push("/events/"+event_id);
         }
 
         render(){
@@ -42,13 +42,13 @@ class Home extends React.Component{
                 var nextItems = <div className='nothing-label'>Aucun</div>;
                 if(next.length > 0) {
                     nextItems = next.map((event) =>
-                            <EventSummary key={event.uid} event={event} />
+                            <EventSummary key={event.event_id} event={event} />
                       );
                 }
                 var prevItems = <div className='nothing-label'>Aucun</div>;
                 if(prev.length > 0) {
                     prevItems = prev.map((event) =>
-                          <EventSummary key={event.uid} event={event} />
+                          <EventSummary key={event.event_id} event={event} />
                     );
                 }
                 return (

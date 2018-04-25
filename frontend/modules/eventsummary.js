@@ -9,9 +9,9 @@ class EventSummary extends React.Component {
                 super(props);
         }
 
-        onEventDetails(uid, isItem){
+        onEventDetails(event_id, isItem){
             if (!isItem || window.innerWidth < 500)
-                history.push("/events/"+uid);
+                history.push("/events/"+event_id);
         }
 
         render(){
@@ -19,10 +19,10 @@ class EventSummary extends React.Component {
           var start = df.getDateText();
           var time = df.getTimeText();
           return (
-                  <div className='event-summary' onClick={(e) => this.onEventDetails(this.props.event.uid, true)}>
+                  <div className='event-summary' onClick={(e) => this.onEventDetails(this.props.event.event_id, true)}>
                       <div className='es-title'>{this.props.event.title}</div>
                       <div className='es-start-long'>{start + ' ' + time}</div>
-                      <div className='es-detail'><div className='event-detail-link' onClick={(e) => this.onEventDetails(this.props.event.uid, false)}>Détails</div></div>
+                      <div className='es-detail'><div className='event-detail-link' onClick={(e) => this.onEventDetails(this.props.event.event_id, false)}>Détails</div></div>
                   </div>)
         }
 }
