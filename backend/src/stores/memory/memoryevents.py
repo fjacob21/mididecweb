@@ -4,10 +4,10 @@ class MemoryEvents():
     def __init__(self):
         self._events = []
 
-    def create(self, title, desc, max_attendee, start, duration, location,
-               organizer_name, organizer_email, event_id):
+    def create(self, title, description, max_attendee, start, duration,
+               location, organizer_name, organizer_email, event_id):
         if not self.get(event_id):
-            obj = self.create_object(title, desc, max_attendee, start,
+            obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
                                      organizer_email, event_id)
             self._events.append(obj)
@@ -21,11 +21,11 @@ class MemoryEvents():
                 return event
         return None
 
-    def update(self, title, desc, max_attendee, start, duration, location,
-               organizer_name, organizer_email, event_id):
+    def update(self, title, description, max_attendee, start, duration,
+               location, organizer_name, organizer_email, event_id):
         event = self.get(event_id)
         if event:
-            obj = self.create_object(title, desc, max_attendee, start,
+            obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
                                      organizer_email, event_id)
             self._events[self.index(event_id)] = obj
@@ -41,12 +41,12 @@ class MemoryEvents():
     def clean(self):
         self.reset()
 
-    def create_object(self, title, desc, max_attendee, start, duration,
+    def create_object(self, title, description, max_attendee, start, duration,
                       location, organizer_name, organizer_email, event_id):
         event = {}
         event['event_id'] = event_id
         event['title'] = title
-        event['desc'] = desc
+        event['description'] = description
         event['max_attendee'] = max_attendee
         event['start'] = start
         event['duration'] = duration

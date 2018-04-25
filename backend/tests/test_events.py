@@ -1,20 +1,30 @@
 from datetime import datetime, timedelta
 import pytz
-from src.event import Event
 from src.events import Events
+from src.stores import MemoryStore
 
 
-def generate_event():
+def generate_event(events):
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
-    return Event("test", "test", 20, start, dur, 'test', 'test', 'test@test.com', 'test')
+    return events.add('test', 'test', 20, start, dur, 'test', 'test',
+                      'test@test.com', 'test')
+
+
+def test_generate_uid():
+    start = datetime.now(pytz.timezone("America/New_York"))
+    store = MemoryStore()
+    events = Events(store)
+    uid = events.generate_event_id(start, 'test')
+    assert uid
+    assert type(uid) == str
 
 
 def test_add_event():
-    e = generate_event()
-    events = Events()
-
-    events.add(e)
+    store = MemoryStore()
+    events = Events(store)
+    e = generate_event(events)
+    assert e
     assert events.count == 1
     assert events.list[0] == e
     ge = events.get('test')
@@ -22,17 +32,13 @@ def test_add_event():
     assert ge == e
     ge = events.get('test2')
     assert not ge
-    assert events.index('test') == 0
-    assert events.index('test2') == -1
 
 
 def test_remove_event():
-    e = generate_event()
-    events = Events()
-
-    events.add(e)
-    events.remove(e.uid)
+    store = MemoryStore()
+    events = Events(store)
+    e = generate_event(events)
+    events.remove(e.event_id)
     assert events.count == 0
     ge = events.get('test')
     assert not ge
-    assert events.index('test') == -1

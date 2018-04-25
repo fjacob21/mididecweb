@@ -21,7 +21,7 @@ def test_events_event(events):
     assert event == events.get('test')
     assert event['event_id'] == 'test'
     assert event['title'] == 'test'
-    assert event['desc'] == 'test'
+    assert event['description'] == 'test'
     assert event['max_attendee'] == 20
     assert event['start'] == '2018-04-26T13:00:00Z'
     assert event['duration'] == 3600
