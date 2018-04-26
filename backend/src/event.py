@@ -14,6 +14,7 @@ class Event():
         self._event_id = event_id
 
     def get_data(self):
+        print('event', self._event_id, self._store.events.get(self._event_id))
         return self._store.events.get(self._event_id)
 
     @property

@@ -15,6 +15,7 @@ def test_users_user(users):
     generate_user(users)
     assert len(users.get_all()) == 1
     user = users.get_all()[0]
+    print(user)
     assert user
     assert users.get('test')
     assert user == users.get('test')
@@ -26,6 +27,7 @@ def test_users_user(users):
     assert user['useemail']
     assert not user['usesms']
     assert user['profile'] == 'profile'
+
     assert user['validated']
     users.delete('test')
 

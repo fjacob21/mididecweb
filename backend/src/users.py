@@ -12,8 +12,12 @@ class Users():
             profile='', validated=False, user_id=''):
         if not user_id:
             user_id = self.generate_user_id(email, name)
-        self._store.users.create(user_id, email, name, alias, phone,
-                                 useemail, usesms, profile, validated)
+        user = self.find_email(email)
+        if user:
+            user_id = user.user_id
+        else:
+            self._store.users.create(user_id, email, name, alias, phone,
+                                     useemail, usesms, profile, validated)
         return User(self._store, user_id)
 
     def generate_user_id(self, email, name):
@@ -24,6 +28,12 @@ class Users():
 
     def remove(self, user_id):
         self._store.users.delete(user_id)
+
+    def find_email(self, email):
+        for user in self.list:
+            if user.email == email:
+                return user
+        return None
 
     @property
     def list(self):

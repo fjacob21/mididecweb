@@ -3,26 +3,20 @@ from flask import Flask, jsonify, abort, request, Response, send_from_directory,
 from events import Events
 from users import Users
 from icalgenerator import iCalGenerator
-# from mailinglist_member import MailingListMember
 from mailinglist import MailingList
 from email_sender import EmailSender
 from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
-# from store import Store as OldStore
-from stores import MemoryStore
+from stores import SqliteStore
 from codec import UserJsonEncoder, EventJsonEncoder, EventsJsonEncoder
 
-store = MemoryStore()
-# oldstore = OldStore()
-# oldstore.connect()
+store = SqliteStore()
 application = Flask(__name__, static_url_path='')
 api = '/mididec/api/v1.0/'
 events = Events(store)
 users = Users(store)
-# mailinglist = oldstore.restore_mailinglist()
 mailinglist = MailingList(store)
-# oldstore.close()
 
 
 @application.after_request
@@ -34,14 +28,12 @@ def after_request(response):
 
 @application.before_request
 def before_request():
-    # oldstore.connect()
-    pass
+    store.open()
 
 
 @application.teardown_request
 def teardown_request(exception):
-    # oldstore.close()
-    pass
+    store.close()
 
 
 @application.route(api + 'events')
@@ -135,7 +127,6 @@ def rm_event(event_id):
     if not ev:
         abort(400)
     events.remove(event_id)
-    # store.store_events(events)
     return jsonify({'result': True})
 
 
@@ -237,10 +228,9 @@ def register_mailinglist():
         usesms = request.json["usesms"]
     if mailinglist.find_member(email) != -1:
         abort(400)
-    # m = MailingListMember(name, email, phone, useemail, usesms)
     u = users.add(email, name, name, phone, useemail, usesms)
+    print('user', u)
     res = mailinglist.register(u)
-    # store.store_mailinglist(mailinglist)
     return jsonify({'result': res})
 
 
@@ -254,7 +244,6 @@ def unregister_mailinglist():
     if mailinglist.find_member(email) == -1:
         abort(400)
     mailinglist.unregister(email)
-    # store.store_mailinglist(mailinglist)
     return jsonify({'result': True})
 
 
