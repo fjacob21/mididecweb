@@ -44,7 +44,6 @@ class Events():
         events = self._store.events.get_all()
         for event in events:
             result.append(Event(self._store, event['event_id']))
-        print(result)
         return result
 
     @property

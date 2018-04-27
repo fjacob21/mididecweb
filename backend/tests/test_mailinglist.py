@@ -1,4 +1,3 @@
-# from src.mailinglist_member import MailingListMember
 from src.mailinglist import MailingList
 from src.users import Users
 from src.stores import MemoryStore

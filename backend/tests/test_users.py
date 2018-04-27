@@ -32,18 +32,15 @@ def test_add_user():
 def test_double_add_user():
     store = MemoryStore()
     users = Users(store)
-    u = generate_user(users)
-    u2 = generate_user(users)
+    u = users.add('test@test.com', 'name', 'alias', '1234567890', True,
+                  True, 'profile', True)
+    u2 = users.add('test@test.com', 'name', 'alias', '1234567890', True,
+                   True, 'profile', True)
     assert u
     assert u2
     assert u == u2
     assert users.count == 1
     assert users.list[0] == u
-    gu = users.get('test')
-    assert gu
-    assert gu == u
-    gu = users.get('test2')
-    assert not gu
 
 
 def test_remove_event():

@@ -22,11 +22,12 @@ class SqliteMalingList():
 
     def delete(self, user_id):
         try:
-            t = (user_id)
+            t = (user_id, )
             self._conn.execute("delete from mailinglist where user_id=?", t)
             self._conn.commit()
-        except Exception:
-            pass
+            return True
+        except Exception as e:
+            return False
 
     def reset(self):
         self.clean()

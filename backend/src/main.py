@@ -123,7 +123,6 @@ def add_event():
 @application.route(api + 'events/<event_id>', methods=['DELETE'])
 def rm_event(event_id):
     ev = events.get(event_id)
-    print(event_id, ev)
     if not ev:
         abort(400)
     events.remove(event_id)
@@ -229,7 +228,6 @@ def register_mailinglist():
     if mailinglist.find_member(email) != -1:
         abort(400)
     u = users.add(email, name, name, phone, useemail, usesms)
-    print('user', u)
     res = mailinglist.register(u)
     return jsonify({'result': res})
 
@@ -243,8 +241,8 @@ def unregister_mailinglist():
     email = request.json["email"]
     if mailinglist.find_member(email) == -1:
         abort(400)
-    mailinglist.unregister(email)
-    return jsonify({'result': True})
+    res = mailinglist.unregister(email)
+    return jsonify({'result': res})
 
 
 @application.route('/html/<path:path>')

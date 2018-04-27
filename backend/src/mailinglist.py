@@ -21,7 +21,8 @@ class MailingList():
     def unregister(self, email):
         idx = self.find_member(email)
         if idx != -1:
-            self._store.mailinglist.delete(self.members[idx].user_id)
+            return self._store.mailinglist.delete(self.members[idx].user_id)
+        return False
 
     def find_member(self, email):
         for i in range(len(self.members)):

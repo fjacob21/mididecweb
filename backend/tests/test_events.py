@@ -34,6 +34,18 @@ def test_add_event():
     assert not ge
 
 
+def test_double_add_event():
+    store = MemoryStore()
+    events = Events(store)
+    e1 = generate_event(events)
+    e2 = generate_event(events)
+    assert e1
+    assert e2
+    assert e1 == e2
+    assert events.count == 1
+    assert events.list[0] == e1
+
+
 def test_remove_event():
     store = MemoryStore()
     events = Events(store)
