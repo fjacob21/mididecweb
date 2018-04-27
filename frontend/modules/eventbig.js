@@ -50,7 +50,7 @@ class EventBig extends React.Component{
                 var dateText = this._start.getDateText();
                 var timeText = this._start.getTimeText() + ' à ';
                 timeText += this._end.getTimeText();
-                var icalurl = '/mididec/api/v1.0/events/' + this.props.event.uid + '/ical';
+                var icalurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + '/ical';
                 return (
                         <div className='eventbig'>
                                 <div className='head'>

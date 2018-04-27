@@ -1,18 +1,21 @@
 from datetime import datetime, timedelta
 import pytz
 from icalendar import Calendar
-from src.event import Event
+from src.events import Events
 from src.icalgenerator import iCalGenerator
+from src.stores import MemoryStore
 
 
-def generate_event():
+def generate_event(events):
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
-    return Event("test", "test", 20, start, dur, 'test', 'test', 'test@test.com', 'test')
+    return events.add("test", "test", 20, start, dur, 'test', 'test', 'test@test.com', 'test')
 
 
 def test_generate_ical():
-    e = generate_event()
+    store = MemoryStore()
+    events = Events(store)
+    e = generate_event(events)
     gen = iCalGenerator(e)
     ical = gen.generate()
     assert ical

@@ -1,25 +1,22 @@
 #!/usr/bin/python
 from flask import Flask, jsonify, abort, request, Response, send_from_directory, redirect
-from attendee import Attendee
-# from events import Events
-from event import Event
+from events import Events
+from users import Users
 from icalgenerator import iCalGenerator
-# from mailinglist import MailingList
-from mailinglist_member import MailingListMember
+from mailinglist import MailingList
 from email_sender import EmailSender
 from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
-from store import Store
+from stores import SqliteStore
 from codec import UserJsonEncoder, EventJsonEncoder, EventsJsonEncoder
 
-store = Store()
-store.connect()
+store = SqliteStore()
 application = Flask(__name__, static_url_path='')
 api = '/mididec/api/v1.0/'
-events = store.restore_events()
-mailinglist = store.restore_mailinglist()
-store.close()
+events = Events(store)
+users = Users(store)
+mailinglist = MailingList(store)
 
 
 @application.after_request
@@ -31,7 +28,7 @@ def after_request(response):
 
 @application.before_request
 def before_request():
-    store.connect()
+    store.open()
 
 
 @application.teardown_request
@@ -44,17 +41,17 @@ def get_events():
     return jsonify({'events': EventsJsonEncoder(events).encode('dict')})
 
 
-@application.route(api + 'events/<uid>')
-def get_event(uid):
-    e = events.get(uid)
+@application.route(api + 'events/<event_id>')
+def get_event(event_id):
+    e = events.get(event_id)
     if not e:
         abort(400)
     return jsonify({'event': EventJsonEncoder(e).encode('dict')})
 
 
-@application.route(api + 'events/<uid>/attendees')
-def get_event_attendees(uid):
-    e = events.get(uid)
+@application.route(api + 'events/<event_id>/attendees')
+def get_event_attendees(event_id):
+    e = events.get(event_id)
     if not e:
         abort(400)
     result = []
@@ -63,9 +60,9 @@ def get_event_attendees(uid):
     return jsonify({'attendees': result})
 
 
-@application.route(api + 'events/<uid>/waitings')
-def get_event_waiting(uid):
-    e = events.get(uid)
+@application.route(api + 'events/<event_id>/waitings')
+def get_event_waiting(event_id):
+    e = events.get(event_id)
     if not e:
         abort(400)
     result = []
@@ -74,9 +71,9 @@ def get_event_waiting(uid):
     return jsonify({'waitings': result})
 
 
-@application.route(api + 'events/<uid>/ical')
-def get_event_ical(uid):
-    e = events.get(uid)
+@application.route(api + 'events/<event_id>/ical')
+def get_event_ical(event_id):
+    e = events.get(event_id)
     if not e:
         abort(400)
     return Response(
@@ -116,29 +113,25 @@ def add_event():
     organizer_email = ''
     if "organizer_email" in request.json:
         organizer_email = request.json["organizer_email"]
-    uid = ''
-    if "uid" in request.json:
-        uid = request.json["uid"]
-    e = Event(title, desc, max_attendee, start, duration, location, organizer_name, organizer_email, uid)
-    events.add(e)
-    store.store_events(events)
+    event_id = ''
+    if "event_id" in request.json:
+        event_id = request.json["event_id"]
+    e = events.add(title, desc, max_attendee, start, duration, location, organizer_name, organizer_email, event_id)
     return jsonify({'result': True, 'event': EventJsonEncoder(e).encode('dict')})
 
 
-@application.route(api + 'events/<uid>', methods=['DELETE'])
-def rm_event(uid):
-    ev = events.get(uid)
-    print(uid, ev)
+@application.route(api + 'events/<event_id>', methods=['DELETE'])
+def rm_event(event_id):
+    ev = events.get(event_id)
     if not ev:
         abort(400)
-    events.remove(uid)
-    store.store_events(events)
+    events.remove(event_id)
     return jsonify({'result': True})
 
 
-@application.route(api + 'events/<uid>/register', methods=['POST'])
-def register_event(uid):
-    ev = events.get(uid)
+@application.route(api + 'events/<event_id>/register', methods=['POST'])
+def register_event(event_id):
+    ev = events.get(event_id)
     if not ev:
         abort(400)
     if not request.json:
@@ -157,15 +150,14 @@ def register_event(uid):
     usesms = False
     if "usesms" in request.json:
         usesms = request.json["usesms"]
-    a = Attendee(name, email, phone, useemail, usesms)
-    res = ev.register_attendee(a)
-    store.store_events(events)
+    u = users.add(email, name, name, phone, useemail, usesms)
+    res = ev.register_attendee(u)
     return jsonify({'result': res})
 
 
-@application.route(api + 'events/<uid>/cancel_registration', methods=['POST'])
-def cancel_registration(uid):
-    ev = events.get(uid)
+@application.route(api + 'events/<event_id>/cancel_registration', methods=['POST'])
+def cancel_registration(event_id):
+    ev = events.get(event_id)
     if not ev:
         abort(400)
     if not request.json:
@@ -173,16 +165,15 @@ def cancel_registration(uid):
     if "email" not in request.json:
         abort(400)
     email = request.json["email"]
-    a = ev.cancel_registration(email)
-    store.store_events(events)
-    if a:
-        return jsonify({'promotee': a.json})
+    u = ev.cancel_registration(email)
+    if u:
+        return jsonify({'promotee': u.json})
     return jsonify({'promotee': None})
 
 
-@application.route(api + 'events/<uid>/publish', methods=['POST'])
-def publish_event(uid):
-    ev = events.get(uid)
+@application.route(api + 'events/<event_id>/publish', methods=['POST'])
+def publish_event(event_id):
+    ev = events.get(event_id)
     if not ev:
         abort(400)
     if not request.json:
@@ -236,9 +227,8 @@ def register_mailinglist():
         usesms = request.json["usesms"]
     if mailinglist.find_member(email) != -1:
         abort(400)
-    m = MailingListMember(name, email, phone, useemail, usesms)
-    res = mailinglist.register(m)
-    store.store_mailinglist(mailinglist)
+    u = users.add(email, name, name, phone, useemail, usesms)
+    res = mailinglist.register(u)
     return jsonify({'result': res})
 
 
@@ -251,9 +241,8 @@ def unregister_mailinglist():
     email = request.json["email"]
     if mailinglist.find_member(email) == -1:
         abort(400)
-    mailinglist.unregister(email)
-    store.store_mailinglist(mailinglist)
-    return jsonify({'result': True})
+    res = mailinglist.unregister(email)
+    return jsonify({'result': res})
 
 
 @application.route('/html/<path:path>')

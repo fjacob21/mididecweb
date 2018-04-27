@@ -11,7 +11,7 @@ class EventJsonEncoder():
 
     def encode(self, format='string'):
         result = {}
-        result['uid'] = self._event.uid
+        result['event_id'] = self._event.event_id
         result['title'] = self._event.title
         result['max_attendee'] = self._event.max_attendee
         result['description'] = self._event.description

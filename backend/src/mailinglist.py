@@ -1,24 +1,31 @@
+from user import User
+
 
 class MailingList():
 
-    def __init__(self):
-        self._members = []
+    def __init__(self, store):
+        self._store = store
 
     @property
     def members(self):
-        return self._members
+        result = []
+        members = self._store.mailinglist.get_all()
+        for member in members:
+            result.append(User(self._store, member['user_id']))
+        return result
 
-    def register(self, member):
-        if self.find_member(member.email):
-            self._members.append(member)
+    def register(self, user):
+        if self.find_member(user.email):
+            self._store.mailinglist.add(user.user_id)
 
     def unregister(self, email):
         idx = self.find_member(email)
         if idx != -1:
-            del self._members[idx]
+            return self._store.mailinglist.delete(self.members[idx].user_id)
+        return False
 
     def find_member(self, email):
-        for i in range(len(self._members)):
-            if self._members[i].email == email:
+        for i in range(len(self.members)):
+            if self.members[i].email == email:
                 return i
         return -1

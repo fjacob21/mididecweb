@@ -1,20 +1,24 @@
 from src.codec.event_json_encoder import EventJsonEncoder
 from datetime import datetime, timedelta
 import pytz
-from src.event import Event
-from src.attendee import Attendee
+from src.events import Events
 import json
+from src.stores import MemoryStore
+from src.users import Users
 
 
 def test_complete_event_json_encoder():
+    store = MemoryStore()
+    events = Events(store)
+    users = Users(store)
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = Event("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = Attendee("test", "test@test.com", '1234567890', True, True)
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
+    a = users.add("test@test.com", 'name', 'alias')
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e, True).encode('dict')
-    assert jsonobj['uid'] == "test"
+    assert jsonobj['event_id'] == "test"
     assert jsonobj['title'] == "test"
     assert jsonobj['description'] == "test"
     assert jsonobj['max_attendee'] == 30
@@ -28,14 +32,17 @@ def test_complete_event_json_encoder():
 
 
 def test_event_json_encoder():
+    store = MemoryStore()
+    events = Events(store)
+    users = Users(store)
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = Event("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = Attendee("test", "test@test.com", '1234567890', True, True)
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
+    a = users.add("test@test.com", 'name', 'alias')
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e).encode('dict')
-    assert jsonobj['uid'] == "test"
+    assert jsonobj['event_id'] == "test"
     assert jsonobj['title'] == "test"
     assert jsonobj['description'] == "test"
     assert jsonobj['max_attendee'] == 30
@@ -49,14 +56,17 @@ def test_event_json_encoder():
 
 
 def test_event_no_attendees_json_encoder():
+    store = MemoryStore()
+    events = Events(store)
+    users = Users(store)
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = Event("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = Attendee("test", "test@test.com", '1234567890', True, True)
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
+    a = users.add("test@test.com", 'name', 'alias')
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e, show_attendee=False).encode('dict')
-    assert jsonobj['uid'] == "test"
+    assert jsonobj['event_id'] == "test"
     assert jsonobj['title'] == "test"
     assert jsonobj['description'] == "test"
     assert jsonobj['max_attendee'] == 30
@@ -70,16 +80,19 @@ def test_event_no_attendees_json_encoder():
 
 
 def test_complete_event_json_encoder_string():
+    store = MemoryStore()
+    events = Events(store)
+    users = Users(store)
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = Event("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = Attendee("test", "test@test.com", '1234567890', True, True)
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
+    a = users.add("test@test.com", 'name', 'alias')
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e, True).encode('string')
     assert type(jsonstr) == str
     jsonobj = json.loads(jsonstr)
-    assert jsonobj['uid'] == "test"
+    assert jsonobj['event_id'] == "test"
     assert jsonobj['title'] == "test"
     assert jsonobj['description'] == "test"
     assert jsonobj['max_attendee'] == 30
@@ -93,16 +106,19 @@ def test_complete_event_json_encoder_string():
 
 
 def test_event_json_encoder_string():
+    store = MemoryStore()
+    events = Events(store)
+    users = Users(store)
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = Event("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = Attendee("test", "test@test.com", '1234567890', True, True)
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
+    a = users.add("test@test.com", 'name', 'alias')
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e).encode('string')
     assert type(jsonstr) == str
     jsonobj = json.loads(jsonstr)
-    assert jsonobj['uid'] == "test"
+    assert jsonobj['event_id'] == "test"
     assert jsonobj['title'] == "test"
     assert jsonobj['description'] == "test"
     assert jsonobj['max_attendee'] == 30
@@ -116,16 +132,19 @@ def test_event_json_encoder_string():
 
 
 def test_event_no_attendees_json_encoder_string():
+    store = MemoryStore()
+    events = Events(store)
+    users = Users(store)
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = Event("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = Attendee("test", "test@test.com", '1234567890', True, True)
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
+    a = users.add("test@test.com", 'name', 'alias')
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e, show_attendee=False).encode('string')
     assert type(jsonstr) == str
     jsonobj = json.loads(jsonstr)
-    assert jsonobj['uid'] == "test"
+    assert jsonobj['event_id'] == "test"
     assert jsonobj['title'] == "test"
     assert jsonobj['description'] == "test"
     assert jsonobj['max_attendee'] == 30
