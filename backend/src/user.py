@@ -25,6 +25,10 @@ class User():
         return self.get_data()['alias']
 
     @property
+    def password(self):
+        return self.get_data()['psw']
+
+    @property
     def phone(self):
         return self.get_data()['phone']
 
@@ -41,8 +45,24 @@ class User():
         return self.get_data()['profile']
 
     @property
+    def access(self):
+        return int(self.get_data()['access'])
+
+    @property
     def validated(self):
         return bool(self.get_data()['validated'])
+
+    @property
+    def smsvalidated(self):
+        return bool(self.get_data()['smsvalidated'])
+
+    @property
+    def lastlogin(self):
+        return self.get_data()['lastlogin']
+
+    @property
+    def loginkey(self):
+        return self.get_data()['loginkey']
 
     def __eq__(self, value):
         return self.get_data() == value.get_data()

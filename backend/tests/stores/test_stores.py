@@ -9,5 +9,5 @@ def test_memory_store():
 
 
 def test_sqlite_store():
-    store = SqliteStore()
+    store = SqliteStore(':memory:')
     store_tests(store)

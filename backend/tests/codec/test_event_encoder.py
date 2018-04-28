@@ -15,7 +15,7 @@ def test_complete_event_json_encoder():
     dur = timedelta(hours=1)
     end = start + dur
     e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = users.add("test@test.com", 'name', 'alias')
+    a = users.add("test@test.com", 'name', 'alias', 'psw')
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e, True).encode('dict')
     assert jsonobj['event_id'] == "test"
@@ -39,7 +39,7 @@ def test_event_json_encoder():
     dur = timedelta(hours=1)
     end = start + dur
     e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = users.add("test@test.com", 'name', 'alias')
+    a = users.add("test@test.com", 'name', 'alias', 'psw')
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e).encode('dict')
     assert jsonobj['event_id'] == "test"
@@ -63,7 +63,7 @@ def test_event_no_attendees_json_encoder():
     dur = timedelta(hours=1)
     end = start + dur
     e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = users.add("test@test.com", 'name', 'alias')
+    a = users.add("test@test.com", 'name', 'alias', 'psw')
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e, show_attendee=False).encode('dict')
     assert jsonobj['event_id'] == "test"
@@ -87,7 +87,7 @@ def test_complete_event_json_encoder_string():
     dur = timedelta(hours=1)
     end = start + dur
     e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = users.add("test@test.com", 'name', 'alias')
+    a = users.add("test@test.com", 'name', 'alias', 'psw')
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e, True).encode('string')
     assert type(jsonstr) == str
@@ -113,7 +113,7 @@ def test_event_json_encoder_string():
     dur = timedelta(hours=1)
     end = start + dur
     e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = users.add("test@test.com", 'name', 'alias')
+    a = users.add("test@test.com", 'name', 'alias', 'psw')
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e).encode('string')
     assert type(jsonstr) == str
@@ -139,7 +139,7 @@ def test_event_no_attendees_json_encoder_string():
     dur = timedelta(hours=1)
     end = start + dur
     e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
-    a = users.add("test@test.com", 'name', 'alias')
+    a = users.add("test@test.com", 'name', 'alias', 'psw')
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e, show_attendee=False).encode('string')
     assert type(jsonstr) == str

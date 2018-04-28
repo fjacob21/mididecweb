@@ -30,8 +30,7 @@ class SqliteEvents():
             r = self._conn.execute("select * from events where event_id=?", t)
             rec = r.fetchall()[0]
             return self.create_object(rec)
-        except Exception as e:
-            print('get except', e)
+        except Exception:
             return None
 
     def update(self, title, description, max_attendee, start, duration,
@@ -54,8 +53,8 @@ class SqliteEvents():
                 sql += 'where event_id=?'
                 self._conn.execute(sql, obj)
                 self._conn.commit()
-            except Exception as e:
-                print('except', e)
+            except Exception:
+                pass
 
     def delete(self, event_id):
         try:

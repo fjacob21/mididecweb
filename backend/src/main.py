@@ -150,7 +150,7 @@ def register_event(event_id):
     usesms = False
     if "usesms" in request.json:
         usesms = request.json["usesms"]
-    u = users.add(email, name, name, phone, useemail, usesms)
+    u = users.add(email, name, name, '', phone, useemail, usesms)
     res = ev.register_attendee(u)
     return jsonify({'result': res})
 
@@ -227,7 +227,7 @@ def register_mailinglist():
         usesms = request.json["usesms"]
     if mailinglist.find_member(email) != -1:
         abort(400)
-    u = users.add(email, name, name, phone, useemail, usesms)
+    u = users.add(email, name, name, '', phone, useemail, usesms)
     res = mailinglist.register(u)
     return jsonify({'result': res})
 
@@ -243,6 +243,12 @@ def unregister_mailinglist():
         abort(400)
     res = mailinglist.unregister(email)
     return jsonify({'result': res})
+
+
+@application.route(api + 'test', methods=['GET'])
+def test():
+    print(request.args.get('user'))
+    return jsonify({'result': request.args})
 
 
 @application.route('/html/<path:path>')
