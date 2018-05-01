@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from flask import Flask, jsonify, abort, request, Response, send_from_directory, redirect
 from events import Events
-from users import Users
+from users import Users, USER_ACCESS_SUPER, USER_ACCESS_MANAGER
 from icalgenerator import iCalGenerator
 from mailinglist import MailingList
 from email_sender import EmailSender
@@ -9,7 +9,8 @@ from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from datetime import datetime, timedelta
 from stores import SqliteStore
-from codec import UserJsonEncoder, EventJsonEncoder, EventsJsonEncoder
+from codec import AttendeeJsonEncoder, EventJsonEncoder, EventsJsonEncoder
+from codec import UsersJsonEncoder, UserJsonEncoder
 
 store = SqliteStore()
 application = Flask(__name__, static_url_path='')
@@ -38,7 +39,13 @@ def teardown_request(exception):
 
 @application.route(api + 'events')
 def get_events():
-    return jsonify({'events': EventsJsonEncoder(events).encode('dict')})
+    loginkey = request.args.get('loginkey')
+    req_user = users.find_loginkey(loginkey)
+    complete = False
+    if loginkey and req_user and req_user.validate_access(USER_ACCESS_SUPER):
+        complete = True
+    result = EventsJsonEncoder(events, complete=complete).encode('dict')
+    return jsonify({'events': result})
 
 
 @application.route(api + 'events/<event_id>')
@@ -46,7 +53,13 @@ def get_event(event_id):
     e = events.get(event_id)
     if not e:
         abort(400)
-    return jsonify({'event': EventJsonEncoder(e).encode('dict')})
+    loginkey = request.args.get('loginkey')
+    req_user = users.find_loginkey(loginkey)
+    complete = False
+    if loginkey and req_user and req_user.validate_access(USER_ACCESS_SUPER):
+        complete = True
+    result = EventJsonEncoder(e, complete=complete).encode('dict')
+    return jsonify({'event': result})
 
 
 @application.route(api + 'events/<event_id>/attendees')
@@ -54,9 +67,18 @@ def get_event_attendees(event_id):
     e = events.get(event_id)
     if not e:
         abort(400)
+    loginkey = request.args.get('loginkey')
+    req_user = users.find_loginkey(loginkey)
+    complete = False
+    if req_user:
+        is_owner = (req_user.email == e.organizer_email and
+                    req_user.validate_access(USER_ACCESS_MANAGER))
+        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
+        if is_admin or is_owner:
+            complete = True
     result = []
     for a in e.attendees:
-        result.append(UserJsonEncoder(a).encode('dict'))
+        result.append(AttendeeJsonEncoder(a, complete=complete).encode('dict'))
     return jsonify({'attendees': result})
 
 
@@ -65,9 +87,18 @@ def get_event_waiting(event_id):
     e = events.get(event_id)
     if not e:
         abort(400)
+    loginkey = request.args.get('loginkey')
+    req_user = users.find_loginkey(loginkey)
+    complete = False
+    if req_user:
+        is_owner = (req_user.email == e.organizer_email and
+                    req_user.validate_access(USER_ACCESS_MANAGER))
+        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
+        if is_admin or is_owner:
+            complete = True
     result = []
     for a in e.waiting_attendees:
-        result.append(UserJsonEncoder(a).encode('dict'))
+        result.append(AttendeeJsonEncoder(a, complete=complete).encode('dict'))
     return jsonify({'waitings': result})
 
 
@@ -203,7 +234,7 @@ def publish_event(event_id):
 def get_mailinglist():
     result = []
     for m in mailinglist.members:
-        result.append(UserJsonEncoder(m).encode())
+        result.append(AttendeeJsonEncoder(m).encode())
     return jsonify({'mailinglist': result})
 
 
@@ -245,10 +276,116 @@ def unregister_mailinglist():
     return jsonify({'result': res})
 
 
-@application.route(api + 'test', methods=['GET'])
-def test():
-    print(request.args.get('user'))
+@application.route(api + 'users', methods=['GET'])
+def get_users():
+    loginkey = request.args.get('loginkey')
+    req_user = users.find_loginkey(loginkey)
+    print(loginkey, req_user)
+    complete = False
+    if req_user:
+        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
+        if is_admin:
+            complete = True
+    result = UsersJsonEncoder(users, complete=complete).encode('dict')
+    return jsonify({'users': result})
+
+
+@application.route(api + 'users', methods=['POST'])
+def add_user():
+    if not request.json:
+        abort(400)
+    if ('email' not in request.json or
+        'name' not in request.json or
+        'alias' not in request.json or
+       'password' not in request.json):
+        abort(400)
+    email = request.json["email"]
+    name = request.json["name"]
+    alias = request.json["alias"]
+    password = request.json["password"]
+    phone = ''
+    if 'phone' in request.json:
+        phone = request.json['phone']
+    useemail = True
+    if 'useemail' in request.json:
+        useemail = request.json['useemail']
+    usesms = False
+    if 'usesms' in request.json:
+        usesms = request.json['usesms']
+    profile = ''
+    if 'profile' in request.json:
+        profile = request.json['profile']
+    user = users.add(email, name, alias, password, phone, useemail, usesms, profile)
+    result = UserJsonEncoder(user, complete=True).encode('dict')
+    return jsonify({'result': result})
+
+
+@application.route(api + 'users/<user_id>', methods=['GET'])
+def get_user(user_id):
+    loginkey = request.args.get('loginkey')
+    req_user = users.find_loginkey(loginkey)
+    user = users.find_email(user_id)
+    if not user:
+        user = users.get(user_id)
+    if not user:
+        abort(400)
+    complete = False
+    if req_user:
+        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
+        is_own = req_user == user
+        if is_admin or is_own:
+            complete = True
+    result = UserJsonEncoder(user, complete=complete).encode('dict')
+    return jsonify({'user': result})
+
+
+@application.route(api + 'users/<user_id>', methods=['POST'])
+def update_user(user_id):
     return jsonify({'result': request.args})
+
+
+@application.route(api + 'users/login', methods=['POST'])
+def login_user():
+    if not request.json:
+        abort(400)
+    if "user_id" not in request.json or "password" not in request.json:
+        abort(400)
+    user_id = request.json["user_id"]
+    password = request.json["password"]
+    loginkey = users.login(user_id, password)
+
+    return jsonify({'loginkey': loginkey})
+
+
+@application.route(api + 'users/logout', methods=['POST'])
+def logout_user():
+    if not request.json:
+        abort(400)
+    if "loginkey" not in request.json:
+        abort(400)
+    loginkey = request.json["loginkey"]
+    result = users.logout(loginkey)
+
+    return jsonify({'result': result})
+
+
+@application.route(api + 'users/<user_id>', methods=['DELETE'])
+def rm_user(user_id):
+    result = False
+    if not request.json:
+        abort(400)
+    if "loginkey" not in request.json:
+        abort(400)
+    loginkey = request.json["loginkey"]
+    req_user = users.find_loginkey(loginkey)
+    user = users.find_email(user_id)
+    if not user:
+        user = users.get(user_id)
+    if not user:
+        abort(400)
+    if req_user == user or req_user.validate_access(USER_ACCESS_SUPER):
+        users.remove(user.user_id)
+    return jsonify({'result': result})
 
 
 @application.route('/html/<path:path>')

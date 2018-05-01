@@ -43,7 +43,7 @@ def test_double_add_user():
     assert users.list[0] == u
 
 
-def test_remove_event():
+def test_remove_user():
     store = MemoryStore()
     users = Users(store)
     u = generate_user(users)
@@ -51,3 +51,15 @@ def test_remove_event():
     assert users.count == 0
     gu = users.get('test')
     assert not gu
+
+
+def test_login():
+    store = MemoryStore()
+    users = Users(store)
+    user = generate_user(users)
+    loginkey = users.login(user.user_id, 'psw')
+    assert loginkey
+    assert type(loginkey) == str
+    users.logout(loginkey)
+    loginkey = users.login(user.user_id, 'psw2')
+    assert not loginkey

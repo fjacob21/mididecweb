@@ -1,11 +1,11 @@
-from src.codec.user_json_encoder import UserJsonEncoder
+from src.codec.attendee_json_encoder import AttendeeJsonEncoder
 from src.attendee import Attendee
 import json
 
 
 def test_complete_user_json_encoder():
     a = Attendee("test", "test@test.com", '1234567890', True, True)
-    jsonobj = UserJsonEncoder(a, True).encode('dict')
+    jsonobj = AttendeeJsonEncoder(a, True).encode('dict')
     assert jsonobj['name'] == "test"
     assert jsonobj['email'] == "test@test.com"
     assert jsonobj['phone'] == "1234567890"
@@ -15,7 +15,7 @@ def test_complete_user_json_encoder():
 
 def test_user_json_encoder():
     a = Attendee("test", "test@test.com", '1234567890', True, True)
-    jsonobj = UserJsonEncoder(a).encode('dict')
+    jsonobj = AttendeeJsonEncoder(a).encode('dict')
     assert jsonobj['name'] == "test"
     assert 'email' not in jsonobj
     assert 'phone' not in jsonobj
@@ -25,7 +25,7 @@ def test_user_json_encoder():
 
 def test_user_json_encoder_string():
     a = Attendee("test", "test@test.com", '1234567890', True, True)
-    strjson = UserJsonEncoder(a).encode('string')
+    strjson = AttendeeJsonEncoder(a).encode('string')
     assert type(strjson) == str
     dict = json.loads(strjson)
     assert dict['name'] == "test"
@@ -37,7 +37,7 @@ def test_user_json_encoder_string():
 
 def test_complete_user_json_encoder_string():
     a = Attendee("test", "test@test.com", '1234567890', True, True)
-    strjson = UserJsonEncoder(a, True).encode('string')
+    strjson = AttendeeJsonEncoder(a, True).encode('string')
     assert type(strjson) == str
     dict = json.loads(strjson)
     assert dict['name'] == "test"

@@ -11,7 +11,7 @@ def test_user():
     assert u.email == 'test@test.com'
     assert u.name == 'name'
     assert u.alias == 'alias'
-    assert u.password == 'psw'
+    assert type(u.password) == str
     assert u.phone == '1234567890'
     assert u.useemail
     assert u.usesms
@@ -30,7 +30,7 @@ def test_default_user():
     assert u.email == 'test@test.com'
     assert u.name == 'name'
     assert u.alias == 'alias'
-    assert u.password == 'psw'
+    assert type(u.password) == str
     assert u.phone == ''
     assert u.useemail
     assert not u.usesms
