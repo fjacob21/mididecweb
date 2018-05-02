@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from stores import SqliteStore
 from codec import AttendeeJsonEncoder, EventJsonEncoder, EventsJsonEncoder
 from codec import UsersJsonEncoder, UserJsonEncoder
+from session import Session
 
 store = SqliteStore()
 application = Flask(__name__, static_url_path='')
@@ -40,17 +41,14 @@ def teardown_request(exception):
 
 @application.route(api + 'events')
 def get_events():
-    result = EventsJsonEncoder(events).encode('dict')
-    return jsonify({'events': result})
+    session = Session({}, events, users, request.args.get('loginkey'))
+    return jsonify(session.get_events())
 
 
 @application.route(api + 'events/<event_id>')
 def get_event(event_id):
-    e = events.get(event_id)
-    if not e:
-        abort(400)
-    result = EventJsonEncoder(e).encode('dict')
-    return jsonify({'event': result})
+    session = Session({}, events, users, request.args.get('loginkey'))
+    return jsonify(session.get_event(event_id))
 
 
 @application.route(api + 'events/<event_id>/ical')
