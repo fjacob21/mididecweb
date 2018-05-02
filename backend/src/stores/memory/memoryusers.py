@@ -22,10 +22,10 @@ class MemoryUsers():
 
     def update(self, user_id, email, name, alias, psw, phone, useemail, usesms,
                profile, access, validated, smsvalidated, lastlogin, loginkey):
-        event = self.get(user_id)
-        if event:
-            obj = self.create_object(user_id, email, name, alias, phone,
-                                     useemail, usesms, profile, psw, access, validated, smsvalidated, lastlogin, loginkey)
+        user = self.get(user_id)
+        if user:
+            obj = self.create_object(user_id, email, name, alias, psw, phone,
+                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)
             self._users[self.index(user_id)] = obj
 
     def delete(self, user_id):

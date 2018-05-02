@@ -61,7 +61,6 @@ class SqliteUsers():
                 sql += 'lastlogin=? ,'
                 sql += 'loginkey=? '
                 sql += 'where user_id=?'
-                print('update', obj)
                 self._conn.execute(sql, obj)
                 self._conn.commit()
             except Exception as e:

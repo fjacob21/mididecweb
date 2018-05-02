@@ -1,7 +1,8 @@
 #!/usr/bin/python
-from flask import Flask, jsonify, abort, request, Response, send_from_directory, redirect
+from flask import Flask, jsonify, abort, request
+from flask import Response, send_from_directory, redirect
 from events import Events
-from users import Users, USER_ACCESS_SUPER, USER_ACCESS_MANAGER
+from users import Users
 from icalgenerator import iCalGenerator
 from mailinglist import MailingList
 from email_sender import EmailSender
@@ -39,12 +40,7 @@ def teardown_request(exception):
 
 @application.route(api + 'events')
 def get_events():
-    loginkey = request.args.get('loginkey')
-    req_user = users.find_loginkey(loginkey)
-    complete = False
-    if loginkey and req_user and req_user.validate_access(USER_ACCESS_SUPER):
-        complete = True
-    result = EventsJsonEncoder(events, complete=complete).encode('dict')
+    result = EventsJsonEncoder(events).encode('dict')
     return jsonify({'events': result})
 
 
@@ -53,53 +49,8 @@ def get_event(event_id):
     e = events.get(event_id)
     if not e:
         abort(400)
-    loginkey = request.args.get('loginkey')
-    req_user = users.find_loginkey(loginkey)
-    complete = False
-    if loginkey and req_user and req_user.validate_access(USER_ACCESS_SUPER):
-        complete = True
-    result = EventJsonEncoder(e, complete=complete).encode('dict')
+    result = EventJsonEncoder(e).encode('dict')
     return jsonify({'event': result})
-
-
-@application.route(api + 'events/<event_id>/attendees')
-def get_event_attendees(event_id):
-    e = events.get(event_id)
-    if not e:
-        abort(400)
-    loginkey = request.args.get('loginkey')
-    req_user = users.find_loginkey(loginkey)
-    complete = False
-    if req_user:
-        is_owner = (req_user.email == e.organizer_email and
-                    req_user.validate_access(USER_ACCESS_MANAGER))
-        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
-        if is_admin or is_owner:
-            complete = True
-    result = []
-    for a in e.attendees:
-        result.append(AttendeeJsonEncoder(a, complete=complete).encode('dict'))
-    return jsonify({'attendees': result})
-
-
-@application.route(api + 'events/<event_id>/waitings')
-def get_event_waiting(event_id):
-    e = events.get(event_id)
-    if not e:
-        abort(400)
-    loginkey = request.args.get('loginkey')
-    req_user = users.find_loginkey(loginkey)
-    complete = False
-    if req_user:
-        is_owner = (req_user.email == e.organizer_email and
-                    req_user.validate_access(USER_ACCESS_MANAGER))
-        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
-        if is_admin or is_owner:
-            complete = True
-    result = []
-    for a in e.waiting_attendees:
-        result.append(AttendeeJsonEncoder(a, complete=complete).encode('dict'))
-    return jsonify({'waitings': result})
 
 
 @application.route(api + 'events/<event_id>/ical')
@@ -147,8 +98,10 @@ def add_event():
     event_id = ''
     if "event_id" in request.json:
         event_id = request.json["event_id"]
-    e = events.add(title, desc, max_attendee, start, duration, location, organizer_name, organizer_email, event_id)
-    return jsonify({'result': True, 'event': EventJsonEncoder(e).encode('dict')})
+    e = events.add(title, desc, max_attendee, start, duration, location,
+                   organizer_name, organizer_email, event_id)
+    return jsonify({'result': True,
+                    'event': EventJsonEncoder(e).encode('dict')})
 
 
 @application.route(api + 'events/<event_id>', methods=['DELETE'])
@@ -278,15 +231,7 @@ def unregister_mailinglist():
 
 @application.route(api + 'users', methods=['GET'])
 def get_users():
-    loginkey = request.args.get('loginkey')
-    req_user = users.find_loginkey(loginkey)
-    print(loginkey, req_user)
-    complete = False
-    if req_user:
-        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
-        if is_admin:
-            complete = True
-    result = UsersJsonEncoder(users, complete=complete).encode('dict')
+    result = UsersJsonEncoder(users).encode('dict')
     return jsonify({'users': result})
 
 
@@ -315,57 +260,71 @@ def add_user():
     profile = ''
     if 'profile' in request.json:
         profile = request.json['profile']
-    user = users.add(email, name, alias, password, phone, useemail, usesms, profile)
-    result = UserJsonEncoder(user, complete=True).encode('dict')
+    user = users.add(email, name, alias, password, phone, useemail,
+                     usesms, profile)
+    result = UserJsonEncoder(user).encode('dict')
     return jsonify({'result': result})
 
 
 @application.route(api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
-    loginkey = request.args.get('loginkey')
-    req_user = users.find_loginkey(loginkey)
-    user = users.find_email(user_id)
-    if not user:
-        user = users.get(user_id)
+    user = users.get(user_id)
     if not user:
         abort(400)
-    complete = False
-    if req_user:
-        is_admin = req_user.validate_access(USER_ACCESS_SUPER)
-        is_own = req_user == user
-        if is_admin or is_own:
-            complete = True
-    result = UserJsonEncoder(user, complete=complete).encode('dict')
+    result = UserJsonEncoder(user).encode('dict')
     return jsonify({'user': result})
 
 
 @application.route(api + 'users/<user_id>', methods=['POST'])
 def update_user(user_id):
-    return jsonify({'result': request.args})
+    user = users.get(user_id)
+    if not user:
+        abort(400)
+
+    if 'email' in request.json:
+        user.email = request.json['email']
+    if 'name' in request.json:
+        user.name = request.json['name']
+    if 'alias' in request.json:
+        user.alias = request.json['alias']
+    if 'password' in request.json:
+        user.password = request.json['password']
+    if 'phone' in request.json:
+        user.phone = request.json['phone']
+    if 'useemail' in request.json:
+        user.useemail = request.json['useemail']
+    if 'usesms' in request.json:
+        user.usesms = request.json['usesms']
+    if 'profile' in request.json:
+        user.profile = request.json['profile']
+    return jsonify({'result': True})
 
 
-@application.route(api + 'users/login', methods=['POST'])
-def login_user():
+@application.route(api + 'users/<user_id>/login', methods=['POST'])
+def login_user(user_id):
     if not request.json:
         abort(400)
-    if "user_id" not in request.json or "password" not in request.json:
+    if "password" not in request.json:
         abort(400)
-    user_id = request.json["user_id"]
     password = request.json["password"]
-    loginkey = users.login(user_id, password)
-
+    user = users.get(user_id)
+    if not user:
+        abort(400)
+    loginkey = user.login(password)
     return jsonify({'loginkey': loginkey})
 
 
-@application.route(api + 'users/logout', methods=['POST'])
-def logout_user():
+@application.route(api + 'users/<user_id>/logout', methods=['POST'])
+def logout_user(user_id):
     if not request.json:
         abort(400)
     if "loginkey" not in request.json:
         abort(400)
     loginkey = request.json["loginkey"]
-    result = users.logout(loginkey)
-
+    user = users.get(user_id)
+    if not user:
+        abort(400)
+    result = user.logout(loginkey)
     return jsonify({'result': result})
 
 
@@ -374,17 +333,10 @@ def rm_user(user_id):
     result = False
     if not request.json:
         abort(400)
-    if "loginkey" not in request.json:
-        abort(400)
-    loginkey = request.json["loginkey"]
-    req_user = users.find_loginkey(loginkey)
-    user = users.find_email(user_id)
-    if not user:
-        user = users.get(user_id)
+    user = users.get(user_id)
     if not user:
         abort(400)
-    if req_user == user or req_user.validate_access(USER_ACCESS_SUPER):
-        users.remove(user.user_id)
+    users.remove(user.user_id)
     return jsonify({'result': result})
 
 

@@ -1,5 +1,11 @@
 from datetime import datetime
 import pytz
+import hashlib
+import random
+
+USER_ACCESS_NORMAL = 0x1
+USER_ACCESS_MANAGER = 0x3
+USER_ACCESS_SUPER = 0xFF
 
 
 class User(object):
@@ -12,10 +18,12 @@ class User(object):
         return self._store.users.get(self._user_id)
 
     def update_data(self, data):
-        self._store.users.update(self._user_id, data['email'], data['name'], data['psw'], data['alias'],
-                                 data['phone'], data['useemail'], data['usesms'], data['profile'],
-                                 data['access'], data['validated'], data['smsvalidated'], data['lastlogin'],
-                                 data['loginkey'])
+        self._store.users.update(self._user_id, data['email'], data['name'],
+                                 data['alias'], data['psw'], data['phone'],
+                                 data['useemail'], data['usesms'],
+                                 data['profile'], data['access'],
+                                 data['validated'], data['smsvalidated'],
+                                 data['lastlogin'], data['loginkey'])
 
     @property
     def user_id(self):
@@ -118,7 +126,7 @@ class User(object):
     @validated.setter
     def validated(self, value):
         data = self.get_data()
-        data['valdated'] = value
+        data['validated'] = value
         self.update_data(data)
 
     @property
@@ -156,8 +164,23 @@ class User(object):
         lastlogin = datetime.now(pytz.timezone("America/New_York"))
         self.lastlogin = lastlogin.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    def logout(self):
+    def generate_loginkey(self, lastlogin):
+        hash = hashlib.sha256()
+        salt = str(random.randint(1, 1000))
+        hash.update((lastlogin + salt).encode())
+        return hash.hexdigest()
+
+    def login(self, password):
+        if password == self.password:
+            self.set_lastlogin()
+            self.loginkey = self.generate_loginkey(self.lastlogin)
+            return self.loginkey
+
+    def logout(self, loginkey):
+        if loginkey != self.loginkey:
+            return False
         self.loginkey = ''
+        return True
 
     def validate_access(self, access):
         return (self.access & access) == access

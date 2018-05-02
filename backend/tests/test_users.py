@@ -1,10 +1,12 @@
-from src.users import Users, USER_ACCESS_SUPER
+from src.users import Users
+from src.user import USER_ACCESS_SUPER
 from src.stores import MemoryStore
 
 
 def generate_user(users):
-    return users.add('test@test.com', 'name', 'alias', 'psw', '1234567890', True,
-                     True, 'profile', USER_ACCESS_SUPER, True, False, '', '', 'test')
+    return users.add('test@test.com', 'name', 'alias', 'psw', '1234567890',
+                     True, True, 'profile', USER_ACCESS_SUPER, True, False,
+                     'test')
 
 
 def test_generate_user_id():
@@ -51,15 +53,3 @@ def test_remove_user():
     assert users.count == 0
     gu = users.get('test')
     assert not gu
-
-
-def test_login():
-    store = MemoryStore()
-    users = Users(store)
-    user = generate_user(users)
-    loginkey = users.login(user.user_id, 'psw')
-    assert loginkey
-    assert type(loginkey) == str
-    users.logout(loginkey)
-    loginkey = users.login(user.user_id, 'psw2')
-    assert not loginkey

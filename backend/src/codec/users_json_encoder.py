@@ -14,7 +14,7 @@ class UsersJsonEncoder():
         events = []
         for user in self._users.list:
             events.append(UserJsonEncoder(user, self._complete).encode('dict'))
-        result['events'] = events
+        result['users'] = events
         if format == 'dict':
             return result
         return json.dumps(result)
