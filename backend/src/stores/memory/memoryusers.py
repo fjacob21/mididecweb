@@ -4,11 +4,11 @@ class MemoryUsers():
     def __init__(self):
         self._users = []
 
-    def create(self, user_id, email, name, alias, phone, useemail, usesms,
-               profile, validated):
+    def create(self, user_id, email, name, alias, psw, phone, useemail, usesms,
+               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey=''):
         if not self.get(user_id):
-            obj = self.create_object(user_id, email, name, alias, phone,
-                                     useemail, usesms, profile, validated)
+            obj = self.create_object(user_id, email, name, alias, psw, phone,
+                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)
             self._users.append(obj)
 
     def get_all(self):
@@ -20,12 +20,12 @@ class MemoryUsers():
                 return user
         return None
 
-    def update(self, user_id, email, name, alias, phone, useemail, usesms,
-               profile, validated):
-        event = self.get(user_id)
-        if event:
-            obj = self.create_object(user_id, email, name, alias, phone,
-                                     useemail, usesms, profile, validated)
+    def update(self, user_id, email, name, alias, psw, phone, useemail, usesms,
+               profile, access, validated, smsvalidated, lastlogin, loginkey):
+        user = self.get(user_id)
+        if user:
+            obj = self.create_object(user_id, email, name, alias, psw, phone,
+                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)
             self._users[self.index(user_id)] = obj
 
     def delete(self, user_id):
@@ -39,8 +39,8 @@ class MemoryUsers():
     def clean(self):
         self.reset()
 
-    def create_object(self, user_id, email, name, alias, phone, useemail,
-                      usesms, profile, validated):
+    def create_object(self, user_id, email, name, alias, psw, phone, useemail,
+                      usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey=''):
         user = {}
         user['user_id'] = user_id
         user['email'] = email
@@ -50,7 +50,12 @@ class MemoryUsers():
         user['useemail'] = useemail
         user['usesms'] = usesms
         user['profile'] = profile
+        user['psw'] = psw
+        user['access'] = access
         user['validated'] = validated
+        user['smsvalidated'] = smsvalidated
+        user['lastlogin'] = lastlogin
+        user['loginkey'] = loginkey
         return user
 
     def index(self, user_id):

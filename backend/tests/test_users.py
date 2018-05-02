@@ -1,10 +1,12 @@
 from src.users import Users
+from src.user import USER_ACCESS_SUPER
 from src.stores import MemoryStore
 
 
 def generate_user(users):
-    return users.add('test@test.com', 'name', 'alias', '1234567890', True,
-                     True, 'profile', True, 'test')
+    return users.add('test@test.com', 'name', 'alias', 'psw', '1234567890',
+                     True, True, 'profile', USER_ACCESS_SUPER, True, False,
+                     'test')
 
 
 def test_generate_user_id():
@@ -32,9 +34,9 @@ def test_add_user():
 def test_double_add_user():
     store = MemoryStore()
     users = Users(store)
-    u = users.add('test@test.com', 'name', 'alias', '1234567890', True,
+    u = users.add('test@test.com', 'name', 'alias', 'psw', '1234567890', True,
                   True, 'profile', True)
-    u2 = users.add('test@test.com', 'name', 'alias', '1234567890', True,
+    u2 = users.add('test@test.com', 'name', 'alias', 'psw', '1234567890', True,
                    True, 'profile', True)
     assert u
     assert u2
@@ -43,7 +45,7 @@ def test_double_add_user():
     assert users.list[0] == u
 
 
-def test_remove_event():
+def test_remove_user():
     store = MemoryStore()
     users = Users(store)
     u = generate_user(users)

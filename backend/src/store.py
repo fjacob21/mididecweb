@@ -82,8 +82,7 @@ class Store():
         try:
             r = self._conn.execute('SELECT * FROM attendee WHERE evenduid=?', t)
             return r.fetchall()
-        except Exception as e:
-            print(e)
+        except Exception:
             return []
 
     def fetch_waitings_attendee(self, uid):

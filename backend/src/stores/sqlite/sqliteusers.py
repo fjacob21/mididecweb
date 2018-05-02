@@ -6,11 +6,11 @@ class SqliteUsers():
         if not self.is_table_exist():
             self.create_table()
 
-    def create(self, user_id, email, name, alias, phone, useemail, usesms,
-               profile, validated):
+    def create(self, user_id, email, name, alias, psw, phone, useemail, usesms,
+               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey=''):
         if not self.get(user_id) and not self.find_email(email):
-            self.insert_object(user_id, email, name, alias, phone, useemail,
-                               usesms, profile, validated)
+            self.insert_object(user_id, email, name, alias, psw, phone, useemail,
+                               usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)
 
     def get_all(self):
         try:
@@ -38,23 +38,28 @@ class SqliteUsers():
         except Exception as e:
             return None
 
-    def update(self, user_id, email, name, alias, phone, useemail, usesms,
-               profile, validated):
+    def update(self, user_id, email, name, alias, psw, phone, useemail, usesms,
+               profile, access, validated, smsvalidated, lastlogin, loginkey):
         user = self.get(user_id)
         if user:
-            obj = (email, name, alias,
+            obj = (email, name, alias, psw,
                    phone, str(useemail), str(usesms),
-                   profile, str(validated), user_id)
+                   profile, str(access), str(validated), str(smsvalidated), lastlogin, loginkey, user_id, )
             try:
                 sql = 'update users set '
                 sql += 'email=? ,'
                 sql += 'name=? ,'
                 sql += 'alias=? ,'
+                sql += 'psw=? ,'
                 sql += 'phone=? ,'
                 sql += 'useemail=? ,'
                 sql += 'usesms=? ,'
                 sql += 'profile=? ,'
-                sql += 'validated=? '
+                sql += 'access=? ,'
+                sql += 'validated=? ,'
+                sql += 'smsvalidated=? ,'
+                sql += 'lastlogin=? ,'
+                sql += 'loginkey=? '
                 sql += 'where user_id=?'
                 self._conn.execute(sql, obj)
                 self._conn.commit()
@@ -86,25 +91,35 @@ class SqliteUsers():
         user['email'] = rec[1]
         user['name'] = rec[2]
         user['alias'] = rec[3]
-        user['phone'] = rec[4]
-        user['useemail'] = eval(rec[5])
-        user['usesms'] = eval(rec[6])
-        user['profile'] = rec[7]
-        user['validated'] = eval(rec[8])
+        user['psw'] = rec[4]
+        user['phone'] = rec[5]
+        user['useemail'] = eval(rec[6])
+        user['usesms'] = eval(rec[7])
+        user['profile'] = rec[8]
+        user['access'] = int(rec[9])
+        user['validated'] = eval(rec[10])
+        user['smsvalidated'] = eval(rec[11])
+        user['lastlogin'] = rec[12]
+        user['loginkey'] = rec[13]
         return user
 
-    def insert_object(self, user_id, email, name, alias, phone, useemail, usesms,
-                      profile, validated):
+    def insert_object(self, user_id, email, name, alias, psw, phone, useemail, usesms,
+                      profile, access, validated, smsvalidated, lastlogin, loginkey):
         sql = "insert into users VALUES ("
         sql += '"' + user_id + '", '
         sql += '"' + email + '", '
         sql += '"' + name + '", '
         sql += '"' + alias + '", '
+        sql += '"' + psw + '", '
         sql += '"' + phone + '", '
         sql += '"' + str(useemail) + '", '
         sql += '"' + str(usesms) + '", '
         sql += '"' + profile + '", '
-        sql += '"' + str(validated) + '") '
+        sql += '"' + str(access) + '", '
+        sql += '"' + str(validated) + '", '
+        sql += '"' + str(smsvalidated) + '", '
+        sql += '"' + lastlogin + '", '
+        sql += '"' + loginkey + '") '
         self._conn.execute(sql)
         self._conn.commit()
 
@@ -116,5 +131,5 @@ class SqliteUsers():
             return False
 
     def create_table(self):
-        self._conn.execute("create table users(user_id, email, name, alias, phone, useemail, usesms, profile, validated)")
+        self._conn.execute("create table users(user_id, email, name, alias, psw, phone, useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)")
         self._conn.commit()

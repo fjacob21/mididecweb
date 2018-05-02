@@ -51,7 +51,7 @@ def test_register_attendee():
     events = Events(store)
     users = Users(store)
     e = events.add("test", "test")
-    u = users.add("test@test.com", 'name', 'alias')
+    u = users.add("test@test.com", 'name', 'alias', 'psw', 8)
     res = e.register_attendee(u)
     assert len(e.attendees) == 1
     assert e.attendees[0] == u
@@ -63,7 +63,7 @@ def test_double_register_attendee():
     events = Events(store)
     users = Users(store)
     e = events.add("test", "test")
-    u = users.add("test@test.com", 'name', 'alias')
+    u = users.add("test@test.com", 'name', 'alias', 'psw', 8)
     res1 = e.register_attendee(u)
     res2 = e.register_attendee(u)
     assert len(e.attendees) == 1
@@ -77,8 +77,8 @@ def test_max_attendee():
     events = Events(store)
     users = Users(store)
     e = events.add("test", "test", max_attendee=1)
-    u1 = users.add("test@test.com", 'name', 'alias')
-    u2 = users.add("test2@test.com", 'name2', 'alias2')
+    u1 = users.add("test@test.com", 'name', 'alias', 'psw', 8)
+    u2 = users.add("test2@test.com", 'name2', 'alias2', 'psw', 8)
     res1 = e.register_attendee(u1)
     res2 = e.register_attendee(u2)
     assert len(e.attendees) == 1
@@ -94,8 +94,8 @@ def test_cancel_register():
     events = Events(store)
     users = Users(store)
     e = events.add("test", "test", max_attendee=1)
-    u1 = users.add("test@test.com", 'name', 'alias')
-    u2 = users.add("test2@test.com", 'name2', 'alias2')
+    u1 = users.add("test@test.com", 'name', 'alias', 'psw', 8)
+    u2 = users.add("test2@test.com", 'name2', 'alias2', 'psw', 8)
     res1 = e.register_attendee(u1)
     res2 = e.register_attendee(u2)
     assert len(e.attendees) == 1
