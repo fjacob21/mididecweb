@@ -56,6 +56,8 @@ class Users():
         return len(self.list)
 
     def get(self, user_id):
+        if not user_id:
+            return None
         user = self._store.users.get(user_id)
         if user:
             return User(self._store, user['user_id'])
