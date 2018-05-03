@@ -3,15 +3,9 @@ from flask import Flask, jsonify, abort, request
 from flask import Response, send_from_directory, redirect
 from events import Events
 from users import Users
-from icalgenerator import iCalGenerator
 from mailinglist import MailingList
-from email_sender import EmailSender
-from sms_sender import SmsSender
-from eventtextgenerator import EventTextGenerator
-from datetime import datetime, timedelta
 from stores import SqliteStore
-from codec import AttendeeJsonEncoder, EventJsonEncoder, EventsJsonEncoder
-from codec import UsersJsonEncoder, UserJsonEncoder
+from codec import AttendeeJsonEncoder
 from session import Session
 
 store = SqliteStore()
@@ -48,16 +42,20 @@ def get_events():
 @application.route(api + 'events/<event_id>')
 def get_event(event_id):
     session = Session({}, events, users, request.args.get('loginkey'))
-    return jsonify(session.get_event(event_id))
+    event_dict = session.get_event(event_id)
+    if not event_dict:
+        abort(400)
+    return jsonify(event_dict)
 
 
 @application.route(api + 'events/<event_id>/ical')
 def get_event_ical(event_id):
-    e = events.get(event_id)
-    if not e:
+    session = Session({}, events, users, request.args.get('loginkey'))
+    ical = session.get_event_ical(event_id)
+    if not ical:
         abort(400)
     return Response(
-        iCalGenerator(e).generate(),
+        ical,
         mimetype="text/csv",
         headers={"Content-disposition":
                  "attachment; filename=event.ics"})
@@ -67,118 +65,53 @@ def get_event_ical(event_id):
 def add_event():
     if not request.json:
         abort(400)
-
-    if "title" not in request.json or "desc" not in request.json:
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    event_dict = session.add_event()
+    if not event_dict:
         abort(400)
-
-    title = request.json["title"]
-    desc = request.json["desc"]
-    max_attendee = None
-    if "max_attendee" in request.json:
-        max_attendee = request.json["max_attendee"]
-    start = None
-    if "start" in request.json:
-        start = request.json["start"]
-        start = datetime.strptime(start, "%Y-%m-%dT%H:%M:%SZ")
-    duration = None
-    if "duration" in request.json:
-        duration = int(request.json["duration"])
-        duration = timedelta(seconds=duration)
-    location = ''
-    if "location" in request.json:
-        location = request.json["location"]
-    organizer_name = ''
-    if "organizer_name" in request.json:
-        organizer_name = request.json["organizer_name"]
-    organizer_email = ''
-    if "organizer_email" in request.json:
-        organizer_email = request.json["organizer_email"]
-    event_id = ''
-    if "event_id" in request.json:
-        event_id = request.json["event_id"]
-    e = events.add(title, desc, max_attendee, start, duration, location,
-                   organizer_name, organizer_email, event_id)
-    return jsonify({'result': True,
-                    'event': EventJsonEncoder(e).encode('dict')})
+    return jsonify(event_dict)
 
 
 @application.route(api + 'events/<event_id>', methods=['DELETE'])
-def rm_event(event_id):
-    ev = events.get(event_id)
-    if not ev:
+def remove_event(event_id):
+    session = Session({}, events, users, request.args.get('loginkey'))
+    result_dict = session.remove_event(event_id)
+    if not result_dict:
         abort(400)
-    events.remove(event_id)
-    return jsonify({'result': True})
+    return jsonify(result_dict)
 
 
 @application.route(api + 'events/<event_id>/register', methods=['POST'])
 def register_event(event_id):
-    ev = events.get(event_id)
-    if not ev:
-        abort(400)
     if not request.json:
         abort(400)
-    if "name" not in request.json or "email" not in request.json:
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    result_dict = session.register_event(event_id)
+    if not result_dict:
         abort(400)
-
-    name = request.json["name"]
-    email = request.json["email"]
-    phone = ''
-    if "phone" in request.json:
-        phone = request.json["phone"]
-    useemail = False
-    if "useemail" in request.json:
-        useemail = request.json["useemail"]
-    usesms = False
-    if "usesms" in request.json:
-        usesms = request.json["usesms"]
-    u = users.add(email, name, name, '', phone, useemail, usesms)
-    res = ev.register_attendee(u)
-    return jsonify({'result': res})
+    return jsonify(result_dict)
 
 
 @application.route(api + 'events/<event_id>/cancel_registration', methods=['POST'])
 def cancel_registration(event_id):
-    ev = events.get(event_id)
-    if not ev:
-        abort(400)
     if not request.json:
         abort(400)
-    if "email" not in request.json:
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    result_dict = session.unregistration(event_id)
+    if not result_dict:
         abort(400)
-    email = request.json["email"]
-    u = ev.cancel_registration(email)
-    if u:
-        return jsonify({'promotee': u.json})
-    return jsonify({'promotee': None})
+    return jsonify(result_dict)
 
 
 @application.route(api + 'events/<event_id>/publish', methods=['POST'])
 def publish_event(event_id):
-    ev = events.get(event_id)
-    if not ev:
-        abort(400)
     if not request.json:
         abort(400)
-    if ("usr" not in request.json or "psw" not in request.json or
-       'sid' not in request.json or 'token' not in request.json):
-        abort(405)
-    usr = request.json["usr"]
-    psw = request.json["psw"]
-    sid = request.json["sid"]
-    token = request.json["token"]
-    body = EventTextGenerator(ev, False).generate()
-    res = True
-    for m in mailinglist.members:
-        if m.useemail and m.email:
-            sender = EmailSender(usr, psw,
-                                 m.email, ev.title, body)
-            res = sender.send()
-        if m.usesms and m.phone:
-            sender = SmsSender(sid, token,
-                               m.phone, ev.title, body)
-            res = sender.send()
-    return jsonify({'result': res})
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    result_dict = session.publish_event(event_id)
+    if not result_dict:
+        abort(400)
+    return jsonify(result_dict)
 
 
 @application.route(api + 'mailinglist')
@@ -229,113 +162,70 @@ def unregister_mailinglist():
 
 @application.route(api + 'users', methods=['GET'])
 def get_users():
-    result = UsersJsonEncoder(users).encode('dict')
-    return jsonify({'users': result})
+    session = Session({}, events, users, request.args.get('loginkey'))
+    return jsonify(session.get_userss())
 
 
 @application.route(api + 'users', methods=['POST'])
 def add_user():
     if not request.json:
         abort(400)
-    if ('email' not in request.json or
-        'name' not in request.json or
-        'alias' not in request.json or
-       'password' not in request.json):
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    user_dict = session.add_user()
+    if not user_dict:
         abort(400)
-    email = request.json["email"]
-    name = request.json["name"]
-    alias = request.json["alias"]
-    password = request.json["password"]
-    phone = ''
-    if 'phone' in request.json:
-        phone = request.json['phone']
-    useemail = True
-    if 'useemail' in request.json:
-        useemail = request.json['useemail']
-    usesms = False
-    if 'usesms' in request.json:
-        usesms = request.json['usesms']
-    profile = ''
-    if 'profile' in request.json:
-        profile = request.json['profile']
-    user = users.add(email, name, alias, password, phone, useemail,
-                     usesms, profile)
-    result = UserJsonEncoder(user).encode('dict')
-    return jsonify({'result': result})
+    return jsonify(user_dict)
 
 
 @application.route(api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
-    user = users.get(user_id)
-    if not user:
+    session = Session({}, events, users, request.args.get('loginkey'))
+    user_dict = session.get_user(user_id)
+    if not user_dict:
         abort(400)
-    result = UserJsonEncoder(user).encode('dict')
-    return jsonify({'user': result})
+    return jsonify(user_dict)
 
 
 @application.route(api + 'users/<user_id>', methods=['POST'])
 def update_user(user_id):
-    user = users.get(user_id)
-    if not user:
+    if not request.json:
         abort(400)
-
-    if 'email' in request.json:
-        user.email = request.json['email']
-    if 'name' in request.json:
-        user.name = request.json['name']
-    if 'alias' in request.json:
-        user.alias = request.json['alias']
-    if 'password' in request.json:
-        user.password = request.json['password']
-    if 'phone' in request.json:
-        user.phone = request.json['phone']
-    if 'useemail' in request.json:
-        user.useemail = request.json['useemail']
-    if 'usesms' in request.json:
-        user.usesms = request.json['usesms']
-    if 'profile' in request.json:
-        user.profile = request.json['profile']
-    return jsonify({'result': True})
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    user_dict = session.update_user(user_id)
+    if not user_dict:
+        abort(400)
+    return jsonify(user_dict)
 
 
 @application.route(api + 'users/<user_id>/login', methods=['POST'])
-def login_user(user_id):
+def login(user_id):
     if not request.json:
         abort(400)
-    if "password" not in request.json:
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    result_dict = session.login(user_id)
+    if not result_dict:
         abort(400)
-    password = request.json["password"]
-    user = users.get(user_id)
-    if not user:
-        abort(400)
-    loginkey = user.login(password)
-    return jsonify({'loginkey': loginkey})
+    return jsonify(result_dict)
 
 
 @application.route(api + 'users/<user_id>/logout', methods=['POST'])
-def logout_user(user_id):
+def logout(user_id):
     if not request.json:
         abort(400)
-    if "loginkey" not in request.json:
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    result_dict = session.logout(user_id)
+    if not result_dict:
         abort(400)
-    loginkey = request.json["loginkey"]
-    user = users.get(user_id)
-    if not user:
-        abort(400)
-    result = user.logout(loginkey)
-    return jsonify({'result': result})
+    return jsonify(result_dict)
 
 
 @application.route(api + 'users/<user_id>', methods=['DELETE'])
 def rm_user(user_id):
-    result = False
-    if not request.json:
+    session = Session({}, events, users, request.args.get('loginkey'))
+    result_dict = session.remove_user(user_id)
+    if not result_dict:
         abort(400)
-    user = users.get(user_id)
-    if not user:
-        abort(400)
-    users.remove(user.user_id)
-    return jsonify({'result': result})
+    return jsonify(result_dict)
 
 
 @application.route('/html/<path:path>')
