@@ -1,3 +1,4 @@
+from bcrypt_hash import BcryptHash
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -11,8 +12,8 @@ def test_login_user():
     params = {}
     params['password'] = 'password'
     session = Session(params, events, users, '')
-
-    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+    password = BcryptHash('password').encrypt()
+    users.add('email', 'name', 'alias', password, 'phone', True, True,
               user_id='test')
 
     loging_dict = session.login('')
@@ -30,7 +31,8 @@ def test_login_user_bad_password():
     params['password'] = 'password2'
     session = Session(params, events, users, '')
 
-    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+    password = BcryptHash('password').encrypt()
+    users.add('email', 'name', 'alias', password, 'phone', True, True,
               user_id='test')
 
     loging_dict = session.login('test')

@@ -2,3 +2,4 @@ pytest
 pytz
 icalendar
 twilio
+bcrypt

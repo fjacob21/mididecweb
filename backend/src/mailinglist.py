@@ -11,7 +11,6 @@ class MailingList():
         result = []
         members = self._store.mailinglist.get_all()
         for member in members:
-            print('User', member['user_id'])
             result.append(User(self._store, member['user_id']))
         return result
 
