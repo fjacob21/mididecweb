@@ -3,6 +3,7 @@ import pytz
 import hashlib
 import random
 
+
 USER_ACCESS_NORMAL = 0x1
 USER_ACCESS_MANAGER = 0x3
 USER_ACCESS_SUPER = 0xFF
@@ -171,7 +172,7 @@ class User(object):
         return hash.hexdigest()
 
     def login(self, password):
-        if password == self.password:
+        if self.password == password:
             self.set_lastlogin()
             self.loginkey = self.generate_loginkey(self.lastlogin)
             return self.loginkey

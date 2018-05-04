@@ -5,6 +5,7 @@ from email_sender import EmailSender
 from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from icalgenerator import iCalGenerator
+from bcrypt_hash import BcryptHash
 
 
 class Session(object):
@@ -168,6 +169,7 @@ class Session(object):
         name = self._params["name"]
         alias = self._params["alias"]
         password = self._params["password"]
+        password = BcryptHash(password).encrypt()
         phone = ''
         if 'phone' in self._params:
             phone = self._params['phone']
@@ -204,7 +206,8 @@ class Session(object):
         if 'alias' in self._params:
             user.alias = self._params['alias']
         if 'password' in self._params:
-            user.password = self._params['password']
+            password = BcryptHash(self._params['password']).encrypt()
+            user.password = password
         if 'phone' in self._params:
             user.phone = self._params['phone']
         if 'useemail' in self._params:
@@ -225,6 +228,7 @@ class Session(object):
         user = self._users.get(user_id)
         if not user:
             return None
+        password = BcryptHash(password, user.password.encode()).encrypt()
         loginkey = user.login(password)
         if not loginkey:
             return None

@@ -1,3 +1,4 @@
+from bcrypt_hash import BcryptHash
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -8,8 +9,10 @@ def test_update_user():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
-    user = users.add('email', 'name', 'alias', 'psw', 'phone', True, True,
+    password = BcryptHash('password').encrypt()
+    user = users.add('email', 'name', 'alias', password, 'phone', True, True,
                      user_id='test')
+
     params = {}
     params['email'] = 'email2'
     params['name'] = 'name2'
@@ -30,7 +33,9 @@ def test_update_user():
     user_dict = session.update_user('email2')
     assert user_dict
     assert 'user' in user_dict
-    loginkey = user.login('password2')
+    password = BcryptHash('password2', user.password.encode()).encrypt()
+    loginkey = user.login(password)
+    assert loginkey
     user_dict = session.update_user(loginkey)
     assert user_dict
     assert 'user' in user_dict
