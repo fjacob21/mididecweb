@@ -1,5 +1,6 @@
 from src.events import Events
 from src.users import Users
+from src.user import USER_ACCESS_MANAGER
 from src.stores import MemoryStore
 from src.session import Session
 
@@ -8,6 +9,8 @@ def test_add_event():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
+    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+              access=USER_ACCESS_MANAGER, user_id='test')
     params = {}
     params['title'] = 'title'
     params['desc'] = 'desc'
@@ -18,7 +21,7 @@ def test_add_event():
     params['organizer_name'] = 'organizer_name'
     params['organizer_email'] = 'organizer_email'
     params['event_id'] = 'event_id'
-    session = Session(params, events, users, '')
+    session = Session(params, events, users, 'test')
 
     event_dict = session.add_event()
     assert event_dict
@@ -70,6 +73,8 @@ def test_double_add_event():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
+    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+              access=USER_ACCESS_MANAGER, user_id='test')
     params = {}
     params['title'] = 'title'
     params['desc'] = 'desc'
@@ -80,7 +85,7 @@ def test_double_add_event():
     params['organizer_name'] = 'organizer_name'
     params['organizer_email'] = 'organizer_email'
     params['event_id'] = 'event_id'
-    session = Session(params, events, users, '')
+    session = Session(params, events, users, 'test')
 
     event_dict = session.add_event()
     assert event_dict

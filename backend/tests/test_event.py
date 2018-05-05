@@ -9,11 +9,13 @@ from src.stores import MemoryStore
 def test_event():
     store = MemoryStore()
     events = Events(store)
+    users = Users(store)
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
+    u = users.add("test@test.com", 'name', 'alias', 'psw', 8)
     e = events.add('test', 'test', 30, start, dur, 'test', 'test',
-                   'test@test.com', 'test')
+                   'test@test.com', 'test', u)
     assert e.event_id == "test"
     assert e.title == "test"
     assert e.description == "test"
@@ -24,6 +26,7 @@ def test_event():
     assert e.location == "test"
     assert e.organizer_name == "test"
     assert e.organizer_email == "test@test.com"
+    assert e.owner_id == u.user_id
 
 
 def test_default_event():
@@ -44,6 +47,7 @@ def test_default_event():
     assert e.organizer_email == ""
     assert e.event_id
     assert type(e.event_id) == str
+    assert not e.owner_id
 
 
 def test_register_attendee():

@@ -12,7 +12,10 @@ class Events():
 
     def add(self, title, description, max_attendee=None, start=None,
             duration=None, location='', organizer_name='', organizer_email="",
-            event_id=''):
+            event_id='', owner=None):
+        owner_id = ''
+        if owner:
+            owner_id = owner.user_id
         if not start:
             start = datetime.now(pytz.timezone("America/New_York"))
         if not duration:
@@ -25,7 +28,7 @@ class Events():
         duration_second = duration.total_seconds()
         self._store.events.create(title, description, max_attendee, startstr,
                                   duration_second, location, organizer_name,
-                                  organizer_email, event_id)
+                                  organizer_email, event_id, owner_id)
         return Event(self._store, event_id)
 
     def generate_event_id(self, start, title):
@@ -55,3 +58,17 @@ class Events():
         if event:
             return Event(self._store, event['event_id'])
         return None
+
+    def find_owning_events(self, owner):
+        events = []
+        for event in self.list:
+            if event.owner_id == owner.user_id:
+                events.append(event)
+        return events
+
+    def is_user_attending_owning_events(self, owner, user):
+        events = self.find_owning_events(owner)
+        for event in events:
+            if event.is_attending(user):
+                return True
+        return False

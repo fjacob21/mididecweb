@@ -4,6 +4,7 @@ from src.events import Events
 from src.event import ATTENDEE_LIST, ALREADY_ATTENDEE_LIST
 from src.event import WAITING_LIST, ALREADY_WAITING_LIST
 from src.users import Users
+from src.user import USER_ACCESS_NORMAL
 from src.stores import MemoryStore
 from src.session import Session
 
@@ -12,7 +13,8 @@ def test_register_event():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
-
+    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+              access=USER_ACCESS_NORMAL, user_id='test')
     params = {}
     params['name'] = 'name'
     params['email'] = 'email'
@@ -20,7 +22,7 @@ def test_register_event():
     params['useemail'] = True
     params['usesms'] = True
 
-    session = Session(params, events, users, '')
+    session = Session(params, events, users, 'test')
 
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
@@ -86,7 +88,8 @@ def test_register_event_waiting():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
-
+    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+              access=USER_ACCESS_NORMAL, user_id='test')
     params = {}
     params['name'] = 'name'
     params['email'] = 'email'
@@ -94,7 +97,7 @@ def test_register_event_waiting():
     params['useemail'] = True
     params['usesms'] = True
 
-    session = Session(params, events, users, '')
+    session = Session(params, events, users, 'test')
 
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
@@ -112,7 +115,7 @@ def test_register_event_waiting():
     params['useemail'] = True
     params['usesms'] = True
 
-    session = Session(params, events, users, '')
+    session = Session(params, events, users, 'test')
     result_dict = session.register_event('test')
     assert result_dict
     assert result_dict['result'] == WAITING_LIST

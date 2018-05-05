@@ -5,11 +5,11 @@ class MemoryEvents():
         self._events = []
 
     def create(self, title, description, max_attendee, start, duration,
-               location, organizer_name, organizer_email, event_id):
+               location, organizer_name, organizer_email, event_id, owner_id):
         if not self.get(event_id):
             obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
-                                     organizer_email, event_id)
+                                     organizer_email, event_id, owner_id)
             self._events.append(obj)
 
     def get_all(self):
@@ -25,9 +25,11 @@ class MemoryEvents():
                location, organizer_name, organizer_email, event_id):
         event = self.get(event_id)
         if event:
+            current = self._events[self.index(event_id)]
             obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
-                                     organizer_email, event_id)
+                                     organizer_email, event_id,
+                                     current['owner_id'])
             self._events[self.index(event_id)] = obj
 
     def delete(self, event_id):
@@ -42,7 +44,8 @@ class MemoryEvents():
         self.reset()
 
     def create_object(self, title, description, max_attendee, start, duration,
-                      location, organizer_name, organizer_email, event_id):
+                      location, organizer_name, organizer_email, event_id,
+                      owner_id):
         event = {}
         event['event_id'] = event_id
         event['title'] = title
@@ -53,6 +56,7 @@ class MemoryEvents():
         event['location'] = location
         event['organizer_name'] = organizer_name
         event['organizer_email'] = organizer_email
+        event['owner_id'] = owner_id
         return event
 
     def index(self, event_id):

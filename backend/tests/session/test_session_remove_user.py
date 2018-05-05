@@ -8,10 +8,10 @@ def test_remove_user():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
-    session = Session({}, events, users, '')
-
     users.add('email', 'name', 'alias', 'psw', 'phone', True, True,
               user_id='test')
+
+    session = Session({}, events, users, 'test')
 
     result_dict = session.remove_user('')
     assert not result_dict
