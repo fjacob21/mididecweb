@@ -1,7 +1,7 @@
 
 def generate_event(events):
     events.create('test', 'test', 20, '2018-04-26T13:00:00Z', 3600, 'test',
-                  'test', 'test@test.com', 'test')
+                  'test', 'test@test.com', 'test', 'owner_id')
 
 
 def test_events(events):
@@ -28,6 +28,7 @@ def test_events_event(events):
     assert event['location'] == 'test'
     assert event['organizer_name'] == 'test'
     assert event['organizer_email'] == 'test@test.com'
+    assert event['owner_id'] == 'owner_id'
     events.delete('test')
 
 

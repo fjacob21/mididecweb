@@ -22,7 +22,7 @@ def test_update_user():
     params['useemail'] = True
     params['usesms'] = True
     params['profile'] = 'profile2'
-    session = Session(params, events, users, '')
+    session = Session(params, events, users, 'test')
 
     user_dict = session.update_user('')
     assert not user_dict

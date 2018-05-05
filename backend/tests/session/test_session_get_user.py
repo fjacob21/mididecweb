@@ -4,7 +4,7 @@ from src.stores import MemoryStore
 from src.session import Session
 
 
-def test_get_event():
+def test_get_user():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)

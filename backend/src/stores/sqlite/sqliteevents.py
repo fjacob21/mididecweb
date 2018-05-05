@@ -7,11 +7,11 @@ class SqliteEvents():
             self.create_table()
 
     def create(self, title, description, max_attendee, start, duration,
-               location, organizer_name, organizer_email, event_id):
+               location, organizer_name, organizer_email, event_id, owner_id):
         if not self.get(event_id):
             self.insert_object(title, description, max_attendee, start,
                                duration, location, organizer_name,
-                               organizer_email, event_id)
+                               organizer_email, event_id, owner_id)
 
     def get_all(self):
         try:
@@ -86,10 +86,12 @@ class SqliteEvents():
         event['location'] = rec[6]
         event['organizer_name'] = rec[7]
         event['organizer_email'] = rec[8]
+        event['owner_id'] = rec[9]
         return event
 
     def insert_object(self, title, description, max_attendee, start, duration,
-                      location, organizer_name, organizer_email, event_id):
+                      location, organizer_name, organizer_email, event_id,
+                      owner_id):
         sql = "insert into events VALUES ("
         sql += '"' + event_id + '", '
         sql += '"' + title + '", '
@@ -99,7 +101,8 @@ class SqliteEvents():
         sql += '"' + str(int(duration)) + '", '
         sql += '"' + location + '", '
         sql += '"' + organizer_name + '", '
-        sql += '"' + organizer_email + '") '
+        sql += '"' + organizer_email + '", '
+        sql += '"' + owner_id + '") '
         self._conn.execute(sql)
         self._conn.commit()
 
@@ -111,5 +114,5 @@ class SqliteEvents():
             return False
 
     def create_table(self):
-        self._conn.execute("create table events(event_id, title, description, max_attendee, start, duration, location, organizer_name, organizer_email)")
+        self._conn.execute("create table events(event_id, title, description, max_attendee, start, duration, location, organizer_name, organizer_email, owner_id)")
         self._conn.commit()

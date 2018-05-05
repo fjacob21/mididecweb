@@ -17,6 +17,10 @@ class Event():
         return self._store.events.get(self._event_id)
 
     @property
+    def owner_id(self):
+        return self.get_data()['owner_id']
+
+    @property
     def event_id(self):
         return self._event_id
 
@@ -78,6 +82,10 @@ class Event():
             result.append(User(self._store, attendee['user_id']))
         return result
 
+    @property
+    def all_attendees(self):
+        return self.attendees + self.waiting_attendees
+
     def register_attendee(self, user):
         aidx = self.find_attendee(user.email)
         if aidx != -1:
@@ -118,3 +126,10 @@ class Event():
             if self.waiting_attendees[i].email == email:
                 return i
         return -1
+
+    def is_attending(self, user):
+        attendees = self.all_attendees
+        for attendee in attendees:
+            if attendee.user_id == user.user_id:
+                return True
+        return False

@@ -6,6 +6,9 @@ from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from icalgenerator import iCalGenerator
 from bcrypt_hash import BcryptHash
+from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
+from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
+from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
 
 
 class Session(object):
@@ -17,15 +20,29 @@ class Session(object):
         self._users = users
         self._user = users.get(loginkey)
 
+    @property
+    def user(self):
+        return self._user
+
+    @property
+    def events(self):
+        return self._events
+
+    @property
+    def users(self):
+        return self._users
+
     def get_events(self):
-        events_dict = EventsJsonEncoder(self._events).encode('dict')
+        complete = EventGetCompleteAccess(self).granted()
+        events_dict = EventsJsonEncoder(self._events, complete).encode('dict')
         return {'events': events_dict}
 
     def get_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
             return None
-        event_dict = EventJsonEncoder(event).encode('dict')
+        complete = EventGetCompleteAccess(self, event).granted()
+        event_dict = EventJsonEncoder(event, complete).encode('dict')
         return {'event': event_dict}
 
     def get_event_ical(self, event_id):
@@ -36,6 +53,9 @@ class Session(object):
 
     def add_event(self):
         if "title" not in self._params or "desc" not in self._params:
+            return None
+
+        if not EventAddAccess(self).granted():
             return None
 
         title = self._params["title"]
@@ -72,6 +92,8 @@ class Session(object):
         event = self._events.get(event_id)
         if not event:
             return None
+        if not EventRemoveAccess(self, event).granted():
+            return None
         self._events.remove(event_id)
         return {'result': True}
 
@@ -83,6 +105,8 @@ class Session(object):
         if not event:
             return None
         if not self._params:
+            return None
+        if not EventRegisterAccess(self, event).granted():
             return None
         if "name" not in self._params or "email" not in self._params:
             return None
@@ -122,6 +146,8 @@ class Session(object):
         event = self._events.get(event_id)
         if not event:
             return None
+        if not EventPublishAccess(self, event).granted():
+            return None
         if not self._params:
             return None
         if ("usr" not in self._params or "psw" not in self._params or
@@ -147,14 +173,16 @@ class Session(object):
         return {'result': True}
 
     def get_users(self):
-        users_dict = UsersJsonEncoder(self._users).encode('dict')
+        complete = UserGetCompleteAccess(self).granted()
+        users_dict = UsersJsonEncoder(self._users, complete).encode('dict')
         return {'users': users_dict}
 
     def get_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
             return None
-        user_dict = UserJsonEncoder(user).encode('dict')
+        complete = UserGetCompleteAccess(self, user).granted()
+        user_dict = UserJsonEncoder(user, complete).encode('dict')
         return {'user': user_dict}
 
     def add_user(self):
@@ -165,6 +193,10 @@ class Session(object):
             'alias' not in self._params or
            'password' not in self._params):
             return None
+
+        if not UserAddAccess(self).granted():
+            return None
+
         email = self._params["email"]
         name = self._params["name"]
         alias = self._params["alias"]
@@ -191,12 +223,16 @@ class Session(object):
         user = self._users.get(user_id)
         if not user:
             return None
+        if not UserRemoveAccess(self, user).granted():
+            return None
         self._users.remove(user.user_id)
         return {'result': True}
 
     def update_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            return None
+        if not UserUpdateAccess(self, user).granted():
             return None
 
         if 'email' in self._params:
