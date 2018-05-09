@@ -21,6 +21,7 @@ class Navbar extends React.Component{
         constructor(props) {
                 super(props);
                 this.onHome = this.onHome.bind(this);
+                this.onCreate = this.onCreate.bind(this);
                 this.onLogin = this.onLogin.bind(this);
                 this.onLogout = this.onLogout.bind(this);
                 this.logoutSuccess = this.logoutSuccess.bind(this);
@@ -46,6 +47,11 @@ class Navbar extends React.Component{
         onLogin(event){
                 event.preventDefault();
                 history.replace("/login");
+        }
+
+        onCreate(event){
+                event.preventDefault();
+                history.replace("/createuser");
         }
 
         onLogout(event){
@@ -85,17 +91,21 @@ class Navbar extends React.Component{
         }
 
         render(){
-                var userlink = (<NavItem>
-                                        <NavLink className='home-link' onClick={this.onLogin}>
-                                                <i class="material-icons md-light">account_circle</i>
-                                        </NavLink>
-                                </NavItem>);
+                var userlink = (<div className='notlognav'>
+                                        <NavItem>
+                                                <NavLink className='mailinglist-link' onClick={this.onCreate}>
+                                                        S'inscrire
+                                                </NavLink>
+                                        </NavItem>
+                                        <NavItem>
+                                                <NavLink className='home-link' onClick={this.onLogin}>
+                                                        Login
+                                                </NavLink>
+                                        </NavItem>
+                                </div>);
 
                 var user = User.getSession();
                 if (user){
-                        console.debug('normal', user.isNormalUser);
-                        console.debug('manager', user.isManager);
-                        console.debug('super', user.isSuperUser);
                         userlink = (    <UncontrolledDropdown nav inNavbar>
                                                 <DropdownToggle nav caret>
                                                         <i class="material-icons md-light">account_circle</i>
@@ -125,8 +135,6 @@ class Navbar extends React.Component{
                                       <NavLink className='mailinglist-link' onClick={this.onMailingList}>Mailing List</NavLink>
                               </NavItem>
                               {userlink}
-
-
                             </Nav>
                           </Collapse>
                         </NB>

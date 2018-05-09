@@ -183,6 +183,17 @@ def add_user():
     return jsonify(user_dict)
 
 
+@application.route(api + 'users/validate', methods=['POST'])
+def validate_user():
+    if not request.json:
+        abort(400)
+    session = Session(request.json, events, users, request.args.get('loginkey'))
+    validate_dict = session.validate_user()
+    if not validate_dict:
+        abort(400)
+    return jsonify(validate_dict)
+
+
 @application.route(api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
     session = Session({}, events, users, request.args.get('loginkey'))

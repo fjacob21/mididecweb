@@ -37,6 +37,12 @@ class Users():
                 return user
         return None
 
+    def find_alias(self, alias):
+        for user in self.list:
+            if user.alias == alias:
+                return user
+        return None
+
     def find_loginkey(self, loginkey):
         for user in self.list:
             if user.loginkey == loginkey:
@@ -63,6 +69,8 @@ class Users():
             return User(self._store, user['user_id'])
         if not user:
             user = self.find_email(user_id)
+        if not user:
+            user = self.find_alias(user_id)
         if not user:
             user = self.find_loginkey(user_id)
         return user

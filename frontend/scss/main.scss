@@ -55,9 +55,7 @@ html, body {
 }
 
 .content {
-        height: 100%;
         display: flex;
-        //padding: 0.5rem 1rem;
         padding-top: 100px;
         padding-left: 1rem;
 }
@@ -68,6 +66,22 @@ html, body {
         width: 100%;
         align-items: center;
         height: 300px;
+}
+
+.notlognav {
+        display: flex;
+        flex-direction: row;
+}
+
+.createuser {
+        display: flex;
+        flex-direction: column;
+         width: 100%;
+         align-items: center;
+         .createuser-card {
+                width: 75%;
+                min-width: 250px;
+         }
 }
 
 .createevent {
