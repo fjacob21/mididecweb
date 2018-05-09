@@ -52,6 +52,20 @@ exports[`Link changes the class when hovered 1`] = `
             Mailing List
           </a>
         </li>
+        <li
+          className="nav-item"
+        >
+          <a
+            className="home-link nav-link"
+            onClick={[Function]}
+          >
+            <i
+              class="material-icons md-light"
+            >
+              account_circle
+            </i>
+          </a>
+        </li>
       </ul>
     </div>
   </nav>

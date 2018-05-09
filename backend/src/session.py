@@ -268,7 +268,8 @@ class Session(object):
         loginkey = user.login(password)
         if not loginkey:
             return None
-        return {'loginkey': loginkey}
+        user_dict = UserJsonEncoder(user, False, True).encode('dict')
+        return {'user': user_dict}
 
     def logout(self, user_id):
         if not self._params:

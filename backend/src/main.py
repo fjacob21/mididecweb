@@ -1,8 +1,10 @@
 #!/usr/bin/python
+from bcrypt_hash import BcryptHash
 from flask import Flask, jsonify, abort, request
 from flask import Response, send_from_directory, redirect
 from events import Events
 from users import Users
+from user import USER_ACCESS_SUPER
 from mailinglist import MailingList
 from stores import SqliteStore
 from codec import AttendeeJsonEncoder
@@ -14,6 +16,10 @@ api = '/mididec/api/v1.0/'
 events = Events(store)
 users = Users(store)
 mailinglist = MailingList(store)
+
+password = BcryptHash('master').encrypt()
+users.add('email', 'root', 'root', password, 'phone', True, True,
+          access=USER_ACCESS_SUPER, user_id='root')
 
 
 @application.after_request
@@ -163,7 +169,7 @@ def unregister_mailinglist():
 @application.route(api + 'users', methods=['GET'])
 def get_users():
     session = Session({}, events, users, request.args.get('loginkey'))
-    return jsonify(session.get_userss())
+    return jsonify(session.get_users())
 
 
 @application.route(api + 'users', methods=['POST'])
