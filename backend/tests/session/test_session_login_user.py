@@ -20,7 +20,7 @@ def test_login_user():
     assert not loging_dict
     loging_dict = session.login('test')
     assert loging_dict
-    assert 'loginkey' in loging_dict
+    assert 'user' in loging_dict
 
 
 def test_login_user_bad_password():
