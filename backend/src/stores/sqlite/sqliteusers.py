@@ -7,10 +7,10 @@ class SqliteUsers():
             self.create_table()
 
     def create(self, user_id, email, name, alias, psw, phone, useemail, usesms,
-               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey=''):
+               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path=''):
         if not self.get(user_id) and not self.find_email(email):
             self.insert_object(user_id, email, name, alias, psw, phone, useemail,
-                               usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)
+                               usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path)
 
     def get_all(self):
         try:
@@ -39,12 +39,12 @@ class SqliteUsers():
             return None
 
     def update(self, user_id, email, name, alias, psw, phone, useemail, usesms,
-               profile, access, validated, smsvalidated, lastlogin, loginkey):
+               profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path):
         user = self.get(user_id)
         if user:
             obj = (email, name, alias, psw,
                    phone, str(useemail), str(usesms),
-                   profile, str(access), str(validated), str(smsvalidated), lastlogin, loginkey, user_id, )
+                   profile, str(access), str(validated), str(smsvalidated), lastlogin, loginkey, avatar_path, user_id, )
             try:
                 sql = 'update users set '
                 sql += 'email=? ,'
@@ -59,7 +59,8 @@ class SqliteUsers():
                 sql += 'validated=? ,'
                 sql += 'smsvalidated=? ,'
                 sql += 'lastlogin=? ,'
-                sql += 'loginkey=? '
+                sql += 'loginkey=? ,'
+                sql += 'avatar_path=? '
                 sql += 'where user_id=?'
                 self._conn.execute(sql, obj)
                 self._conn.commit()
@@ -101,10 +102,11 @@ class SqliteUsers():
         user['smsvalidated'] = eval(rec[11])
         user['lastlogin'] = rec[12]
         user['loginkey'] = rec[13]
+        user['avatar_path'] = rec[14]
         return user
 
     def insert_object(self, user_id, email, name, alias, psw, phone, useemail, usesms,
-                      profile, access, validated, smsvalidated, lastlogin, loginkey):
+                      profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path):
         sql = "insert into users VALUES ("
         sql += '"' + user_id + '", '
         sql += '"' + email + '", '
@@ -119,7 +121,8 @@ class SqliteUsers():
         sql += '"' + str(validated) + '", '
         sql += '"' + str(smsvalidated) + '", '
         sql += '"' + lastlogin + '", '
-        sql += '"' + loginkey + '") '
+        sql += '"' + loginkey + '", '
+        sql += '"' + avatar_path + '") '
         self._conn.execute(sql)
         self._conn.commit()
 
@@ -131,5 +134,5 @@ class SqliteUsers():
             return False
 
     def create_table(self):
-        self._conn.execute("create table users(user_id, email, name, alias, psw, phone, useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)")
+        self._conn.execute("create table users(user_id, email, name, alias, psw, phone, useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path)")
         self._conn.commit()

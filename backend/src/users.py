@@ -10,7 +10,7 @@ class Users():
 
     def add(self, email, name, alias, psw, phone='', useemail=True,
             usesms=False, profile='', access=USER_ACCESS_NORMAL,
-            validated=False, smsvalidated=False, user_id=''):
+            validated=False, smsvalidated=False, user_id='', avatar_path=''):
         if not user_id:
             user_id = self.generate_user_id(email, name)
         user = self.get(email)
@@ -19,7 +19,7 @@ class Users():
         else:
             self._store.users.create(user_id, email, name, alias, psw, phone,
                                      useemail, usesms, profile, access,
-                                     validated, smsvalidated, '', '')
+                                     validated, smsvalidated, '', '', avatar_path)
         return User(self._store, user_id)
 
     def generate_user_id(self, email, name):

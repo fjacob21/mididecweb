@@ -24,7 +24,7 @@ class User(object):
                                  data['useemail'], data['usesms'],
                                  data['profile'], data['access'],
                                  data['validated'], data['smsvalidated'],
-                                 data['lastlogin'], data['loginkey'])
+                                 data['lastlogin'], data['loginkey'], data['avatar_path'])
 
     @property
     def user_id(self):
@@ -159,6 +159,16 @@ class User(object):
     def loginkey(self, value):
         data = self.get_data()
         data['loginkey'] = value
+        self.update_data(data)
+
+    @property
+    def avatar_path(self):
+        return self.get_data()['avatar_path']
+
+    @avatar_path.setter
+    def loginkey(self, value):
+        data = self.get_data()
+        data['avatar_path'] = value
         self.update_data(data)
 
     def set_lastlogin(self):
