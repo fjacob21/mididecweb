@@ -83,7 +83,7 @@ class Login extends React.Component{
                                                         <Label for="password">Password</Label>
                                                         <Input onChange={this.onChange} type='password' name="password" id="password" value={this.state.values.password} />
                                                 </FormGroup>
-                                                <Button color="primary" onClick={this.onLogin}>Login</Button>{' '}
+                                                <Button color="success" onClick={this.onLogin}>Login</Button>{' '}
                                         </Form>
                                 </Card>
                         </div>)

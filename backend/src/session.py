@@ -214,10 +214,31 @@ class Session(object):
         profile = ''
         if 'profile' in self._params:
             profile = self._params['profile']
+        user = self._users.get(email)
+        if user:
+            return None
+        user = self._users.get(alias)
+        if user:
+            return None
         user = self._users.add(email, name, alias, password, phone, useemail,
                                usesms, profile)
         user_dict = UserJsonEncoder(user).encode('dict')
         return {'user': user_dict}
+
+    def validate_user(self):
+        if not self._params:
+            return None
+
+        email = ''
+        if 'email' in self._params:
+            email = self._params['email']
+        alias = ''
+        if 'alias' in self._params:
+            alias = self._params['alias']
+
+        emailok = not self._users.find_email(email)
+        aliasok = not self._users.find_alias(alias)
+        return {'emailok': emailok, 'aliasok': aliasok}
 
     def remove_user(self, user_id):
         user = self._users.get(user_id)

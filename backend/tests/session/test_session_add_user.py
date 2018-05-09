@@ -25,9 +25,7 @@ def test_add_user():
     assert len(users.list) == 1
 
     user_dict = session.add_user()
-    assert user_dict
-    assert 'user' in user_dict
-    assert len(users.list) == 1
+    assert not user_dict
 
 
 def test_add_user_missing_email():
