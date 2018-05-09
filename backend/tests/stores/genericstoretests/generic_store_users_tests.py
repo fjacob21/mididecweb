@@ -1,6 +1,6 @@
 def generate_user(users):
     users.create('test', 'test@test.com', 'test', 'test', 'psw', '1234567890', True,
-                 False, 'profile', 8, True, True, '2018-04-26T13:00:00Z', 'testkey')
+                 False, 'profile', 8, True, True, '2018-04-26T13:00:00Z', 'testkey', 'avatar')
 
 
 def test_users(users):
@@ -36,13 +36,15 @@ def test_users_user(users):
     assert user['lastlogin'] == '2018-04-26T13:00:00Z'
     assert 'loginkey' in user
     assert user['loginkey'] == 'testkey'
+    assert 'avatar_path' in user
+    assert user['avatar_path'] == 'avatar'
     users.delete('test')
 
 
 def test_update(users):
     generate_user(users)
     users.update('test', 'test@test.com', 'test2', 'test', 'psw', '1234567890', True,
-                 False, 'profile', 8, True, True, '2018-04-26T13:00:00Z', 'testkey')
+                 False, 'profile', 8, True, True, '2018-04-26T13:00:00Z', 'testkey', 'avatar')
     assert len(users.get_all()) == 1
     user = users.get_all()[0]
     assert user

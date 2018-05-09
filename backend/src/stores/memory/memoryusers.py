@@ -5,10 +5,10 @@ class MemoryUsers():
         self._users = []
 
     def create(self, user_id, email, name, alias, psw, phone, useemail, usesms,
-               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey=''):
+               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path=''):
         if not self.get(user_id):
             obj = self.create_object(user_id, email, name, alias, psw, phone,
-                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)
+                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path)
             self._users.append(obj)
 
     def get_all(self):
@@ -21,11 +21,11 @@ class MemoryUsers():
         return None
 
     def update(self, user_id, email, name, alias, psw, phone, useemail, usesms,
-               profile, access, validated, smsvalidated, lastlogin, loginkey):
+               profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path):
         user = self.get(user_id)
         if user:
             obj = self.create_object(user_id, email, name, alias, psw, phone,
-                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey)
+                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path)
             self._users[self.index(user_id)] = obj
 
     def delete(self, user_id):
@@ -40,7 +40,7 @@ class MemoryUsers():
         self.reset()
 
     def create_object(self, user_id, email, name, alias, psw, phone, useemail,
-                      usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey=''):
+                      usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path=''):
         user = {}
         user['user_id'] = user_id
         user['email'] = email
@@ -56,6 +56,7 @@ class MemoryUsers():
         user['smsvalidated'] = smsvalidated
         user['lastlogin'] = lastlogin
         user['loginkey'] = loginkey
+        user['avatar_path'] = avatar_path
         return user
 
     def index(self, user_id):
