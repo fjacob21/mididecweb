@@ -23,7 +23,6 @@ class Session(object):
             self._user = users.get(loginkey)
         if 'loginkey' in params:
             self._user = users.get(self._params["loginkey"])
-            print('user:', self._user, self._params["loginkey"])
 
     @property
     def user(self):
@@ -92,7 +91,7 @@ class Session(object):
             event_id = self._params["event_id"]
         e = self._events.add(title, desc, max_attendee, start, duration,
                              location, organizer_name, organizer_email,
-                             event_id)
+                             event_id, self._user)
         return {'event': EventJsonEncoder(e).encode('dict')}
 
     def remove_event(self, event_id):

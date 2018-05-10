@@ -16,6 +16,10 @@ class User {
                 return this._userinfo.access;
         }
 
+        get email(){
+                return this._userinfo.email;
+        }
+
         get name(){
                 return this._userinfo.name;
         }

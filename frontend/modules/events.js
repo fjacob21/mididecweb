@@ -7,7 +7,6 @@ import { Alert } from 'reactstrap';
 class Events extends React.Component{
         constructor(props) {
                 super(props);
-                console.debug('Start');
                 this.state = {
                         event: null,
                         invalid: true,

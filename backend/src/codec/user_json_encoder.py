@@ -14,7 +14,6 @@ class UserJsonEncoder():
         result['name'] = self._user.name
         result['alias'] = self._user.alias
         if self._complete:
-            result['email'] = self._user.email
             result['password'] = self._user.password
             result['phone'] = self._user.phone
             result['useemail'] = self._user.useemail
@@ -24,6 +23,7 @@ class UserJsonEncoder():
             result['smsvalidated'] = self._user.smsvalidated
             result['lastlogin'] = self._user.lastlogin
         if self._complete or self._islogin:
+            result['email'] = self._user.email
             result['loginkey'] = self._user.loginkey
             result['access'] = self._user.access
 
