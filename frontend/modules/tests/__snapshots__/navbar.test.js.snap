@@ -42,16 +42,6 @@ exports[`Link changes the class when hovered 1`] = `
             Home
           </a>
         </li>
-        <li
-          className="nav-item"
-        >
-          <a
-            className="mailinglist-link nav-link"
-            onClick={[Function]}
-          >
-            Mailing List
-          </a>
-        </li>
         <div
           className="notlognav"
         >

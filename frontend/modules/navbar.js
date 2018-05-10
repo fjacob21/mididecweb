@@ -27,7 +27,6 @@ class Navbar extends React.Component{
                 this.onLogout = this.onLogout.bind(this);
                 this.logoutSuccess = this.logoutSuccess.bind(this);
                 this.logoutError = this.logoutError.bind(this);
-                this.onMailingList = this.onMailingList.bind(this);
                 this.toggle = this.toggle.bind(this);
                 this.state = {
                   isOpen: false
@@ -85,11 +84,6 @@ class Navbar extends React.Component{
                 this.setState(this.state);
         }
 
-        onMailingList(event){
-                event.preventDefault();
-                history.replace("/mailinglist");
-        }
-
         toggle() {
           this.setState({
             isOpen: !this.state.isOpen
@@ -140,9 +134,6 @@ class Navbar extends React.Component{
                             <Nav className="ml-auto" navbar>
                               <NavItem>
                                       <NavLink className='home-link' onClick={this.onHome}>Home</NavLink>
-                              </NavItem>
-                              <NavItem>
-                                      <NavLink className='mailinglist-link' onClick={this.onMailingList}>Mailing List</NavLink>
                               </NavItem>
                               {userlink}
                             </Nav>

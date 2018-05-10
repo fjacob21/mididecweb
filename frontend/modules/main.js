@@ -6,7 +6,6 @@ import Home from './home'
 import Events from './events'
 import CreateEvent from './createevent'
 import CreateUser from './createuser'
-import MailingList from './mailinglist'
 import App from './app'
 import Login from './login'
 import 'bootstrap/dist/css/bootstrap.css';
@@ -17,7 +16,6 @@ render((
       <Route exact path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/events/:id" component={Events} />
-      <Route path="/mailinglist" component={MailingList} />
       <Route path="/createevent" component={CreateEvent} />
       <Route path="/createuser" component={CreateUser} />
     </App>
