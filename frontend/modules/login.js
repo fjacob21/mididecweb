@@ -73,7 +73,6 @@ class Login extends React.Component{
                                 </Alert>
                                 <Card body className='login-card'>
                                         <CardTitle>Login</CardTitle>
-
                                         <Form className='form'>
                                                 <FormGroup className='userid'>
                                                         <Label for="userid">User</Label>

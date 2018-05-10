@@ -58,12 +58,12 @@ def test_login_user_json_encoder():
                   True, True, 'profile', USER_ACCESS_SUPER, True, False,
                   'test')
     jsonobj = UserJsonEncoder(u, False, True).encode('dict')
-    assert jsonobj['user_id'] == "test"
+    assert jsonobj['email'] == "test@test.com"
+    assert jsonobj['loginkey'] == ''
     assert jsonobj['name'] == "name"
     assert jsonobj['alias'] == "alias"
     assert jsonobj['access'] == USER_ACCESS_SUPER
     assert jsonobj['loginkey'] == ''
-    assert 'email' not in jsonobj
     assert 'password' not in jsonobj
     assert 'phone' not in jsonobj
     assert 'useemail' not in jsonobj
@@ -134,11 +134,11 @@ def test_login_user_json_encoder_string():
     assert type(jsonstr) == str
     jsonobj = json.loads(jsonstr)
     assert jsonobj['user_id'] == "test"
+    assert jsonobj['email'] == "test@test.com"
     assert jsonobj['name'] == "name"
     assert jsonobj['alias'] == "alias"
     assert jsonobj['access'] == USER_ACCESS_SUPER
     assert jsonobj['loginkey'] == ''
-    assert 'email' not in jsonobj
     assert 'password' not in jsonobj
     assert 'phone' not in jsonobj
     assert 'useemail' not in jsonobj

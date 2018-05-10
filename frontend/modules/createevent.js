@@ -9,6 +9,7 @@ const history = createHistory();
 class CreateEvent extends React.Component{
         constructor(props) {
             super(props);
+            var user = User.getSession();
             this.state = {
                   valid: false,
                   alert: {
@@ -23,8 +24,8 @@ class CreateEvent extends React.Component{
                       time: '12:00',
                       durationString: '1h00',
                       location: '3b6',
-                      organizerName: 'Frederic Jacob',
-                      organizerEmail: 'fjacob@matrox.com'}
+                      organizer_name: user.alias,
+                      organizer_email: user.email}
             };
             this.onCancel = this.onCancel.bind(this);
             this.onAdd = this.onAdd.bind(this);
@@ -89,12 +90,12 @@ class CreateEvent extends React.Component{
         }
 
         onCancel() {
-
         }
 
         onChange(e) {
+                this.state.valid = false;
                 this.state.values[e.target.id] = e.target.value;
-                if (this.title != '' && this.desc != '')
+                if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '')
                         this.state.valid = true;
                 this.setState(this.state);
         }
@@ -114,12 +115,8 @@ class CreateEvent extends React.Component{
                                     <Label for="desc">Description <font size="3" color="red">*</font></Label>
                                     <Input onChange={this.onChange} type='textarea' name="desc" id="desc" placeholder="desc" value={this.state.values.description} />
                             </FormGroup>
-                            <FormGroup className='maxAttendee'>
-                                    <Label for="maxAttendee">maxAttendee</Label>
-                                    <Input onChange={this.onChange} type='text' name="maxAttendee" id="maxAttendee" placeholder="20" value={this.state.values.maxAttendee} />
-                            </FormGroup>
                             <FormGroup className='startDate'>
-                                    <Label for="startDate">Start</Label>
+                                    <Label for="startDate">Start <font size="3" color="red">*</font></Label>
                                     <div><Input onChange={this.onChange} type='date' name="startDate" id="startDate" placeholder="startDate" value={this.state.values.startDate} />
                                     <Input onChange={this.onChange} type='time' name="time" id="time" placeholder="time" value={this.state.values.time} /></div>
                             </FormGroup>
@@ -127,17 +124,21 @@ class CreateEvent extends React.Component{
                                     <Label for="durationString">Duration </Label>
                                     <Input onChange={this.onChange} type='text' name="durationString" id="durationString" placeholder="durationString" value={this.state.values.durationString} />
                             </FormGroup>
+                            <FormGroup className='maxAttendee'>
+                                    <Label for="maxAttendee">maxAttendee</Label>
+                                    <Input onChange={this.onChange} type='text' name="maxAttendee" id="maxAttendee" placeholder="20" value={this.state.values.maxAttendee} />
+                            </FormGroup>
                             <FormGroup className='location'>
                                     <Label for="location">location</Label>
                                     <Input onChange={this.onChange} type='text' name="location" id="location" placeholder="location" value={this.state.values.location} />
                             </FormGroup>
-                            <FormGroup className='organizerName'>
-                                    <Label for="organizerName">organizerName</Label>
-                                    <Input onChange={this.onChange} type='text' name="organizerName" id="organizerName" placeholder="organizerName" value={this.state.values.organizerName} />
+                            <FormGroup className='organizer_name'>
+                                    <Label for="organizer_name">organizerName</Label>
+                                    <Input onChange={this.onChange} type='text' name="organizer_name" id="organizer_name" placeholder="organizerName" value={this.state.values.organizer_name} />
                             </FormGroup>
-                            <FormGroup className='organizerEmail'>
-                                    <Label for="title">organizerEmail</Label>
-                                    <Input onChange={this.onChange} type='email' name="organizerEmail" id="organizerEmail" placeholder="organizerEmail" value={this.state.values.organizerEmail} />
+                            <FormGroup className='organizer_email'>
+                                    <Label for="organizer_email">organizerEmail</Label>
+                                    <Input onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
                             <Button color="primary" onClick={this.onAdd} disabled={!this.state.valid}>Ajouter</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
