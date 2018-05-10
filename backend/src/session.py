@@ -18,7 +18,12 @@ class Session(object):
         self._loginkey = loginkey
         self._events = events
         self._users = users
-        self._user = users.get(loginkey)
+        self._user = None
+        if loginkey:
+            self._user = users.get(loginkey)
+        if 'loginkey' in params:
+            self._user = users.get(self._params["loginkey"])
+            print('user:', self._user, self._params["loginkey"])
 
     @property
     def user(self):
@@ -53,9 +58,11 @@ class Session(object):
 
     def add_event(self):
         if "title" not in self._params or "desc" not in self._params:
+            print('missing tile or desc')
             return None
 
         if not EventAddAccess(self).granted():
+            print('Access denied')
             return None
 
         title = self._params["title"]

@@ -22,6 +22,7 @@ class Navbar extends React.Component{
                 super(props);
                 this.onHome = this.onHome.bind(this);
                 this.onCreate = this.onCreate.bind(this);
+                this.onCreateEvent = this.onCreateEvent.bind(this);
                 this.onLogin = this.onLogin.bind(this);
                 this.onLogout = this.onLogout.bind(this);
                 this.logoutSuccess = this.logoutSuccess.bind(this);
@@ -52,6 +53,11 @@ class Navbar extends React.Component{
         onCreate(event){
                 event.preventDefault();
                 history.replace("/createuser");
+        }
+
+        onCreateEvent(event){
+                event.preventDefault();
+                history.replace("/createevent");
         }
 
         onLogout(event){
@@ -94,7 +100,7 @@ class Navbar extends React.Component{
                 var userlink = (<div className='notlognav'>
                                         <NavItem>
                                                 <NavLink className='mailinglist-link' onClick={this.onCreate}>
-                                                        S'inscrire
+                                                        Sinscrire
                                                 </NavLink>
                                         </NavItem>
                                         <NavItem>
@@ -105,6 +111,9 @@ class Navbar extends React.Component{
                                 </div>);
 
                 var user = User.getSession();
+                var createevent = "";
+                if (user && (user.isManager || user.isSuperUser))
+                    createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter un evenement</DropdownItem> );
                 if (user){
                         userlink = (    <UncontrolledDropdown nav inNavbar>
                                                 <DropdownToggle nav caret>
@@ -114,6 +123,7 @@ class Navbar extends React.Component{
                                                         <DropdownItem header>
                                                                 {user.alias}
                                                         </DropdownItem>
+                                                        {createevent}
                                                         <DropdownItem divider />
                                                         <DropdownItem onClick={this.onLogout}>
                                                                 Logout
