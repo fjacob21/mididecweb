@@ -27,7 +27,6 @@ class Navbar extends React.Component{
                 this.onLogout = this.onLogout.bind(this);
                 this.logoutSuccess = this.logoutSuccess.bind(this);
                 this.logoutError = this.logoutError.bind(this);
-                this.onMailingList = this.onMailingList.bind(this);
                 this.toggle = this.toggle.bind(this);
                 this.state = {
                   isOpen: false
@@ -83,11 +82,6 @@ class Navbar extends React.Component{
                 sessionStorage.removeItem('userinfo');
                 history.replace("/");
                 this.setState(this.state);
-        }
-
-        onMailingList(event){
-                event.preventDefault();
-                history.replace("/mailinglist");
         }
 
         toggle() {
