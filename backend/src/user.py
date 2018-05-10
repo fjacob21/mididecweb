@@ -24,7 +24,8 @@ class User(object):
                                  data['useemail'], data['usesms'],
                                  data['profile'], data['access'],
                                  data['validated'], data['smsvalidated'],
-                                 data['lastlogin'], data['loginkey'], data['avatar_path'])
+                                 data['lastlogin'], data['loginkey'],
+                                 data['avatar_path'])
 
     @property
     def user_id(self):

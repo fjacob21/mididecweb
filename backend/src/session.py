@@ -13,12 +13,13 @@ from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
 
 class Session(object):
 
-    def __init__(self, params, events, users, loginkey=''):
+    def __init__(self, params, events, users, loginkey='', config=None):
         self._params = params
         self._loginkey = loginkey
         self._events = events
         self._users = users
         self._user = None
+        self._config = config
         if loginkey:
             self._user = users.get(loginkey)
         if 'loginkey' in params:
@@ -141,7 +142,8 @@ class Session(object):
         if "email" not in self._params:
             return None
         email = self._params["email"]
-        if event.find_attendee(email) == -1 and event.find_waiting(email) == -1:
+        if (event.find_attendee(email) == -1 and
+           event.find_waiting(email) == -1):
             return None
         promotee = event.cancel_registration(email)
         if promotee:
