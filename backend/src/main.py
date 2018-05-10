@@ -5,7 +5,6 @@ from flask import Response, send_from_directory, redirect
 from events import Events
 from users import Users
 from user import USER_ACCESS_SUPER
-from mailinglist import MailingList
 from stores import SqliteStore
 from codec import AttendeeJsonEncoder
 from session import Session
@@ -17,7 +16,6 @@ application = Flask(__name__, static_url_path='')
 api = '/mididec/api/v1.0/'
 events = Events(store)
 users = Users(store)
-mailinglist = MailingList(store)
 
 
 password = BcryptHash(config.root['password']).encrypt()
@@ -134,52 +132,6 @@ def publish_event(event_id):
     if not result_dict:
         abort(400)
     return jsonify(result_dict)
-
-
-@application.route(api + 'mailinglist')
-def get_mailinglist():
-    result = []
-    for m in mailinglist.members:
-        result.append(AttendeeJsonEncoder(m).encode())
-    return jsonify({'mailinglist': result})
-
-
-@application.route(api + 'mailinglist/register', methods=['POST'])
-def register_mailinglist():
-    if not request.json:
-        abort(400)
-    if "name" not in request.json or "email" not in request.json:
-        abort(400)
-
-    name = request.json["name"]
-    email = request.json["email"]
-    phone = ''
-    if "phone" in request.json:
-        phone = request.json["phone"]
-    useemail = True
-    if "useemail" in request.json:
-        useemail = request.json["useemail"]
-    usesms = False
-    if "usesms" in request.json:
-        usesms = request.json["usesms"]
-    if mailinglist.find_member(email) != -1:
-        abort(400)
-    u = users.add(email, name, name, '', phone, useemail, usesms)
-    res = mailinglist.register(u)
-    return jsonify({'result': res})
-
-
-@application.route(api + 'mailinglist/unregister', methods=['POST'])
-def unregister_mailinglist():
-    if not request.json:
-        abort(400)
-    if "email" not in request.json:
-        abort(400)
-    email = request.json["email"]
-    if mailinglist.find_member(email) == -1:
-        abort(400)
-    res = mailinglist.unregister(email)
-    return jsonify({'result': res})
 
 
 @application.route(api + 'users', methods=['GET'])

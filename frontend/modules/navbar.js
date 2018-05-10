@@ -141,9 +141,6 @@ class Navbar extends React.Component{
                               <NavItem>
                                       <NavLink className='home-link' onClick={this.onHome}>Home</NavLink>
                               </NavItem>
-                              <NavItem>
-                                      <NavLink className='mailinglist-link' onClick={this.onMailingList}>Mailing List</NavLink>
-                              </NavItem>
                               {userlink}
                             </Nav>
                           </Collapse>
