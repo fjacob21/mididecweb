@@ -5,7 +5,8 @@ from email.mime.text import MIMEText
 
 class EmailSender():
 
-    def __init__(self, usr, psw, to, title, body, type='plain', server='smtp.gmail.com'):
+    def __init__(self, usr, psw, to, title, body, type='plain',
+                 server='smtp.gmail.com'):
         self._server = server
         self._psw = psw
         self._type = type

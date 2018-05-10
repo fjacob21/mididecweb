@@ -1,0 +1,22 @@
+{
+    "database":{
+            "path": "../data/mididec.db"
+    },
+    "root": {
+            "user_id": "root",
+            "name": "root",
+            "alias": "root",
+            "email": "mididecouverte@gmail.com",
+            "password":  "test"
+        },
+    "sms": {
+        "sid": "",
+        "token": ""
+    },
+    "email":{
+        "server": "smtp.gmail.com",
+        "user": "",
+        "password": ""
+    }
+
+}
