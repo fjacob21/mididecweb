@@ -1,6 +1,10 @@
 import React from 'react'
 import jquery from 'jquery'
+import User from './user'
+import createHistory from "history/createHashHistory"
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+
+const history = createHistory();
 
 class CreateEvent extends React.Component{
         constructor(props) {
@@ -37,6 +41,7 @@ class CreateEvent extends React.Component{
 
         addSuccess(data){
             this.showAlert('l\'evenement a ete enregistre', 'success')
+            history.replace("/events/" + data.event.event_id);
         }
 
         addError(data){
@@ -70,6 +75,8 @@ class CreateEvent extends React.Component{
         onAdd() {
             this.state.values.start = this.parseDate(this.state.values.startDate, this.state.values.time);
             this.state.values.duration = this.parseDuration(this.state.values.durationString);
+            var user = User.getSession();
+            this.state.values['loginkey'] = user.loginkey
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/events",
