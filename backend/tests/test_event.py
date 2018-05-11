@@ -108,15 +108,15 @@ def test_cancel_register():
     assert len(e.waiting_attendees) == 1
     assert e.waiting_attendees[0] == u2
     assert res2 == WAITING_LIST
-    e.cancel_registration(u1.email)
+    e.cancel_registration(u1)
     assert len(e.attendees) == 1
     assert len(e.waiting_attendees) == 0
     assert e.attendees[0] == u2
-    e.cancel_registration(u2.email)
+    e.cancel_registration(u2)
     assert len(e.attendees) == 0
     assert len(e.waiting_attendees) == 0
     res1 = e.register_attendee(u1)
     res2 = e.register_attendee(u2)
-    e.cancel_registration(u2.email)
+    e.cancel_registration(u2)
     assert len(e.attendees) == 1
     assert len(e.waiting_attendees) == 0

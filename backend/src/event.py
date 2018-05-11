@@ -87,10 +87,10 @@ class Event():
         return self.attendees + self.waiting_attendees
 
     def register_attendee(self, user):
-        aidx = self.find_attendee(user.email)
+        aidx = self.find_attendee(user)
         if aidx != -1:
             return ALREADY_ATTENDEE_LIST
-        widx = self.find_waiting(user.email)
+        widx = self.find_waiting(user)
         if widx != -1:
             return ALREADY_WAITING_LIST
         if len(self.attendees) < self.max_attendee:
@@ -99,9 +99,9 @@ class Event():
         self._store.waitings.add(user.user_id, self.event_id)
         return WAITING_LIST
 
-    def cancel_registration(self, email):
-        aidx = self.find_attendee(email)
-        widx = self.find_waiting(email)
+    def cancel_registration(self, user):
+        aidx = self.find_attendee(user)
+        widx = self.find_waiting(user)
         if aidx == -1 and widx == -1:
             return None
         if aidx != -1:
@@ -111,19 +111,20 @@ class Event():
                 self._store.waitings.delete(self.waiting_attendees[0].user_id, self._event_id)
                 self.register_attendee(attendee)
                 return attendee
+            return user
         else:
             self._store.waitings.delete(self.waiting_attendees[widx].user_id, self._event_id)
-            return None
+            return user
 
-    def find_attendee(self, email):
+    def find_attendee(self, user):
         for i in range(len(self.attendees)):
-            if self.attendees[i].email == email:
+            if self.attendees[i].user_id == user.user_id:
                 return i
         return -1
 
-    def find_waiting(self, email):
+    def find_waiting(self, user):
         for i in range(len(self.waiting_attendees)):
-            if self.waiting_attendees[i].email == email:
+            if self.waiting_attendees[i].user_id == user.user_id:
                 return i
         return -1
 

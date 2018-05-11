@@ -88,14 +88,11 @@ def test_register_event_waiting():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
-    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
-              access=USER_ACCESS_NORMAL, user_id='test')
+    user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+                     access=USER_ACCESS_NORMAL, user_id='test')
+    loginkey = user.login('password')
     params = {}
-    params['name'] = 'name'
-    params['email'] = 'email'
-    params['phone'] = 'phone'
-    params['useemail'] = True
-    params['usesms'] = True
+    params['loginkey'] = loginkey
 
     session = Session(params, events, users, 'test')
 
@@ -108,12 +105,11 @@ def test_register_event_waiting():
     event = events.get('test')
     assert len(event.attendees) == 1
 
+    user2 = users.add('email2', 'name2', 'alias2', 'password', 'phone', True,
+                      True, access=USER_ACCESS_NORMAL, user_id='test2')
+    loginkey2 = user2.login('password')
     params = {}
-    params['name'] = 'name2'
-    params['email'] = 'email2'
-    params['phone'] = 'phone'
-    params['useemail'] = True
-    params['usesms'] = True
+    params['loginkey'] = loginkey2
 
     session = Session(params, events, users, 'test')
     result_dict = session.register_event('test')
