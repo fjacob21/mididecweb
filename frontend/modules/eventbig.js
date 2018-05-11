@@ -2,6 +2,8 @@ import React from 'react'
 import jquery from 'jquery'
 import DateFormater from './dateformater'
 import UserInfo from './userinfo'
+import RegisterPanel from './registerpanel'
+import RegisterStatusPanel from './registerstatuspanel'
 import { Card, CardBody, CardTitle, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class EventBig extends React.Component{
@@ -60,12 +62,7 @@ class EventBig extends React.Component{
                                                 <div className='organizer'> Organiser par {this.props.event.organizer_name} </div>
                                         </div>
                                         <div className='head-register'>
-                                                <Card>
-                                                        <CardBody>
-                                                          <CardTitle>Vous y aller?</CardTitle>
-                                                          <Button color="success" onClick={this.toggle}>Oui</Button>
-                                                        </CardBody>
-                                                </Card>
+                                                <RegisterStatusPanel />
                                         </div>
                                 </div>
                                 <div className='body'>
