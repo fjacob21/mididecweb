@@ -6,7 +6,6 @@ from events import Events
 from users import Users
 from user import USER_ACCESS_SUPER
 from stores import SqliteStore
-from codec import AttendeeJsonEncoder
 from session import Session
 from config import Config
 
@@ -109,14 +108,14 @@ def register_event(event_id):
     return jsonify(result_dict)
 
 
-@application.route(api + 'events/<event_id>/cancel_registration',
+@application.route(api + 'events/<event_id>/unregister',
                    methods=['POST'])
-def cancel_registration(event_id):
+def unregister_event(event_id):
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
                       request.args.get('loginkey'), config)
-    result_dict = session.unregistration(event_id)
+    result_dict = session.unregister_event(event_id)
     if not result_dict:
         abort(400)
     return jsonify(result_dict)

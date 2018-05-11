@@ -3,67 +3,82 @@ import User from './user'
 class Event {
 
         constructor(event){
-                this._event = event
+            this._event = event
         }
 
         get event_id(){
-                return this._event.event_id;
+            return this._event.event_id;
         }
 
         get title(){
-                return this._event.title;
+            return this._event.title;
         }
 
         get description(){
-                return this._event.description;
+            return this._event.description;
         }
 
         get max_attendee(){
-                return this._event.max_attendee;
+            return this._event.max_attendee;
         }
 
         get start(){
-                return this._event.start;
+            return this._event.start;
         }
 
         get duration(){
-                return this._event.duration;
+            return this._event.duration;
+        }
+
+        get end(){
+            return this._event.end;
         }
 
         get location(){
-                return this._event.location;
+            return this._event.location;
         }
 
         get organizer_name(){
-                return this._event.organizer_name;
+            return this._event.organizer_name;
         }
 
         get organizer_email(){
-                return this._event.organizer_email;
+            return this._event.organizer_email;
         }
 
-        get owner(){
-                return new User(this._event.owner_id);
+        get owner_id(){
+            return this._event.owner_id;
         }
 
         get attendees(){
-                return this._event.attendees;
+            var attendees = [];
+            for (let attendee of this._event.attendees)
+                attendees.push(new User(attendee));
+            return attendees;
         }
 
-        get waiting_attendees(){
-                return this._event.waiting_attendees;
+        get waitings(){
+            var waitings = [];
+            for (let attendee of this._event.waitings)
+                waitings.push(new User(attendee));
+            return waitings;
         }
 
-        get find_attendee(){
-                return this._event.waiting_attendees;
+        find_attendee(user){
+            var attendees = this.attendees;
+            for (let attendee of attendees)
+                if (attendee.user_id == user.user_id)
+                    return attendee;
+            return null;
         }
 
-        get find_waiting(){
-                return this._event.waiting_attendees;
+        find_waiting(user){
+            var waitings = this.waitings;
+            for (let attendee of waitings)
+                if (attendee.user_id == user.user_id)
+                    return attendee;
+            return null;
         }
 }
 
-Event.ACCESS_NORMAL = 0;
-Event.ACCESS_MANAGER = 0x3;
-Event.ACCESS_SUPER = 0xFF;
 module.exports = Event;

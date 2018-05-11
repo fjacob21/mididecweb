@@ -122,6 +122,18 @@ class User(object):
         self.update_data(data)
 
     @property
+    def is_normal_user(self):
+        return self.access == USER_ACCESS_NORMAL
+
+    @property
+    def is_manager(self):
+        return self.access == USER_ACCESS_MANAGER
+
+    @property
+    def is_super_user(self):
+        return self.access == USER_ACCESS_SUPER
+
+    @property
     def validated(self):
         return bool(self.get_data()['validated'])
 

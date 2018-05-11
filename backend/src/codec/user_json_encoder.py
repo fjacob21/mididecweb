@@ -10,6 +10,11 @@ class UserJsonEncoder():
 
     def encode(self, format='string'):
         result = {}
+        result['infotype'] = 'normal'
+        if self._complete:
+            result['infotype'] = 'complete'
+        elif self._islogin:
+            result['infotype'] = 'login'
         result['user_id'] = self._user.user_id
         result['name'] = self._user.name
         result['alias'] = self._user.alias

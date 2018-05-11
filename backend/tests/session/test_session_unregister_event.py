@@ -14,10 +14,11 @@ def test_unregister_event():
     dur = timedelta(hours=1)
     event = events.add('test', 'test', 30, start, dur, 'test', 'test',
                        'test@test.com', 'test')
-    user = users.add('email', 'name', 'name', '', 'phone', True, True)
+    user = users.add('email', 'name', 'name', 'psw', 'phone', True, True)
+    loginkey = user.login('psw')
     event.register_attendee(user)
     params = {}
-    params['email'] = 'email'
+    params['loginkey'] = loginkey
 
     session = Session(params, events, users, '')
     result_dict = session.unregister_event('')

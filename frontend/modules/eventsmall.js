@@ -1,6 +1,8 @@
 import React from 'react'
 import DateFormater from './dateformater'
-import UserInfo from './userinfo'
+import User from './user'
+import RegisterPanel from './registerpanel'
+import RegisterStatusPanel from './registerstatuspanel'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class EventSmall extends React.Component{
@@ -13,15 +15,9 @@ class EventSmall extends React.Component{
                 };
                 this._start = new DateFormater(this.props.event.start);
                 this._end = new DateFormater(this.props.event.end);
-                this.toggle = this.toggle.bind(this);
                 this.onCancel = this.onCancel.bind(this);
                 this.onRegister = this.onRegister.bind(this);
                 this.onUserInfoChange = this.onUserInfoChange.bind(this);
-        }
-
-        toggle() {
-                this.state.modal = !this.state.modal;
-                this.setState(this.state);
         }
 
         onCancel() {
@@ -46,10 +42,16 @@ class EventSmall extends React.Component{
         }
 
         render(){
+                var user = User.getSession();
                 var dateText = this._start.getDateText();
                 var timeText = this._start.getTimeText() + ' à ';
                 timeText += this._end.getTimeText();
                 var icalurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + '/ical';
+                var registerPanel = <RegisterPanel onRegister={this.onRegister}/>
+                if (this.props.event.find_attendee(user))
+                    registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} />
+                else if (this.props.event.find_waiting(user))
+                    registerPanel = <RegisterStatusPanel status='waiting' onCancel={this.onCancel} />
                 return (
                         <div className='eventsmall'>
                                 <div className='title'>{this.props.event.title}</div>
@@ -59,7 +61,7 @@ class EventSmall extends React.Component{
                                         <div className='description'>{this.props.event.description} </div>
                                 </div>
                                 <div className='register'>
-                                        <Button color="success" onClick={this.toggle}>S'inscrire</Button>
+                                        {registerPanel}
                                 </div>
                                 <div className='duration'>
                                         <img className='timeicon' src='res/drawables/time-icon.png'></img>
@@ -75,16 +77,6 @@ class EventSmall extends React.Component{
                                                 {this.props.event.location}
                                         </div>
                                 </div>
-                                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                                        <ModalHeader toggle={this.toggle}>Informations</ModalHeader>
-                                        <ModalBody>
-                                            <UserInfo onInfoChange={this.onUserInfoChange}/>
-                                        </ModalBody>
-                                        <ModalFooter>
-                                                <Button color="primary" onClick={this.onRegister} disabled={!this.state.valid}>S'inscrire</Button>{' '}
-                                                <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
-                                        </ModalFooter>
-                                </Modal>
                         </div>);
         }
 }

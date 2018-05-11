@@ -7,6 +7,11 @@ class RegisterStatusPanel extends React.Component{
 
         constructor(props) {
                 super(props);
+                this.onCancel = this.onCancel.bind(this);
+        }
+
+        onCancel(){
+            this.props.onCancel();
         }
 
         render(){
@@ -20,7 +25,7 @@ class RegisterStatusPanel extends React.Component{
                                 <Card>
                                         <CardBody>
                                           <CardTitle>{status}</CardTitle>
-                                          <Button color="danger">Cancelation</Button>
+                                          <Button color="danger" onClick={this.onCancel}>Cancelation</Button>
                                         </CardBody>
                                 </Card>
                         </div>

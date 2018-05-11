@@ -7,6 +7,11 @@ class RegisterPanel extends React.Component{
 
         constructor(props) {
                 super(props);
+                this.onRegister = this.onRegister.bind(this);
+        }
+
+        onRegister(){
+            this.props.onRegister();
         }
 
         render(){
@@ -15,7 +20,7 @@ class RegisterPanel extends React.Component{
                                 <Card>
                                         <CardBody>
                                           <CardTitle>Vous y aller?</CardTitle>
-                                          <Button color="success">Oui</Button>
+                                          <Button color="success" onClick={this.onRegister}>Oui</Button>
                                         </CardBody>
                                 </Card>
                         </div>

@@ -93,7 +93,7 @@ class Session(object):
         e = self._events.add(title, desc, max_attendee, start, duration,
                              location, organizer_name, organizer_email,
                              event_id, self._user)
-        return {'event': EventJsonEncoder(e).encode('dict')}
+        return {'event': EventJsonEncoder(e, True).encode('dict')}
 
     def remove_event(self, event_id):
         event = self._events.get(event_id)
@@ -115,23 +115,11 @@ class Session(object):
             return None
         if not EventRegisterAccess(self, event).granted():
             return None
-        if "name" not in self._params or "email" not in self._params:
-            return None
-
-        name = self._params["name"]
-        email = self._params["email"]
-        phone = ''
-        if "phone" in self._params:
-            phone = self._params["phone"]
-        useemail = False
-        if "useemail" in self._params:
-            useemail = self._params["useemail"]
-        usesms = False
-        if "usesms" in self._params:
-            usesms = self._params["usesms"]
-        user = self._users.add(email, name, name, '', phone, useemail, usesms)
-        result = event.register_attendee(user)
-        return {'result': result}
+        result = event.register_attendee(self.user)
+        is_owner = event.owner_id == self.user.user_id
+        complete = self.user.is_super_user or is_owner
+        return {'result': result,
+                'event': EventJsonEncoder(event, complete).encode('dict')}
 
     def unregister_event(self, event_id):
         event = self._events.get(event_id)
@@ -139,16 +127,17 @@ class Session(object):
             return None
         if not self._params:
             return None
-        if "email" not in self._params:
+        if not self.user:
             return None
-        email = self._params["email"]
-        if (event.find_attendee(email) == -1 and
-           event.find_waiting(email) == -1):
+        promotee = event.cancel_registration(self.user)
+        if not promotee:
             return None
-        promotee = event.cancel_registration(email)
-        if promotee:
+        if promotee and promotee != self.user:
             pass  # send email to promotee
-        return {'result': True}
+        is_owner = event.owner_id == self.user.user_id
+        complete = self.user.is_super_user or is_owner
+        return {'result': True,
+                'event': EventJsonEncoder(event, complete).encode('dict')}
 
     def publish_event(self, event_id):
         event = self._events.get(event_id)

@@ -12,12 +12,12 @@ class User {
                 this._userinfo = userinfo
         }
 
-        get access(){
-                return this._userinfo.access;
+        get infotype(){
+                return this._userinfo.infotype;
         }
 
-        get email(){
-                return this._userinfo.email;
+        get user_id(){
+                return this._userinfo.user_id;
         }
 
         get name(){
@@ -28,12 +28,48 @@ class User {
                 return this._userinfo.alias;
         }
 
+        get password(){
+                return this._userinfo.password;
+        }
+
+        get phone(){
+                return this._userinfo.phone;
+        }
+
+        get useemail(){
+                return this._userinfo.useemail;
+        }
+
+        get usesms(){
+                return this._userinfo.usesms;
+        }
+
+        get profile(){
+                return this._userinfo.profile;
+        }
+
+        get validated(){
+                return this._userinfo.validated;
+        }
+
+        get smsvalidated(){
+                return this._userinfo.smsvalidated;
+        }
+
+        get lastlogin(){
+                return this._userinfo.lastlogin;
+        }
+
+        get email(){
+                return this._userinfo.email;
+        }
+
         get loginkey(){
                 return this._userinfo.loginkey;
         }
 
-        get user_id(){
-                return this._userinfo.user_id;
+        get access(){
+                return this._userinfo.access;
         }
 
         get isNormalUser(){
