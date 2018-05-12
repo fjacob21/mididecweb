@@ -105,7 +105,6 @@ class Events extends React.Component{
 
         onCancel(){
             var user = User.getSession();
-            console.debug('Cancel', user);
             var data = {'loginkey': user.loginkey};
             jquery.ajax({
             type: 'POST',
