@@ -49,10 +49,10 @@ exports[`Link changes the class when hovered 1`] = `
             className="nav-item"
           >
             <a
-              className="mailinglist-link nav-link"
+              className="subscribe-link nav-link"
               onClick={[Function]}
             >
-              Sinscrire
+              S'inscrire
             </a>
           </li>
           <li
