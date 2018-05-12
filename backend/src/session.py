@@ -232,9 +232,15 @@ class Session(object):
         alias = ''
         if 'alias' in self._params:
             alias = self._params['alias']
+        sameemail = False
+        if self.user and email == self.user.email:
+            sameemail = True
+        samealias = False
+        if self.user and email == self.user.alias:
+            samealias = True
 
-        emailok = not self._users.find_email(email)
-        aliasok = not self._users.find_alias(alias)
+        emailok = not self._users.find_email(email) or sameemail
+        aliasok = not self._users.find_alias(alias) or samealias
         return {'emailok': emailok, 'aliasok': aliasok}
 
     def remove_user(self, user_id):
@@ -249,8 +255,10 @@ class Session(object):
     def update_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            print('not user')
             return None
         if not UserUpdateAccess(self, user).granted():
+            print('Access denied')
             return None
 
         if 'email' in self._params:
@@ -260,8 +268,9 @@ class Session(object):
         if 'alias' in self._params:
             user.alias = self._params['alias']
         if 'password' in self._params:
-            password = BcryptHash(self._params['password']).encrypt()
-            user.password = password
+            if self._params['password']:
+                password = BcryptHash(self._params['password']).encrypt()
+                user.password = password
         if 'phone' in self._params:
             user.phone = self._params['phone']
         if 'useemail' in self._params:
