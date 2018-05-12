@@ -44,10 +44,6 @@ html, body {
         .home-link {
                 cursor:pointer;
         }
-
-        .mailinglist-link {
-                cursor:pointer;
-        }
 }
 
 .required {
@@ -56,7 +52,7 @@ html, body {
 
 .content {
         display: flex;
-        padding-top: 100px;
+        padding-top: 90px;
         padding-left: 1rem;
 }
 
@@ -106,6 +102,23 @@ html, body {
          .createuser-card {
                 width: 75%;
                 min-width: 250px;
+         }
+}
+
+.updateuser {
+        display: flex;
+        flex-direction: column;
+         width: 100%;
+         align-items: center;
+         .updateuser-card {
+                width: 75%;
+                min-width: 250px;
+
+                .updateuser-form{
+                        .bt-update{
+                                margin-right: 20px;
+                        }
+                }
          }
 }
 

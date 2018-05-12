@@ -27,6 +27,7 @@ class Navbar extends React.Component{
                 this.onLogout = this.onLogout.bind(this);
                 this.logoutSuccess = this.logoutSuccess.bind(this);
                 this.logoutError = this.logoutError.bind(this);
+                this.onProfile = this.onProfile.bind(this);
                 this.toggle = this.toggle.bind(this);
                 this.state = {
                   isOpen: false
@@ -42,6 +43,12 @@ class Navbar extends React.Component{
         onHome(event){
                 event.preventDefault();
                 history.replace("/");
+        }
+
+        onProfile(event){
+                var user = User.getSession();
+                event.preventDefault();
+                history.replace("/users/" + user.user_id + '/update');
         }
 
         onLogin(event){
@@ -116,6 +123,9 @@ class Navbar extends React.Component{
                                                 <DropdownMenu right>
                                                         <DropdownItem header>
                                                                 {user.alias}
+                                                        </DropdownItem>
+                                                        <DropdownItem onClick={this.onProfile}>
+                                                                Profile
                                                         </DropdownItem>
                                                         {createevent}
                                                         <DropdownItem divider />
