@@ -3,6 +3,7 @@ import DateFormater from './dateformater'
 import User from './user'
 import RegisterPanel from './registerpanel'
 import RegisterStatusPanel from './registerstatuspanel'
+import AttendeeIcon from './attendeeicon'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class EventSmall extends React.Component{
@@ -47,6 +48,9 @@ class EventSmall extends React.Component{
                 var timeText = this._start.getTimeText() + ' à ';
                 timeText += this._end.getTimeText();
                 var icalurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + '/ical';
+                var attendees = this.props.event.attendees.map((attendee) =>
+                        <AttendeeIcon key={attendee.user_id} attendee={attendee} />
+                );
                 var registerPanel = <RegisterPanel onRegister={this.onRegister}/>
                 if (this.props.event.find_attendee(user))
                     registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} />
@@ -76,6 +80,10 @@ class EventSmall extends React.Component{
                                         <div className='locationtext'>
                                                 {this.props.event.location}
                                         </div>
+                                </div>
+                                <div className='attendees-title'>Participants</div>
+                                <div className='attendeesgrid'>
+                                        {attendees}
                                 </div>
                         </div>);
         }
