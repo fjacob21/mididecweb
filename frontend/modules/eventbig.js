@@ -4,6 +4,7 @@ import DateFormater from './dateformater'
 import User from './user'
 import RegisterPanel from './registerpanel'
 import RegisterStatusPanel from './registerstatuspanel'
+import AttendeeIcon from './attendeeicon'
 import { Card, CardBody, CardTitle, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class EventBig extends React.Component{
@@ -44,6 +45,9 @@ class EventBig extends React.Component{
                 var timeText = this._start.getTimeText() + ' à ';
                 timeText += this._end.getTimeText();
                 var icalurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + '/ical';
+                var attendees = this.props.event.attendees.map((attendee) =>
+                        <AttendeeIcon key={attendee.user_id} attendee={attendee} />
+                );
                 var registerPanel = <RegisterPanel onRegister={this.onRegister}/>
                 if (this.props.event.find_attendee(user))
                     registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} />
@@ -65,6 +69,10 @@ class EventBig extends React.Component{
                                         <div className='detail'>
                                                 <div className='detaillabel'> Détail </div>
                                                 <div className='description'>{this.props.event.description} </div>
+                                                <div className='attendees-title'>Participants</div>
+                                                <div className='attendeesgrid'>
+                                                        {attendees}
+                                                </div>
                                         </div>
                                         <div className='info'>
                                                 <div className='duration'>

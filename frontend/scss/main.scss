@@ -60,6 +60,32 @@ html, body {
         padding-left: 1rem;
 }
 
+.attendees-title {
+        margin-top: 20px;
+        font-size: 1.5em;
+}
+
+.attendeesgrid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+}
+
+.attendeeicon {
+        margin: 10px;
+        display: flex;
+        flex-direction: column;
+        width: 100px;
+        height: 150px;
+        border-radius: 15px;
+        background-color: white;
+        align-items: center;
+        .attendee-avatar{
+                font-size: 70px;
+        }
+
+}
+
 .login {
         display: flex;
         flex-direction: column;
