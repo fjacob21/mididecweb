@@ -31,7 +31,6 @@ class Home extends React.Component{
         }
 
         onEventDetails(event_id){
-                console.log(event_id);
                 history.push("/events/"+event_id);
         }
 

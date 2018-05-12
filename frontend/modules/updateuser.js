@@ -79,13 +79,11 @@ class UpdateUser extends React.Component{
 
         onCheck(e){
                 this.state.values[e.target.id] = e.target.checked;
-                console.debug(e.target.id, e.target.checked, this.state.values);
                 this.setState(this.state);
         }
 
         onChange(e) {
                 this.state.values[e.target.id] = e.target.value;
-                console.debug(e, this.state.values);
                 this.validateUser();
                 this.setState(this.state);
         }
