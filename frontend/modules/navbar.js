@@ -100,8 +100,8 @@ class Navbar extends React.Component{
         render(){
                 var userlink = (<div className='notlognav'>
                                         <NavItem>
-                                                <NavLink className='mailinglist-link' onClick={this.onCreate}>
-                                                        Sinscrire
+                                                <NavLink className='subscribe-link' onClick={this.onCreate}>
+                                                        S'inscrire
                                                 </NavLink>
                                         </NavItem>
                                         <NavItem>
