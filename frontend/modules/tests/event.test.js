@@ -37,8 +37,10 @@ test('A class to keep event info', () => {
   expect(event.attendees[0].constructor.name).toBe('User');
   expect(event.find_attendee(user)).toBeDefined();
   expect(event.find_attendee(user2)).toBeNull();
+  expect(event.find_attendee(null)).toBeNull();
   expect(event.waitings.length).toBe(1);
   expect(event.waitings[0].constructor.name).toBe('User');
   expect(event.find_waiting(user)).toBeDefined();
   expect(event.find_waiting(user2)).toBeNull();
+  expect(event.find_waiting(null)).toBeNull();
 });

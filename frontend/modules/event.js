@@ -65,6 +65,8 @@ class Event {
         }
 
         find_attendee(user){
+            if (!user)
+                return null;
             var attendees = this.attendees;
             for (let attendee of attendees)
                 if (attendee.user_id == user.user_id)
@@ -73,6 +75,8 @@ class Event {
         }
 
         find_waiting(user){
+            if (!user)
+                return null;
             var waitings = this.waitings;
             for (let attendee of waitings)
                 if (attendee.user_id == user.user_id)
