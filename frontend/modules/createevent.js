@@ -96,7 +96,9 @@ class CreateEvent extends React.Component{
         onChange(e) {
                 this.state.valid = false;
                 this.state.values[e.target.id] = e.target.value;
-                if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '')
+                var start = new Date(this.state.values.startDate + " " + this.state.values.time);
+                var isBefore = Date.now() > start;
+                if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '' && !isBefore)
                         this.state.valid = true;
                 this.setState(this.state);
         }
