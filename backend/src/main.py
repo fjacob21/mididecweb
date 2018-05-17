@@ -49,13 +49,15 @@ def teardown_request(exception):
 
 @application.route(api + 'events')
 def get_events():
-    session = Session({}, events, users, request.args.get('loginkey'), config)
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
     return jsonify(session.get_events())
 
 
 @application.route(api + 'events/<event_id>')
 def get_event(event_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config)
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
     event_dict = session.get_event(event_id)
     if not event_dict:
         abort(400)
@@ -64,7 +66,8 @@ def get_event(event_id):
 
 @application.route(api + 'events/<event_id>/ical')
 def get_event_ical(event_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config)
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
     ical = session.get_event_ical(event_id)
     if not ical:
         abort(400)
@@ -80,7 +83,7 @@ def add_event():
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     event_dict = session.add_event()
     if not event_dict:
         abort(400)
@@ -89,7 +92,8 @@ def add_event():
 
 @application.route(api + 'events/<event_id>', methods=['DELETE'])
 def remove_event(event_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config)
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
     result_dict = session.remove_event(event_id)
     if not result_dict:
         abort(400)
@@ -101,7 +105,7 @@ def register_event(event_id):
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     result_dict = session.register_event(event_id)
     if not result_dict:
         abort(400)
@@ -114,7 +118,7 @@ def unregister_event(event_id):
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     result_dict = session.unregister_event(event_id)
     if not result_dict:
         abort(400)
@@ -126,7 +130,7 @@ def publish_event(event_id):
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     result_dict = session.publish_event(event_id)
     if not result_dict:
         abort(400)
@@ -135,7 +139,8 @@ def publish_event(event_id):
 
 @application.route(api + 'users', methods=['GET'])
 def get_users():
-    session = Session({}, events, users, request.args.get('loginkey'), config)
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
     return jsonify(session.get_users())
 
 
@@ -144,7 +149,7 @@ def add_user():
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     user_dict = session.add_user()
     if not user_dict:
         abort(400)
@@ -152,12 +157,12 @@ def add_user():
 
 
 @application.route(api + 'users/validate', methods=['POST'])
-def validate_user():
+def validate_user_info():
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
-    validate_dict = session.validate_user()
+                      request.args.get('loginkey'), config, request.url_root)
+    validate_dict = session.validate_user_info()
     if not validate_dict:
         abort(400)
     return jsonify(validate_dict)
@@ -165,11 +170,22 @@ def validate_user():
 
 @application.route(api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config)
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
     user_dict = session.get_user(user_id)
     if not user_dict:
         abort(400)
     return jsonify(user_dict)
+
+
+@application.route(api + 'users/<user_id>/validate', methods=['GET'])
+def get_user_validate(user_id):
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
+    validate_html = session.validate_user(user_id)
+    if not validate_html:
+        abort(400)
+    return validate_html
 
 
 @application.route(api + 'users/<user_id>', methods=['POST'])
@@ -177,7 +193,7 @@ def update_user(user_id):
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     user_dict = session.update_user(user_id)
     if not user_dict:
         abort(400)
@@ -189,7 +205,7 @@ def login(user_id):
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     result_dict = session.login(user_id)
     if not result_dict:
         abort(400)
@@ -201,7 +217,7 @@ def logout(user_id):
     if not request.json:
         abort(400)
     session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config)
+                      request.args.get('loginkey'), config, request.url_root)
     result_dict = session.logout(user_id)
     if not result_dict:
         abort(400)
@@ -210,7 +226,8 @@ def logout(user_id):
 
 @application.route(api + 'users/<user_id>', methods=['DELETE'])
 def rm_user(user_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config)
+    session = Session({}, events, users, request.args.get('loginkey'), config,
+                      request.url_root)
     result_dict = session.remove_user(user_id)
     if not result_dict:
         abort(400)

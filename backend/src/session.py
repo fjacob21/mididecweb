@@ -5,21 +5,25 @@ from email_sender import EmailSender
 from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from icalgenerator import iCalGenerator
+from config import Config
 from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
+from jinja2 import Environment, FileSystemLoader
 
 
 class Session(object):
 
-    def __init__(self, params, events, users, loginkey='', config=None):
+    def __init__(self, params, events, users, loginkey='', config=None,
+                 server='https://mididecouverte.org/'):
         self._params = params
         self._loginkey = loginkey
         self._events = events
         self._users = users
         self._user = None
         self._config = config
+        self._server = server
         if loginkey:
             self._user = users.get(loginkey)
         if 'loginkey' in params:
@@ -219,10 +223,35 @@ class Session(object):
             return None
         user = self._users.add(email, name, alias, password, phone, useemail,
                                usesms, profile)
+        self.send_validation_email(user)
         user_dict = UserJsonEncoder(user).encode('dict')
         return {'user': user_dict}
 
-    def validate_user(self):
+    def send_validation_email(self, user):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            env = Environment(loader=FileSystemLoader('emails'))
+            t = env.get_template('uservalidate.html')
+            sender = EmailSender(self._config.email_user,
+                                 self._config.email_password,
+                                 user.email,
+                                 'Validation MidiDecouverte',
+                                 t.render(user=user,
+                                          server=self._server).encode('utf8'),
+                                 'html',
+                                 self._config.email_server)
+            sender.send()
+
+    def validate_user(self, user_id):
+        user = self._users.get(user_id)
+        if not user:
+            return None
+        user.validated = True
+        env = Environment(loader=FileSystemLoader('emails'))
+        t = env.get_template('uservalidated.html')
+        return t.render(user=user, server=self._server)
+
+    def validate_user_info(self):
         if not self._params:
             return None
 

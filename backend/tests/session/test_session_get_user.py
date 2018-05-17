@@ -12,6 +12,7 @@ def test_get_user():
 
     user = users.add('email', 'name', 'alias', 'psw', 'phone', True, True,
                      user_id='test')
+    user.validated = True
     user_dict = session.get_user('')
     assert not user_dict
     user_dict = session.get_user('email')

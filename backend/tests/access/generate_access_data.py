@@ -39,15 +39,18 @@ def add_event(events, owner, attendee):
 
 
 def add_general_user(users):
-    users.add('useremail', 'user', 'alias', 'psw', 'phone', True, True,
-              access=USER_ACCESS_NORMAL, user_id='user')
+    user = users.add('useremail', 'user', 'alias', 'psw', 'phone', True, True,
+                     access=USER_ACCESS_NORMAL, user_id='user')
+    user.validated = True
 
 
 def add_manager_user(users):
-    users.add('manageremail', 'manager', 'alias', 'psw', 'phone', True, True,
-              access=USER_ACCESS_MANAGER, user_id='manager')
+    user = users.add('manageremail', 'manager', 'alias', 'psw', 'phone', True, True,
+                     access=USER_ACCESS_MANAGER, user_id='manager')
+    user.validated = True
 
 
 def add_super_user(users):
-    users.add('superemail', 'super', 'alias', 'psw', 'phone', True, True,
-              access=USER_ACCESS_SUPER, user_id='super')
+    user = users.add('superemail', 'super', 'alias', 'psw', 'phone', True, True,
+                     access=USER_ACCESS_SUPER, user_id='super')
+    user.validated = True

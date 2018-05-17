@@ -10,7 +10,7 @@ def test_logout_user():
     users = Users(store)
     user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
                      user_id='test')
-
+    user.validated = True
     loginkey = user.login('password')
     params = {}
     params['loginkey'] = loginkey
@@ -29,7 +29,7 @@ def test_logout_user_bad_loginkey():
     users = Users(store)
     user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
                      user_id='test')
-
+    user.validated = True
     user.login('password')
     params = {}
     params['loginkey'] = ''

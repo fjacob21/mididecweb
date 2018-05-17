@@ -12,7 +12,7 @@ def test_update_user():
     password = BcryptHash('password').encrypt()
     user = users.add('email', 'name', 'alias', password, 'phone', True, True,
                      user_id='test')
-
+    user.validated = True
     params = {}
     params['email'] = 'email2'
     params['name'] = 'name2'
