@@ -25,9 +25,10 @@ if users.get(config.root['user_id']):
     root.alias = config.root['alias']
     root.password = password
 else:
-    users.add(config.root['email'], config.root['name'], config.root['alias'],
-              password, '', True, True, access=USER_ACCESS_SUPER,
-              user_id=config.root['user_id'])
+    root = users.add(config.root['email'], config.root['name'], config.root['alias'],
+                     password, '', True, True, access=USER_ACCESS_SUPER,
+                     user_id=config.root['user_id'])
+    root.validated = True
 
 
 @application.after_request

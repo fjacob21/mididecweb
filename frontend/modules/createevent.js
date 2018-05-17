@@ -33,6 +33,7 @@ class CreateEvent extends React.Component{
             this.addSuccess = this.addSuccess.bind(this);
             this.addError = this.addError.bind(this);
             this.onDismiss = this.onDismiss.bind(this);
+            this.onKeyPress = this.onKeyPress.bind(this);
         }
 
         onDismiss() {
@@ -100,13 +101,18 @@ class CreateEvent extends React.Component{
                 this.setState(this.state);
         }
 
+        onKeyPress(e){
+                if (e.key == 'Enter' && this.state.valid)
+                        this.onAdd();
+        }
+
         render() {
             return (
                 <div className='createevent'>
                     <Alert color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss}>
                             {this.state.alert.message}
                     </Alert>
-                    <Form className='form'>
+                    <Form className='form' onKeyPress={this.onKeyPress}>
                             <FormGroup className='title'>
                                     <Label for="title">Titre <font size="3" color="red">*</font></Label>
                                     <Input onChange={this.onChange} type='text' name="title" id="title" placeholder="title" value={this.state.values.title} />

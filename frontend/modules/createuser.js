@@ -38,6 +38,7 @@ class CreateUser extends React.Component{
                 this.onChange = this.onChange.bind(this);
                 this.onCheck = this.onCheck.bind(this);
                 this.onDismiss = this.onDismiss.bind(this);
+                this.onKeyPress = this.onKeyPress.bind(this);
         }
 
         componentDidMount(){
@@ -60,6 +61,11 @@ class CreateUser extends React.Component{
                 this.state.values[e.target.id] = e.target.value;
                 this.validateUser();
                 this.setState(this.state);
+        }
+
+        onKeyPress(e){
+                if (e.key == 'Enter' && this.state.valid)
+                        this.oncCreate();
         }
 
         validateUser(){
@@ -136,7 +142,7 @@ class CreateUser extends React.Component{
                                 <Card body className='createuser-card'>
                                         <CardTitle>S'inscrire</CardTitle>
 
-                                        <Form className='createuser-form'>
+                                        <Form className='createuser-form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='name'>
                                                         <Label for="name">Nom <font size="3" color="red">*</font></Label>
                                                         <Input onChange={this.onChange} autocomplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
