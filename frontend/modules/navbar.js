@@ -22,6 +22,7 @@ class Navbar extends React.Component{
                 super(props);
                 this.onHome = this.onHome.bind(this);
                 this.onCreate = this.onCreate.bind(this);
+                this.onUsersAdmin = this.onUsersAdmin.bind(this);
                 this.onCreateEvent = this.onCreateEvent.bind(this);
                 this.onLogin = this.onLogin.bind(this);
                 this.onLogout = this.onLogout.bind(this);
@@ -64,6 +65,12 @@ class Navbar extends React.Component{
                 event.preventDefault();
                 this.toggle();
                 history.replace("/createuser");
+        }
+
+        onUsersAdmin(event){
+                event.preventDefault();
+                this.toggle();
+                history.replace("/usersadmin");
         }
 
         onCreateEvent(event){
@@ -116,6 +123,9 @@ class Navbar extends React.Component{
                 var userlink = "";
 
                 var user = User.getSession();
+                var useradmin = "";
+                if (user && user.isSuperUser)
+                    useradmin = (<DropdownItem onClick={this.onUsersAdmin}>Gestion des usagers</DropdownItem> );
                 var createevent = "";
                 if (user && (user.isManager || user.isSuperUser))
                     createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter un evenement</DropdownItem> );
@@ -132,6 +142,7 @@ class Navbar extends React.Component{
                                                                 Profile
                                                         </DropdownItem>
                                                         {createevent}
+                                                        {useradmin}
                                                         <DropdownItem divider />
                                                         <DropdownItem onClick={this.onLogout}>
                                                                 Logout

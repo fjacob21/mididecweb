@@ -91,6 +91,7 @@ class CreateEvent extends React.Component{
         }
 
         onCancel() {
+                history.goBack();
         }
 
         onChange(e) {

@@ -227,7 +227,10 @@ def logout(user_id):
 
 @application.route(api + 'users/<user_id>', methods=['DELETE'])
 def rm_user(user_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config,
+    params = {}
+    if request.json:
+        params = request.json
+    session = Session(params, events, users, request.args.get('loginkey'), config,
                       request.url_root)
     result_dict = session.remove_user(user_id)
     if not result_dict:

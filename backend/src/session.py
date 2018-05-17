@@ -5,7 +5,6 @@ from email_sender import EmailSender
 from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
 from icalgenerator import iCalGenerator
-from config import Config
 from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
@@ -26,7 +25,7 @@ class Session(object):
         self._server = server
         if loginkey:
             self._user = users.get(loginkey)
-        if 'loginkey' in params:
+        if 'loginkey' in params and self._params["loginkey"]:
             self._user = users.get(self._params["loginkey"])
 
     @property
@@ -241,6 +240,8 @@ class Session(object):
                                  'html',
                                  self._config.email_server)
             sender.send()
+        else:
+            user.validated = True
 
     def validate_user(self, user_id):
         user = self._users.get(user_id)
@@ -255,6 +256,10 @@ class Session(object):
         if not self._params:
             return None
 
+        user_id = ''
+        if 'user_id' in self._params:
+            user_id = self._params['user_id']
+        user = self._users.get(user_id)
         email = ''
         if 'email' in self._params:
             email = self._params['email']
@@ -262,10 +267,10 @@ class Session(object):
         if 'alias' in self._params:
             alias = self._params['alias']
         sameemail = False
-        if self.user and email == self.user.email:
+        if self.user and email == self.user.email or user and user.email == email:
             sameemail = True
         samealias = False
-        if self.user and email == self.user.alias:
+        if self.user and alias == self.user.alias or user and user.alias == alias:
             samealias = True
 
         emailok = not self._users.find_email(email) or sameemail
@@ -284,10 +289,8 @@ class Session(object):
     def update_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
-            print('not user')
             return None
         if not UserUpdateAccess(self, user).granted():
-            print('Access denied')
             return None
 
         if 'email' in self._params:
@@ -308,6 +311,8 @@ class Session(object):
             user.usesms = self._params['usesms']
         if 'profile' in self._params:
             user.profile = self._params['profile']
+        if self.user.is_super_user and 'access' in self._params:
+            user.access = self._params['access']
         user_dict = UserJsonEncoder(user).encode('dict')
         return {'user': user_dict}
 

@@ -7,6 +7,7 @@ import Events from './events'
 import CreateEvent from './createevent'
 import CreateUser from './createuser'
 import UpdateUser from './updateuser'
+import UsersAdmin from './usersadmin'
 import App from './app'
 import Login from './login'
 import 'bootstrap/dist/css/bootstrap.css';
@@ -20,6 +21,7 @@ render((
       <Route path="/createevent" component={CreateEvent} />
       <Route path="/users/:id/update" component={UpdateUser} />
       <Route path="/createuser" component={CreateUser} />
+      <Route path="/usersadmin" component={UsersAdmin} />
     </App>
   </HashRouter >
 ), document.getElementById('app'))
