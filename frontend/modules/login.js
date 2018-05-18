@@ -23,6 +23,7 @@ class Login extends React.Component{
                 this.loginSuccess = this.loginSuccess.bind(this);
                 this.loginError = this.loginError.bind(this);
                 this.onChange = this.onChange.bind(this);
+                this.onKeyPress = this.onKeyPress.bind(this);
         }
 
         componentDidMount(){
@@ -34,6 +35,11 @@ class Login extends React.Component{
         onChange(e) {
                 this.state.values[e.target.id] = e.target.value;
                 this.setState(this.state);
+        }
+
+        onKeyPress(e){
+                if (e.key == 'Enter')
+                        this.onLogin();
         }
 
         onLogin() {
@@ -73,14 +79,14 @@ class Login extends React.Component{
                                 </Alert>
                                 <Card body className='login-card'>
                                         <CardTitle>Login</CardTitle>
-                                        <Form className='form'>
+                                        <Form className='form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='userid'>
                                                         <Label for="userid">User</Label>
-                                                        <Input onChange={this.onChange} type='text' name="userid" id="userid" value={this.state.values.userid} />
+                                                        <Input onChange={this.onChange} type='text' name="userid" id="userid" autocomplete="username" value={this.state.values.userid} />
                                                 </FormGroup>
                                                 <FormGroup className='password'>
                                                         <Label for="password">Password</Label>
-                                                        <Input onChange={this.onChange} type='password' name="password" id="password" value={this.state.values.password} />
+                                                        <Input onChange={this.onChange} type='password' name="password" id="password" autocomplete="current-password" value={this.state.values.password} />
                                                 </FormGroup>
                                                 <Button color="success" onClick={this.onLogin}>Login</Button>{' '}
                                         </Form>

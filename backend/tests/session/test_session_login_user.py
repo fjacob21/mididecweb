@@ -13,9 +13,9 @@ def test_login_user():
     params['password'] = 'password'
     session = Session(params, events, users, '')
     password = BcryptHash('password').encrypt()
-    users.add('email', 'name', 'alias', password, 'phone', True, True,
-              user_id='test')
-
+    user = users.add('email', 'name', 'alias', password, 'phone', True, True,
+                     user_id='test')
+    user.validated = True
     loging_dict = session.login('')
     assert not loging_dict
     loging_dict = session.login('test')
@@ -32,8 +32,8 @@ def test_login_user_bad_password():
     session = Session(params, events, users, '')
 
     password = BcryptHash('password').encrypt()
-    users.add('email', 'name', 'alias', password, 'phone', True, True,
-              user_id='test')
-
+    user = users.add('email', 'name', 'alias', password, 'phone', True, True,
+                     user_id='test')
+    user.validated = True
     loging_dict = session.login('test')
     assert not loging_dict

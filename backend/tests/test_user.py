@@ -50,6 +50,7 @@ def test_login():
     store = MemoryStore()
     users = Users(store)
     u = users.add('test@test.com', 'name', 'alias', 'psw')
+    u.validated = True
     loginkey = u.login('psw')
     assert loginkey
     assert type(loginkey) == str

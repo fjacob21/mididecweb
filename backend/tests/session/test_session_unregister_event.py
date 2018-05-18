@@ -15,6 +15,7 @@ def test_unregister_event():
     event = events.add('test', 'test', 30, start, dur, 'test', 'test',
                        'test@test.com', 'test')
     user = users.add('email', 'name', 'name', 'psw', 'phone', True, True)
+    user.validated = True
     loginkey = user.login('psw')
     event.register_attendee(user)
     params = {}

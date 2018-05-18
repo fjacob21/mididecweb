@@ -22,6 +22,7 @@ class Navbar extends React.Component{
                 super(props);
                 this.onHome = this.onHome.bind(this);
                 this.onCreate = this.onCreate.bind(this);
+                this.onUsersAdmin = this.onUsersAdmin.bind(this);
                 this.onCreateEvent = this.onCreateEvent.bind(this);
                 this.onLogin = this.onLogin.bind(this);
                 this.onLogout = this.onLogout.bind(this);
@@ -29,6 +30,7 @@ class Navbar extends React.Component{
                 this.logoutError = this.logoutError.bind(this);
                 this.onProfile = this.onProfile.bind(this);
                 this.toggle = this.toggle.bind(this);
+                this.onLeave = this.onLeave.bind(this);
                 this.state = {
                   isOpen: false
                 };
@@ -42,27 +44,38 @@ class Navbar extends React.Component{
 
         onHome(event){
                 event.preventDefault();
+                this.toggle();
                 history.replace("/");
         }
 
         onProfile(event){
                 var user = User.getSession();
                 event.preventDefault();
+                this.toggle();
                 history.replace("/users/" + user.user_id + '/update');
         }
 
         onLogin(event){
                 event.preventDefault();
+                this.toggle();
                 history.replace("/login");
         }
 
         onCreate(event){
                 event.preventDefault();
+                this.toggle();
                 history.replace("/createuser");
+        }
+
+        onUsersAdmin(event){
+                event.preventDefault();
+                this.toggle();
+                history.replace("/usersadmin");
         }
 
         onCreateEvent(event){
                 event.preventDefault();
+                this.toggle();
                 history.replace("/createevent");
         }
 
@@ -81,12 +94,14 @@ class Navbar extends React.Component{
 
         logoutSuccess(data){
             sessionStorage.removeItem('userinfo');
+            this.toggle();
             history.replace("/");
             this.setState(this.state);
         }
 
         logoutError(data){
                 sessionStorage.removeItem('userinfo');
+                this.toggle();
                 history.replace("/");
                 this.setState(this.state);
         }
@@ -97,21 +112,20 @@ class Navbar extends React.Component{
           });
         }
 
+        onLeave(e){
+                this.setState({
+                  isOpen: false
+                });
+        }
         render(){
-                var userlink = (<div className='notlognav'>
-                                        <NavItem>
-                                                <NavLink className='subscribe-link' onClick={this.onCreate}>
-                                                        S'inscrire
-                                                </NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                                <NavLink className='home-link' onClick={this.onLogin}>
-                                                        Login
-                                                </NavLink>
-                                        </NavItem>
-                                </div>);
+                var subscribelink = "";
+                var loginlink = "";
+                var userlink = "";
 
                 var user = User.getSession();
+                var useradmin = "";
+                if (user && user.isSuperUser)
+                    useradmin = (<DropdownItem onClick={this.onUsersAdmin}>Gestion des usagers</DropdownItem> );
                 var createevent = "";
                 if (user && (user.isManager || user.isSuperUser))
                     createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter un evenement</DropdownItem> );
@@ -128,6 +142,7 @@ class Navbar extends React.Component{
                                                                 Profile
                                                         </DropdownItem>
                                                         {createevent}
+                                                        {useradmin}
                                                         <DropdownItem divider />
                                                         <DropdownItem onClick={this.onLogout}>
                                                                 Logout
@@ -135,16 +150,30 @@ class Navbar extends React.Component{
                                                 </DropdownMenu>
                                         </UncontrolledDropdown>)
                 }
+                else {
+                        subscribelink = (<NavItem>
+                                <NavLink className='subscribe-link' onClick={this.onCreate}>
+                                        S'inscrire
+                                </NavLink>
+                        </NavItem>);
+                        loginlink =(<NavItem>
+                                <NavLink className='home-link' onClick={this.onLogin}>
+                                        Login
+                                </NavLink>
+                        </NavItem>);
+                }
                 return (
                         <div className='navbars'>
-                        <NB className='navs'  dark expand="md" fixed={'top'}>
+                        <NB className='navs'  dark expand="md" fixed={'top'} onMouseLeave={this.onLeave}>
                           <NavbarBrand ><img className='logo' src='res/drawables/mididec.png' onClick={this.onHome}/></NavbarBrand>
                           <NavbarToggler onClick={this.toggle} />
-                          <Collapse isOpen={this.state.isOpen} navbar>
+                          <Collapse isOpen={this.state.isOpen}  navbar>
                             <Nav className="ml-auto" navbar>
                               <NavItem>
                                       <NavLink className='home-link' onClick={this.onHome}>Home</NavLink>
                               </NavItem>
+                              {subscribelink}
+                              {loginlink}
                               {userlink}
                             </Nav>
                           </Collapse>

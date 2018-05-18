@@ -33,6 +33,7 @@ class CreateEvent extends React.Component{
             this.addSuccess = this.addSuccess.bind(this);
             this.addError = this.addError.bind(this);
             this.onDismiss = this.onDismiss.bind(this);
+            this.onKeyPress = this.onKeyPress.bind(this);
         }
 
         onDismiss() {
@@ -90,14 +91,22 @@ class CreateEvent extends React.Component{
         }
 
         onCancel() {
+                history.goBack();
         }
 
         onChange(e) {
                 this.state.valid = false;
                 this.state.values[e.target.id] = e.target.value;
-                if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '')
+                var start = new Date(this.state.values.startDate + " " + this.state.values.time);
+                var isBefore = Date.now() > start;
+                if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '' && !isBefore)
                         this.state.valid = true;
                 this.setState(this.state);
+        }
+
+        onKeyPress(e){
+                if (e.key == 'Enter' && this.state.valid)
+                        this.onAdd();
         }
 
         render() {
@@ -106,7 +115,7 @@ class CreateEvent extends React.Component{
                     <Alert color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss}>
                             {this.state.alert.message}
                     </Alert>
-                    <Form className='form'>
+                    <Form className='form' onKeyPress={this.onKeyPress}>
                             <FormGroup className='title'>
                                     <Label for="title">Titre <font size="3" color="red">*</font></Label>
                                     <Input onChange={this.onChange} type='text' name="title" id="title" placeholder="title" value={this.state.values.title} />

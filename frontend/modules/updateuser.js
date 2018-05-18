@@ -29,6 +29,7 @@ class UpdateUser extends React.Component{
                                 useemail: false,
                                 usesms: false,
                                 profile: '',
+                                access: 0,
                         }
                 };
                 var user = User.getSession();
@@ -49,6 +50,7 @@ class UpdateUser extends React.Component{
                 this.onChange = this.onChange.bind(this);
                 this.onCheck = this.onCheck.bind(this);
                 this.onDismiss = this.onDismiss.bind(this);
+                this.onKeyPress = this.onKeyPress.bind(this);
         }
 
         componentDidMount(){
@@ -74,7 +76,7 @@ class UpdateUser extends React.Component{
         }
 
         onCancel(e) {
-                history.replace("/");
+                history.goBack();
         }
 
         onCheck(e){
@@ -84,8 +86,14 @@ class UpdateUser extends React.Component{
 
         onChange(e) {
                 this.state.values[e.target.id] = e.target.value;
+                console.debug(this.state.values);
                 this.validateUser();
                 this.setState(this.state);
+        }
+
+        onKeyPress(e){
+                if (e.key == 'Enter' && this.state.valid)
+                        this.onUpdate();
         }
 
         validateUser(){
@@ -121,6 +129,8 @@ class UpdateUser extends React.Component{
         }
 
         onUpdate() {
+            var user = User.getSession();
+            this.state.values.loginkey = user.loginkey;
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/users/" + this.props.match.params.id,
@@ -148,6 +158,19 @@ class UpdateUser extends React.Component{
         }
 
         render(){
+                var user = User.getSession();
+                var access = "";
+                if (user.isSuperUser)
+                        access = (<FormGroup className='profile'>
+                                <Label for="access">Acess</Label>
+                                <div>
+                                        <Input type="select" name="access" id="access" onChange={this.onChange} value={this.state.values.access.toString()}>
+                                            <option value='0'>Normal</option>
+                                            <option value='3'>Manager</option>
+                                            <option value='255'>Super</option>
+                                        </Input>
+                                </div>
+                        </FormGroup>);
                 var emailErrorMessage = "";
                 if (!this.state.validation.emailok)
                         emailErrorMessage = <FormFeedback>Désolé ce courriel est déja utilisé</FormFeedback>
@@ -162,7 +185,7 @@ class UpdateUser extends React.Component{
                                 <Card body className='updateuser-card'>
                                         <CardTitle>Profile</CardTitle>
 
-                                        <Form className='updateuser-form'>
+                                        <Form className='updateuser-form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='name'>
                                                         <Label for="name">Nom <font size="3" color="red">*</font></Label>
                                                         <Input onChange={this.onChange} autocomplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
@@ -195,6 +218,7 @@ class UpdateUser extends React.Component{
                                                                 <Input autocomplete='profile' onChange={this.onChange} type='text' name="profile" id="profile" placeholder="profile" value={this.state.values.profile} />
                                                         </div>
                                                 </FormGroup>
+                                                {access}
                                                 <FormGroup check>
                                                         <Label>
                                                                 <Input onChange={this.onCheck} type='checkbox' id="useemail" checked={this.state.values.useemail} />{' '}

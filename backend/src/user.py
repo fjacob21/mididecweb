@@ -15,6 +15,9 @@ class User(object):
         self._store = store
         self._user_id = user_id
 
+    def __iter__(self):
+        return self.get_data().items()
+
     def get_data(self):
         return self._store.users.get(self._user_id)
 
@@ -195,10 +198,11 @@ class User(object):
         return hash.hexdigest()
 
     def login(self, password):
-        if self.password == password:
+        if self.password == password and self.validated:
             self.set_lastlogin()
             self.loginkey = self.generate_loginkey(self.lastlogin)
             return self.loginkey
+        return None
 
     def logout(self, loginkey):
         if loginkey != self.loginkey:

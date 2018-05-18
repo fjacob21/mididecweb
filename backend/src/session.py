@@ -9,20 +9,23 @@ from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
+from jinja2 import Environment, FileSystemLoader
 
 
 class Session(object):
 
-    def __init__(self, params, events, users, loginkey='', config=None):
+    def __init__(self, params, events, users, loginkey='', config=None,
+                 server='https://mididecouverte.org/'):
         self._params = params
         self._loginkey = loginkey
         self._events = events
         self._users = users
         self._user = None
         self._config = config
+        self._server = server
         if loginkey:
             self._user = users.get(loginkey)
-        if 'loginkey' in params:
+        if 'loginkey' in params and self._params["loginkey"]:
             self._user = users.get(self._params["loginkey"])
 
     @property
@@ -219,13 +222,44 @@ class Session(object):
             return None
         user = self._users.add(email, name, alias, password, phone, useemail,
                                usesms, profile)
+        self.send_validation_email(user)
         user_dict = UserJsonEncoder(user).encode('dict')
         return {'user': user_dict}
 
-    def validate_user(self):
+    def send_validation_email(self, user):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            env = Environment(loader=FileSystemLoader('emails'))
+            t = env.get_template('uservalidate.html')
+            sender = EmailSender(self._config.email_user,
+                                 self._config.email_password,
+                                 user.email,
+                                 'Validation MidiDecouverte',
+                                 t.render(user=user,
+                                          server=self._server).encode('utf8'),
+                                 'html',
+                                 self._config.email_server)
+            sender.send()
+        else:
+            user.validated = True
+
+    def validate_user(self, user_id):
+        user = self._users.get(user_id)
+        if not user:
+            return None
+        user.validated = True
+        env = Environment(loader=FileSystemLoader('emails'))
+        t = env.get_template('uservalidated.html')
+        return t.render(user=user, server=self._server)
+
+    def validate_user_info(self):
         if not self._params:
             return None
 
+        user_id = ''
+        if 'user_id' in self._params:
+            user_id = self._params['user_id']
+        user = self._users.get(user_id)
         email = ''
         if 'email' in self._params:
             email = self._params['email']
@@ -233,10 +267,10 @@ class Session(object):
         if 'alias' in self._params:
             alias = self._params['alias']
         sameemail = False
-        if self.user and email == self.user.email:
+        if self.user and email == self.user.email or user and user.email == email:
             sameemail = True
         samealias = False
-        if self.user and email == self.user.alias:
+        if self.user and alias == self.user.alias or user and user.alias == alias:
             samealias = True
 
         emailok = not self._users.find_email(email) or sameemail
@@ -255,10 +289,8 @@ class Session(object):
     def update_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
-            print('not user')
             return None
         if not UserUpdateAccess(self, user).granted():
-            print('Access denied')
             return None
 
         if 'email' in self._params:
@@ -279,6 +311,8 @@ class Session(object):
             user.usesms = self._params['usesms']
         if 'profile' in self._params:
             user.profile = self._params['profile']
+        if self.user.is_super_user and 'access' in self._params:
+            user.access = self._params['access']
         user_dict = UserJsonEncoder(user).encode('dict')
         return {'user': user_dict}
 

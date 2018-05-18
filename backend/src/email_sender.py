@@ -34,5 +34,6 @@ class EmailSender():
             server.sendmail(fromaddr, toaddr, text)
             server.quit()
             return True
-        except Exception:
+        except Exception as e:
+            print(e)
             return False

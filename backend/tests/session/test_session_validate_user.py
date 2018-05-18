@@ -5,7 +5,7 @@ from src.stores import MemoryStore
 from src.session import Session
 
 
-def test_validate_user():
+def test_validate_user_info():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
@@ -14,7 +14,7 @@ def test_validate_user():
     params['alias'] = 'alias'
     session = Session(params, events, users, '')
 
-    validation_dict = session.validate_user()
+    validation_dict = session.validate_user_info()
     assert validation_dict
     assert 'emailok' in validation_dict
     assert validation_dict['emailok']
@@ -22,7 +22,7 @@ def test_validate_user():
     assert validation_dict['aliasok']
 
 
-def test_invalid_validate_user():
+def test_invalid_validate_user_info():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
@@ -33,7 +33,7 @@ def test_invalid_validate_user():
     params['alias'] = 'alias'
     session = Session(params, events, users, '')
 
-    validation_dict = session.validate_user()
+    validation_dict = session.validate_user_info()
     assert validation_dict
     assert 'emailok' in validation_dict
     assert not validation_dict['emailok']
@@ -41,7 +41,7 @@ def test_invalid_validate_user():
     assert not validation_dict['aliasok']
 
 
-def test_invalid_email_validate_user():
+def test_invalid_email_validate_user_info():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
@@ -52,7 +52,7 @@ def test_invalid_email_validate_user():
     params['alias'] = 'alias2'
     session = Session(params, events, users, '')
 
-    validation_dict = session.validate_user()
+    validation_dict = session.validate_user_info()
     assert validation_dict
     assert 'emailok' in validation_dict
     assert not validation_dict['emailok']
@@ -60,7 +60,7 @@ def test_invalid_email_validate_user():
     assert validation_dict['aliasok']
 
 
-def test_invalid_alias_validate_user():
+def test_invalid_alias_validate_user_info():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
@@ -71,7 +71,7 @@ def test_invalid_alias_validate_user():
     params['alias'] = 'alias'
     session = Session(params, events, users, '')
 
-    validation_dict = session.validate_user()
+    validation_dict = session.validate_user_info()
     assert validation_dict
     assert 'emailok' in validation_dict
     assert validation_dict['emailok']

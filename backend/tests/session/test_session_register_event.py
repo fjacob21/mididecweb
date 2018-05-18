@@ -90,6 +90,7 @@ def test_register_event_waiting():
     users = Users(store)
     user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
                      access=USER_ACCESS_NORMAL, user_id='test')
+    user.validated = True
     loginkey = user.login('password')
     params = {}
     params['loginkey'] = loginkey
@@ -107,6 +108,7 @@ def test_register_event_waiting():
 
     user2 = users.add('email2', 'name2', 'alias2', 'password', 'phone', True,
                       True, access=USER_ACCESS_NORMAL, user_id='test2')
+    user2.validated = True
     loginkey2 = user2.login('password')
     params = {}
     params['loginkey'] = loginkey2

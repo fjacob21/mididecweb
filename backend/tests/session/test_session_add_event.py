@@ -9,8 +9,9 @@ def test_add_event():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
-    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
-              access=USER_ACCESS_MANAGER, user_id='test')
+    user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+                     access=USER_ACCESS_MANAGER, user_id='test')
+    user.validated = True
     params = {}
     params['title'] = 'title'
     params['desc'] = 'desc'
@@ -73,8 +74,9 @@ def test_double_add_event():
     store = MemoryStore()
     events = Events(store)
     users = Users(store)
-    users.add('email', 'name', 'alias', 'password', 'phone', True, True,
-              access=USER_ACCESS_MANAGER, user_id='test')
+    user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
+                     access=USER_ACCESS_MANAGER, user_id='test')
+    user.validated = True
     params = {}
     params['title'] = 'title'
     params['desc'] = 'desc'

@@ -6,6 +6,7 @@ exports[`Link changes the class when hovered 1`] = `
 >
   <nav
     className="navs navbar navbar-expand-md navbar-dark fixed-top"
+    onMouseLeave={[Function]}
   >
     <a
       className="navbar-brand"
@@ -42,30 +43,27 @@ exports[`Link changes the class when hovered 1`] = `
             Home
           </a>
         </li>
-        <div
-          className="notlognav"
+        <li
+          className="nav-item"
         >
-          <li
-            className="nav-item"
+          <a
+            className="subscribe-link nav-link"
+            onClick={[Function]}
           >
-            <a
-              className="subscribe-link nav-link"
-              onClick={[Function]}
-            >
-              S'inscrire
-            </a>
-          </li>
-          <li
-            className="nav-item"
+            S'inscrire
+          </a>
+        </li>
+        <li
+          className="nav-item"
+        >
+          <a
+            className="home-link nav-link"
+            onClick={[Function]}
           >
-            <a
-              className="home-link nav-link"
-              onClick={[Function]}
-            >
-              Login
-            </a>
-          </li>
-        </div>
+            Login
+          </a>
+        </li>
+        
       </ul>
     </div>
   </nav>
