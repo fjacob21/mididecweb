@@ -25,9 +25,9 @@ if users.get(config.root['user_id']):
     root.alias = config.root['alias']
     root.password = password
 else:
-    root = users.add(config.root['email'], config.root['name'], config.root['alias'],
-                     password, '', True, True, access=USER_ACCESS_SUPER,
-                     user_id=config.root['user_id'])
+    root = users.add(config.root['email'], config.root['name'],
+                     config.root['alias'], password, '', True, True,
+                     access=USER_ACCESS_SUPER, user_id=config.root['user_id'])
     root.validated = True
 
 
@@ -230,8 +230,8 @@ def rm_user(user_id):
     params = {}
     if request.json:
         params = request.json
-    session = Session(params, events, users, request.args.get('loginkey'), config,
-                      request.url_root)
+    session = Session(params, events, users, request.args.get('loginkey'),
+                      config, request.url_root)
     result_dict = session.remove_user(user_id)
     if not result_dict:
         abort(400)
