@@ -1,6 +1,6 @@
 import React from 'react'
 import jquery from 'jquery'
-import { Card, CardBody, CardTitle, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Card, CardBody, CardTitle, Button } from 'reactstrap';
 
 
 class RegisterStatusPanel extends React.Component{

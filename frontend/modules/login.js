@@ -3,7 +3,7 @@ import { browserHistory} from 'react-router'
 import jquery from 'jquery'
 import createHistory from "history/createHashHistory"
 import User from './user'
-import { Button, Form, FormGroup, Label, Input, Alert, Card, CardTitle } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Card, CardTitle } from 'reactstrap';
 
 const history = createHistory();
 
@@ -11,11 +11,6 @@ class Login extends React.Component{
         constructor(props) {
                 super(props);
                 this.state = {
-                      alert: {
-                              visible: false,
-                              message: '',
-                              color: 'success'
-                          },
                       values: { userid: '',
                           password: ''}
                 };
@@ -55,7 +50,6 @@ class Login extends React.Component{
         }
 
         loginSuccess(data){
-            this.showAlert('login success', 'success')
             sessionStorage.setItem('userinfo', JSON.stringify(data.user));
             history.replace("/");
         }
@@ -65,18 +59,12 @@ class Login extends React.Component{
         }
 
         showAlert(message, color='success'){
-                this.state.alert.color = color;
-                this.state.alert.visible = true;
-                this.state.alert.message = message;
-                this.setState(this.state);
+                this.props.onError(message, color);
         }
 
         render(){
                 return (
                         <div className='login'>
-                                <Alert color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss}>
-                                        {this.state.alert.message}
-                                </Alert>
                                 <Card body className='login-card'>
                                         <CardTitle>Login</CardTitle>
                                         <Form className='form' onKeyPress={this.onKeyPress}>
