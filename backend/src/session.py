@@ -10,6 +10,8 @@ from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
 from jinja2 import Environment, FileSystemLoader
+from session_exception import SessionError
+import errors
 
 
 class Session(object):
@@ -48,7 +50,7 @@ class Session(object):
     def get_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
-            return None
+            raise SessionError(errors.ERROR_INVALID_EVENT)
         complete = EventGetCompleteAccess(self, event).granted()
         event_dict = EventJsonEncoder(event, complete).encode('dict')
         return {'event': event_dict}
@@ -56,17 +58,15 @@ class Session(object):
     def get_event_ical(self, event_id):
         event = self._events.get(event_id)
         if not event:
-            return None
+            raise SessionError(errors.ERROR_INVALID_EVENT)
         return iCalGenerator(event).generate()
 
     def add_event(self):
         if "title" not in self._params or "desc" not in self._params:
-            print('missing tile or desc')
-            return None
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
 
         if not EventAddAccess(self).granted():
-            print('Access denied')
-            return None
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         title = self._params["title"]
         desc = self._params["desc"]
@@ -101,9 +101,9 @@ class Session(object):
     def remove_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
-            return None
+            raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventRemoveAccess(self, event).granted():
-            return None
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
         self._events.remove(event_id)
         return {'result': True}
 
@@ -113,11 +113,11 @@ class Session(object):
     def register_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
-            return None
+            raise SessionError(errors.ERROR_INVALID_EVENT)
         if not self._params:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not EventRegisterAccess(self, event).granted():
-            return None
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
         result = event.register_attendee(self.user)
         is_owner = event.owner_id == self.user.user_id
         complete = self.user.is_super_user or is_owner
@@ -127,14 +127,13 @@ class Session(object):
     def unregister_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
-            return None
+            raise SessionError(errors.ERROR_INVALID_EVENT)
         if not self._params:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not self.user:
-            return None
+            raise SessionError(errors.ERROR_LOGIN_NEEDED)
         promotee = event.cancel_registration(self.user)
-        if not promotee:
-            return None
+        print('promotee', promotee)
         if promotee and promotee != self.user:
             pass  # send email to promotee
         is_owner = event.owner_id == self.user.user_id
@@ -145,14 +144,14 @@ class Session(object):
     def publish_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
-            return None
+            raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventPublishAccess(self, event).granted():
-            return None
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
         if not self._params:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         if ("usr" not in self._params or "psw" not in self._params or
            'sid' not in self._params or 'token' not in self._params):
-            return None
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
         usr = self._params["usr"]
         psw = self._params["psw"]
         sid = self._params["sid"]
@@ -169,7 +168,7 @@ class Session(object):
                                    user.phone, event.title, body)
                 res = sender.send()
         if not res:
-            return None
+            raise SessionError(errors.ERROR_SENDING_EMAIL)
         return {'result': True}
 
     def get_users(self):
@@ -180,22 +179,22 @@ class Session(object):
     def get_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_USER)
         complete = UserGetCompleteAccess(self, user).granted()
         user_dict = UserJsonEncoder(user, complete).encode('dict')
         return {'user': user_dict}
 
     def add_user(self):
         if not self._params:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         if ('email' not in self._params or
             'name' not in self._params or
             'alias' not in self._params or
            'password' not in self._params):
-            return None
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
 
         if not UserAddAccess(self).granted():
-            return None
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         email = self._params["email"]
         name = self._params["name"]
@@ -216,10 +215,10 @@ class Session(object):
             profile = self._params['profile']
         user = self._users.get(email)
         if user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_USER)
         user = self._users.get(alias)
         if user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_USER)
         user = self._users.add(email, name, alias, password, phone, useemail,
                                usesms, profile)
         self.send_validation_email(user)
@@ -246,7 +245,7 @@ class Session(object):
     def validate_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_USER)
         user.validated = True
         env = Environment(loader=FileSystemLoader('emails'))
         t = env.get_template('uservalidated.html')
@@ -254,7 +253,7 @@ class Session(object):
 
     def validate_user_info(self):
         if not self._params:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
 
         user_id = ''
         if 'user_id' in self._params:
@@ -280,18 +279,18 @@ class Session(object):
     def remove_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_USER)
         if not UserRemoveAccess(self, user).granted():
-            return None
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
         self._users.remove(user.user_id)
         return {'result': True}
 
     def update_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_USER)
         if not UserUpdateAccess(self, user).granted():
-            return None
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         if 'email' in self._params:
             user.email = self._params['email']
@@ -318,29 +317,27 @@ class Session(object):
 
     def login(self, user_id):
         if not self._params:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "password" not in self._params:
-            return None
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
         password = self._params["password"]
         user = self._users.get(user_id)
         if not user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_LOGIN)
         password = BcryptHash(password, user.password.encode()).encrypt()
-        loginkey = user.login(password)
-        if not loginkey:
-            return None
+        user.login(password)
         user_dict = UserJsonEncoder(user, False, True).encode('dict')
         return {'user': user_dict}
 
     def logout(self, user_id):
         if not self._params:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "loginkey" not in self._params:
-            return None
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
         loginkey = self._params["loginkey"]
         user = self._users.get(user_id)
         if not user:
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not user.logout(loginkey):
-            return None
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
         return {'result': True}

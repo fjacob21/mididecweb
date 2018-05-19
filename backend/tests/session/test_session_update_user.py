@@ -1,4 +1,5 @@
 from bcrypt_hash import BcryptHash
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -24,8 +25,8 @@ def test_update_user():
     params['profile'] = 'profile2'
     session = Session(params, events, users, 'test')
 
-    user_dict = session.update_user('')
-    assert not user_dict
+    with pytest.raises(Exception):
+        session.update_user('')
     user_dict = session.update_user('test')
     assert user_dict
     assert 'user' in user_dict

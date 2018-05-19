@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -22,10 +23,10 @@ def test_publish_event():
     params['token'] = 'token'
 
     session = Session(params, events, users, '')
-    result_dict = session.publish_event('')
-    assert not result_dict
-    result_dict = session.publish_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.publish_event('')
+    with pytest.raises(Exception):
+        session.publish_event('test')
 
 
 def test_publish_event_missing_usr():
@@ -43,8 +44,8 @@ def test_publish_event_missing_usr():
     params['token'] = 'token'
 
     session = Session(params, events, users, '')
-    result_dict = session.publish_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.publish_event('test')
 
 
 def test_publish_event_missing_psw():
@@ -62,8 +63,8 @@ def test_publish_event_missing_psw():
     params['token'] = 'token'
 
     session = Session(params, events, users, '')
-    result_dict = session.publish_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.publish_event('test')
 
 
 def test_publish_event_missing_sid():
@@ -81,8 +82,8 @@ def test_publish_event_missing_sid():
     params['token'] = 'token'
 
     session = Session(params, events, users, '')
-    result_dict = session.publish_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.publish_event('test')
 
 
 def test_publish_event_missing_token():
@@ -100,5 +101,5 @@ def test_publish_event_missing_token():
     params['sid'] = 'sid'
 
     session = Session(params, events, users, '')
-    result_dict = session.publish_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.publish_event('test')

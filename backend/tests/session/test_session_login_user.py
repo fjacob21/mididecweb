@@ -1,4 +1,5 @@
 from bcrypt_hash import BcryptHash
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -16,8 +17,8 @@ def test_login_user():
     user = users.add('email', 'name', 'alias', password, 'phone', True, True,
                      user_id='test')
     user.validated = True
-    loging_dict = session.login('')
-    assert not loging_dict
+    with pytest.raises(Exception):
+        session.login('')
     loging_dict = session.login('test')
     assert loging_dict
     assert 'user' in loging_dict
@@ -35,5 +36,5 @@ def test_login_user_bad_password():
     user = users.add('email', 'name', 'alias', password, 'phone', True, True,
                      user_id='test')
     user.validated = True
-    loging_dict = session.login('test')
-    assert not loging_dict
+    with pytest.raises(Exception):
+        session.login('test')

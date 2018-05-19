@@ -1,3 +1,4 @@
+import pytest
 from src.users import Users
 from src.user import USER_ACCESS_SUPER, USER_ACCESS_NORMAL
 from src.stores import MemoryStore
@@ -57,8 +58,8 @@ def test_login():
     assert loginkey == u.loginkey
     assert u.lastlogin
     u.logout(loginkey)
-    loginkey = u.login('psw2')
-    assert not loginkey
+    with pytest.raises(Exception):
+        u.login('psw2')
 
 
 def test_update_user():

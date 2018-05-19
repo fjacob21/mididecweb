@@ -1,3 +1,4 @@
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -13,8 +14,8 @@ def test_get_user():
     user = users.add('email', 'name', 'alias', 'psw', 'phone', True, True,
                      user_id='test')
     user.validated = True
-    user_dict = session.get_user('')
-    assert not user_dict
+    with pytest.raises(Exception):
+        session.get_user('')
     user_dict = session.get_user('email')
     assert user_dict
     assert 'user' in user_dict
