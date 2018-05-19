@@ -21,7 +21,7 @@ class UpdateUser extends React.Component{
                                 password: '',
                                 alias: '',
                                 phone: '',
-                                useemail: false,
+                                useemail: true,
                                 usesms: false,
                                 profile: '',
                                 access: 0,
@@ -154,7 +154,7 @@ class UpdateUser extends React.Component{
                 var access = "";
                 if (user.isSuperUser)
                         access = (<FormGroup className='profile'>
-                                <Label for="access">Acess</Label>
+                                <Label for="access">Access</Label>
                                 <div>
                                         <Input type="select" name="access" id="access" onChange={this.onChange} value={this.state.values.access.toString()}>
                                             <option value='0'>Normal</option>

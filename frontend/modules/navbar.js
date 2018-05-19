@@ -128,7 +128,7 @@ class Navbar extends React.Component{
                     useradmin = (<DropdownItem onClick={this.onUsersAdmin}>Gestion des usagers</DropdownItem> );
                 var createevent = "";
                 if (user && (user.isManager || user.isSuperUser))
-                    createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter un evenement</DropdownItem> );
+                    createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter un événement</DropdownItem> );
                 if (user){
                         userlink = (    <UncontrolledDropdown nav inNavbar>
                                                 <DropdownToggle nav caret>

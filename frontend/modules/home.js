@@ -53,11 +53,11 @@ class Home extends React.Component{
                 return (
                         <div className='home'>
                             <Card body className='home-card'>
-                                <CardTitle>Prochaines rencontres</CardTitle>
+                                <CardTitle>Prochains Événements</CardTitle>
                                 {nextItems}
                             </Card>
                             <Card body className='home-card'>
-                                <CardTitle>Rencontres précédentes</CardTitle>
+                                <CardTitle>Événements précédents</CardTitle>
                                 {prevItems}
                             </Card>
                         </div>)

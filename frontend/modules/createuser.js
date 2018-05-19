@@ -21,7 +21,7 @@ class CreateUser extends React.Component{
                                 password: '',
                                 alias: '',
                                 phone: '',
-                                useemail: false,
+                                useemail: true,
                                 usesms: false
                         }
                 };
@@ -107,7 +107,6 @@ class CreateUser extends React.Component{
         }
 
         createSuccess(data){
-            this.showAlert('Inscription success', 'success')
             history.replace("/login");
         }
 
