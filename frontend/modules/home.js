@@ -52,14 +52,10 @@ class Home extends React.Component{
                 }
                 return (
                         <div className='home'>
-                            <Card body className='home-card'>
-                                <CardTitle>Prochains Événements</CardTitle>
+                                <div className='next-events'>Prochains Événements</div>
                                 {nextItems}
-                            </Card>
-                            <Card body className='home-card'>
-                                <CardTitle>Événements précédents</CardTitle>
+                                <div className='next-events'>Événements précédents</div>
                                 {prevItems}
-                            </Card>
                         </div>)
         }
 }
