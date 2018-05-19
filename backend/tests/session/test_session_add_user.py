@@ -1,3 +1,4 @@
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -24,8 +25,8 @@ def test_add_user():
     assert 'user' in user_dict
     assert len(users.list) == 1
 
-    user_dict = session.add_user()
-    assert not user_dict
+    with pytest.raises(Exception):
+        session.add_user()
 
 
 def test_add_user_missing_email():
@@ -42,8 +43,8 @@ def test_add_user_missing_email():
     params['profile'] = 'profile'
     session = Session(params, events, users, '')
 
-    user_dict = session.add_user()
-    assert not user_dict
+    with pytest.raises(Exception):
+        session.add_user()
     assert len(users.list) == 0
 
 
@@ -61,8 +62,8 @@ def test_add_user_missing_name():
     params['profile'] = 'profile'
     session = Session(params, events, users, '')
 
-    user_dict = session.add_user()
-    assert not user_dict
+    with pytest.raises(Exception):
+        session.add_user()
     assert len(users.list) == 0
 
 
@@ -80,8 +81,8 @@ def test_add_user_missing_alias():
     params['profile'] = 'profile'
     session = Session(params, events, users, '')
 
-    user_dict = session.add_user()
-    assert not user_dict
+    with pytest.raises(Exception):
+        session.add_user()
     assert len(users.list) == 0
 
 
@@ -99,6 +100,6 @@ def test_add_user_missing_password():
     params['profile'] = 'profile'
     session = Session(params, events, users, '')
 
-    user_dict = session.add_user()
-    assert not user_dict
+    with pytest.raises(Exception):
+        session.add_user()
     assert len(users.list) == 0

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -16,8 +17,8 @@ def test_get_event():
     dur = timedelta(hours=1)
     events = events.add('test', 'test', 30, start, dur, 'test', 'test',
                         'test@test.com', 'test')
-    event_dict = session.get_event('')
-    assert not event_dict
+    with pytest.raises(Exception):
+        session.get_event('')
     event_dict = session.get_event('test')
     assert event_dict
     assert 'event' in event_dict

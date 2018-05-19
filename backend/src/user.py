@@ -2,6 +2,8 @@ from datetime import datetime
 import pytz
 import hashlib
 import random
+from session_exception import SessionError
+import errors
 
 
 USER_ACCESS_NORMAL = 0x1
@@ -202,7 +204,7 @@ class User(object):
             self.set_lastlogin()
             self.loginkey = self.generate_loginkey(self.lastlogin)
             return self.loginkey
-        return None
+        raise SessionError(errors.ERROR_LOGIN)
 
     def logout(self, loginkey):
         if loginkey != self.loginkey:

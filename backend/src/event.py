@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 from user import User
+from session_exception import SessionError
+import errors
 
 ATTENDEE_LIST = 1
 ALREADY_ATTENDEE_LIST = 2
@@ -103,7 +105,7 @@ class Event():
         aidx = self.find_attendee(user)
         widx = self.find_waiting(user)
         if aidx == -1 and widx == -1:
-            return None
+            raise SessionError(errors.ERROR_NOT_REGISTERED)
         if aidx != -1:
             self._store.attendees.delete(self.attendees[aidx].user_id, self._event_id)
             if len(self.waiting_attendees):
@@ -111,6 +113,7 @@ class Event():
                 self._store.waitings.delete(self.waiting_attendees[0].user_id, self._event_id)
                 self.register_attendee(attendee)
                 return attendee
+            print('unregister user')
             return user
         else:
             self._store.waitings.delete(self.waiting_attendees[widx].user_id, self._event_id)

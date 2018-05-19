@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -16,8 +17,8 @@ def test_get_event_ical():
     dur = timedelta(hours=1)
     events = events.add('test', 'test', 30, start, dur, 'test', 'test',
                         'test@test.com', 'test')
-    ical = session.get_event_ical('')
-    assert not ical
+    with pytest.raises(Exception):
+        session.get_event_ical('')
     ical = session.get_event_ical('test')
     assert ical
     assert type(ical) == str

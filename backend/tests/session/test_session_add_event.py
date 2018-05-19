@@ -1,3 +1,4 @@
+import pytest
 from src.events import Events
 from src.users import Users
 from src.user import USER_ACCESS_MANAGER
@@ -45,8 +46,8 @@ def test_add_event_bad_title():
     params['event_id'] = 'event_id'
     session = Session(params, events, users, '')
 
-    event_dict = session.add_event()
-    assert not event_dict
+    with pytest.raises(Exception):
+        session.add_event()
     assert len(events.list) == 0
 
 
@@ -65,8 +66,8 @@ def test_add_event_bad_desc():
     params['event_id'] = 'event_id'
     session = Session(params, events, users, '')
 
-    event_dict = session.add_event()
-    assert not event_dict
+    with pytest.raises(Exception):
+        session.add_event()
     assert len(events.list) == 0
 
 

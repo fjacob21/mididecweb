@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
+import pytest
 from src.events import Events
 from src.event import ATTENDEE_LIST, ALREADY_ATTENDEE_LIST
 from src.event import WAITING_LIST, ALREADY_WAITING_LIST
@@ -28,8 +29,8 @@ def test_register_event():
     dur = timedelta(hours=1)
     events.add('test', 'test', 30, start, dur, 'test', 'test',
                'test@test.com', 'test')
-    result_dict = session.register_event('')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.register_event('')
     result_dict = session.register_event('test')
     assert result_dict
     assert result_dict['result'] == ATTENDEE_LIST
@@ -59,8 +60,8 @@ def test_register_event_bad_name():
     dur = timedelta(hours=1)
     events = events.add('test', 'test', 30, start, dur, 'test', 'test',
                         'test@test.com', 'test')
-    result_dict = session.register_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.register_event('test')
 
 
 def test_register_event_bad_email():
@@ -80,8 +81,8 @@ def test_register_event_bad_email():
     dur = timedelta(hours=1)
     events = events.add('test', 'test', 30, start, dur, 'test', 'test',
                         'test@test.com', 'test')
-    result_dict = session.register_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.register_event('test')
 
 
 def test_register_event_waiting():

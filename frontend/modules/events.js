@@ -5,6 +5,7 @@ import EventBig from './eventbig'
 import Event from './event'
 import User from './user'
 import createHistory from "history/createHashHistory"
+import Errors from './errors'
 
 const history = createHistory();
 
@@ -40,7 +41,9 @@ class Events extends React.Component{
         }
 
         error(data){
-                this.showAlert('Cette événement n\'est pas disponible!', 'danger');
+                console.debug(data.responseJSON);
+                var errorCode = data.responseJSON.code;
+                this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onDismiss() {

@@ -1,3 +1,4 @@
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -13,12 +14,12 @@ def test_remove_user():
 
     session = Session({}, events, users, 'test')
 
-    result_dict = session.remove_user('')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.remove_user('')
     assert len(users.list) == 1
     result_dict = session.remove_user('test')
     assert result_dict
     assert len(users.list) == 0
-    result_dict = session.remove_user('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.remove_user('test')
     assert len(users.list) == 0

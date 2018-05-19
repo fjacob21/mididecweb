@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
+import pytest
 from src.events import Events
 from src.users import Users
 from src.user import USER_ACCESS_MANAGER
@@ -19,8 +20,8 @@ def test_remove_event():
                'test@test.com', 'test', u)
     session = Session({}, events, users, 'test')
 
-    result_dict = session.remove_event('')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.remove_event('')
     assert len(events.list) == 1
     result_dict = session.remove_event('test')
     assert result_dict

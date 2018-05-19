@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
+import pytest
 from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
@@ -22,14 +23,14 @@ def test_unregister_event():
     params['loginkey'] = loginkey
 
     session = Session(params, events, users, '')
-    result_dict = session.unregister_event('')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.unregister_event('')
     assert len(event.attendees) == 1
     result_dict = session.unregister_event('test')
     assert result_dict
     assert len(event.attendees) == 0
-    result_dict = session.unregister_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.unregister_event('test')
     assert len(event.attendees) == 0
 
 
@@ -47,6 +48,6 @@ def test_unregister_event_bad_email():
     params['email'] = 'bademail'
 
     session = Session(params, events, users, '')
-    result_dict = session.unregister_event('test')
-    assert not result_dict
+    with pytest.raises(Exception):
+        session.unregister_event('test')
     assert len(event.attendees) == 1

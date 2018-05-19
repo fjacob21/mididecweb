@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from bcrypt_hash import BcryptHash
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, request, make_response
 from flask import Response, send_from_directory, redirect
 from events import Events
 from users import Users
@@ -8,6 +8,8 @@ from user import USER_ACCESS_SUPER
 from stores import SqliteStore
 from session import Session
 from config import Config
+from session_exception import SessionError
+import errors
 
 config = Config()
 store = SqliteStore(config.database)
@@ -29,6 +31,13 @@ else:
                      config.root['alias'], password, '', True, True,
                      access=USER_ACCESS_SUPER, user_id=config.root['user_id'])
     root.validated = True
+
+
+def return_error(code):
+    error = {}
+    error['code'] = code
+    resp = make_response(jsonify(error), 400)
+    return resp
 
 
 @application.after_request
@@ -57,85 +66,87 @@ def get_events():
 
 @application.route(api + 'events/<event_id>')
 def get_event(event_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config,
-                      request.url_root)
-    event_dict = session.get_event(event_id)
-    if not event_dict:
-        abort(400)
-    return jsonify(event_dict)
+    try:
+        session = Session({}, events, users, request.args.get('loginkey'), config,
+                          request.url_root)
+        event_dict = session.get_event(event_id)
+        return jsonify(event_dict)
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'events/<event_id>/ical')
 def get_event_ical(event_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config,
-                      request.url_root)
-    ical = session.get_event_ical(event_id)
-    if not ical:
-        abort(400)
-    return Response(
-        ical,
-        mimetype="text/csv",
-        headers={"Content-disposition":
-                 "attachment; filename=event.ics"})
+    try:
+        session = Session({}, events, users, request.args.get('loginkey'), config,
+                          request.url_root)
+        return Response(
+            session.get_event_ical(event_id),
+            mimetype="text/csv",
+            headers={"Content-disposition":
+                     "attachment; filename=event.ics"})
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'events', methods=['POST'])
 def add_event():
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    event_dict = session.add_event()
-    if not event_dict:
-        abort(400)
-    return jsonify(event_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.add_event())
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'events/<event_id>', methods=['DELETE'])
 def remove_event(event_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config,
-                      request.url_root)
-    result_dict = session.remove_event(event_id)
-    if not result_dict:
-        abort(400)
-    return jsonify(result_dict)
+    try:
+        session = Session({}, events, users, request.args.get('loginkey'), config,
+                          request.url_root)
+        return jsonify(session.remove_event(event_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'events/<event_id>/register', methods=['POST'])
 def register_event(event_id):
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    result_dict = session.register_event(event_id)
-    if not result_dict:
-        abort(400)
-    return jsonify(result_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.register_event(event_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'events/<event_id>/unregister',
                    methods=['POST'])
 def unregister_event(event_id):
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    result_dict = session.unregister_event(event_id)
-    if not result_dict:
-        abort(400)
-    return jsonify(result_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.unregister_event(event_id))
+    except SessionError as se:
+        print(se)
+        return return_error(se.code)
 
 
 @application.route(api + 'events/<event_id>/publish', methods=['POST'])
 def publish_event(event_id):
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    result_dict = session.publish_event(event_id)
-    if not result_dict:
-        abort(400)
-    return jsonify(result_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.publish_event(event_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users', methods=['GET'])
@@ -147,95 +158,95 @@ def get_users():
 
 @application.route(api + 'users', methods=['POST'])
 def add_user():
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    user_dict = session.add_user()
-    if not user_dict:
-        abort(400)
-    return jsonify(user_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.add_user())
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users/validate', methods=['POST'])
 def validate_user_info():
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    validate_dict = session.validate_user_info()
-    if not validate_dict:
-        abort(400)
-    return jsonify(validate_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.validate_user_info())
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config,
-                      request.url_root)
-    user_dict = session.get_user(user_id)
-    if not user_dict:
-        abort(400)
-    return jsonify(user_dict)
+    try:
+        session = Session({}, events, users, request.args.get('loginkey'), config,
+                          request.url_root)
+        return jsonify(session.get_user(user_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users/<user_id>/validate', methods=['GET'])
 def get_user_validate(user_id):
-    session = Session({}, events, users, request.args.get('loginkey'), config,
-                      request.url_root)
-    validate_html = session.validate_user(user_id)
-    if not validate_html:
-        abort(400)
-    return validate_html
+    try:
+        session = Session({}, events, users, request.args.get('loginkey'), config,
+                          request.url_root)
+        return session.validate_user(user_id)
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users/<user_id>', methods=['POST'])
 def update_user(user_id):
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    user_dict = session.update_user(user_id)
-    if not user_dict:
-        abort(400)
-    return jsonify(user_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.update_user(user_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users/<user_id>/login', methods=['POST'])
 def login(user_id):
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    result_dict = session.login(user_id)
-    if not result_dict:
-        abort(400)
-    return jsonify(result_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.login(user_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users/<user_id>/logout', methods=['POST'])
 def logout(user_id):
-    if not request.json:
-        abort(400)
-    session = Session(request.json, events, users,
-                      request.args.get('loginkey'), config, request.url_root)
-    result_dict = session.logout(user_id)
-    if not result_dict:
-        abort(400)
-    return jsonify(result_dict)
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config, request.url_root)
+        return jsonify(session.logout(user_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route(api + 'users/<user_id>', methods=['DELETE'])
 def rm_user(user_id):
-    params = {}
-    if request.json:
-        params = request.json
-    session = Session(params, events, users, request.args.get('loginkey'),
-                      config, request.url_root)
-    result_dict = session.remove_user(user_id)
-    if not result_dict:
-        abort(400)
-    return jsonify(result_dict)
+    try:
+        params = {}
+        if request.json:
+            params = request.json
+        session = Session(params, events, users, request.args.get('loginkey'),
+                          config, request.url_root)
+        return jsonify(session.remove_user(user_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 
 @application.route('/html/<path:path>')
