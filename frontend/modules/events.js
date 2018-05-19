@@ -74,10 +74,10 @@ class Events extends React.Component{
         registerSuccess(data){
                 switch(data.result){
                 case 1:
-                        this.showAlert('Vous êtes maintenant inscrit a cette évènement')
+                        this.showAlert('Vous êtes maintenant inscrit a cette événement')
                 break;
                 case 2:
-                        this.showAlert('Vous êtes déja inscrit a cette évènement', 'danger')
+                        this.showAlert('Vous êtes déja inscrit a cette événement', 'danger')
                 break;
                 case 3:
                         this.showAlert('Malheureusement il ne reste plus de place disponible! Vous etes par contre sur la liste d\'attente.', 'warning')

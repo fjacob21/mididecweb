@@ -37,12 +37,12 @@ class CreateEvent extends React.Component{
         }
 
         addSuccess(data){
-            this.showAlert('l\'evenement a ete enregistre', 'success')
+            this.showAlert('l\'événement a été enregistré', 'success')
             history.replace("/events/" + data.event.event_id);
         }
 
         addError(data){
-                this.showAlert('Une erreur est survenue lors de la create de l\'evenement!', 'danger')
+                this.showAlert('Une erreur est survenue lors de la création de l\'événement!', 'danger')
         }
 
         showAlert(message, color='success'){
@@ -114,16 +114,16 @@ class CreateEvent extends React.Component{
                                     <Input onChange={this.onChange} type='textarea' name="desc" id="desc" placeholder="desc" value={this.state.values.description} />
                             </FormGroup>
                             <FormGroup className='startDate'>
-                                    <Label for="startDate">Start <font size="3" color="red">*</font></Label>
+                                    <Label for="startDate">Début <font size="3" color="red">*</font></Label>
                                     <div><Input onChange={this.onChange} type='date' name="startDate" id="startDate" placeholder="startDate" value={this.state.values.startDate} />
                                     <Input onChange={this.onChange} type='time' name="time" id="time" placeholder="time" value={this.state.values.time} /></div>
                             </FormGroup>
                             <FormGroup className='durationString'>
-                                    <Label for="durationString">Duration </Label>
+                                    <Label for="durationString">Durée </Label>
                                     <Input onChange={this.onChange} type='text' name="durationString" id="durationString" placeholder="durationString" value={this.state.values.durationString} />
                             </FormGroup>
                             <FormGroup className='maxAttendee'>
-                                    <Label for="maxAttendee">maxAttendee</Label>
+                                    <Label for="maxAttendee">Nombre de participants</Label>
                                     <Input onChange={this.onChange} type='text' name="maxAttendee" id="maxAttendee" placeholder="20" value={this.state.values.maxAttendee} />
                             </FormGroup>
                             <FormGroup className='location'>
@@ -131,11 +131,11 @@ class CreateEvent extends React.Component{
                                     <Input onChange={this.onChange} type='text' name="location" id="location" placeholder="location" value={this.state.values.location} />
                             </FormGroup>
                             <FormGroup className='organizer_name'>
-                                    <Label for="organizer_name">organizerName</Label>
+                                    <Label for="organizer_name">Organisateur</Label>
                                     <Input onChange={this.onChange} type='text' name="organizer_name" id="organizer_name" placeholder="organizerName" value={this.state.values.organizer_name} />
                             </FormGroup>
                             <FormGroup className='organizer_email'>
-                                    <Label for="organizer_email">organizerEmail</Label>
+                                    <Label for="organizer_email">Courriel de l'Organisateur</Label>
                                     <Input onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
                             <Button color="primary" onClick={this.onAdd} disabled={!this.state.valid}>Ajouter</Button>{' '}
