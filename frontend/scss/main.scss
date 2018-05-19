@@ -18,7 +18,13 @@ html, body {
         height: 100%;
 }
 .home {
+        display: flex;
+        flex-direction: column;
         width: 100%;
+        .next-events{
+                display: flex;
+                font-size: 2em;
+        }
 }
 
 .navs {
@@ -66,6 +72,26 @@ html, body {
         display: flex;
         padding-top: 90px;
         padding-left: 1rem;
+}
+
+.event-summary {
+        display: flex;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        width: 90%;
+        max-width: 500px;
+        cursor: pointer;
+
+        .es-title{
+                font-size: 1.0em;
+        }
+        .es-start-long {
+                font-size: 0.5em;
+        }
+        .es-attendees {
+                font-size: 0.5em;
+                color: rgba(0,0,0,0.5);
+        }
 }
 
 .attendees-title {
@@ -185,7 +211,7 @@ html, body {
         .user-bt {
                 display: flex;
                 margin: 5px;
-                cursor:pointer;
+                cursor: pointer;
         }
 }
 
@@ -397,6 +423,19 @@ html, body {
 }
 
 @media (min-width: 500px) {
+        .event-summary {
+
+                .es-title{
+                        font-size: 1.5em;
+                }
+                .es-start-long {
+                        font-size: 1em;
+                }
+                .es-attendees {
+                        font-size: 1em;
+                }
+        }
+
         .eventsmall {
                 visibility: hidden;
                 height: 0;
