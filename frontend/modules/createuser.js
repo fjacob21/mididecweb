@@ -3,7 +3,7 @@ import { browserHistory} from 'react-router'
 import jquery from 'jquery'
 import createHistory from "history/createHashHistory"
 import User from './user'
-import { Button, Form, FormGroup, Label, Input, Alert, Card, CardTitle, FormFeedback } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Card, CardTitle, FormFeedback } from 'reactstrap';
 
 const history = createHistory();
 
@@ -16,11 +16,6 @@ class CreateUser extends React.Component{
                               emailok: true,
                               aliasok: true
                       },
-                      alert: {
-                              visible: false,
-                              message: '',
-                              color: 'success'
-                          },
                       values: { name: '',
                                 email: '',
                                 password: '',
@@ -121,10 +116,7 @@ class CreateUser extends React.Component{
         }
 
         showAlert(message, color='success'){
-                this.state.alert.color = color;
-                this.state.alert.visible = true;
-                this.state.alert.message = message;
-                this.setState(this.state);
+                this.props.onError(message, color);
         }
 
         render(){
@@ -136,9 +128,6 @@ class CreateUser extends React.Component{
                         aliasErrorMessage = <FormFeedback>Désolé cet alias est déja utilisé</FormFeedback>
                 return (
                         <div className='createuser'>
-                                <Alert color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss}>
-                                        {this.state.alert.message}
-                                </Alert>
                                 <Card body className='createuser-card'>
                                         <CardTitle>S'inscrire</CardTitle>
 

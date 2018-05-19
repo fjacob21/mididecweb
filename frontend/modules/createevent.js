@@ -2,7 +2,7 @@ import React from 'react'
 import jquery from 'jquery'
 import User from './user'
 import createHistory from "history/createHashHistory"
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 const history = createHistory();
 
@@ -12,11 +12,6 @@ class CreateEvent extends React.Component{
             var user = User.getSession();
             this.state = {
                   valid: false,
-                  alert: {
-                          visible: false,
-                          message: '',
-                          color: 'success'
-                      },
                   values: { title: '',
                       desc: '',
                       maxAttendee: '20',
@@ -51,10 +46,7 @@ class CreateEvent extends React.Component{
         }
 
         showAlert(message, color='success'){
-                this.state.alert.color = color;
-                this.state.alert.visible = true;
-                this.state.alert.message = message;
-                this.setState(this.state);
+                this.props.onError(message, color);
         }
 
         parseDate(date, time){
@@ -112,9 +104,6 @@ class CreateEvent extends React.Component{
         render() {
             return (
                 <div className='createevent'>
-                    <Alert color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss}>
-                            {this.state.alert.message}
-                    </Alert>
                     <Form className='form' onKeyPress={this.onKeyPress}>
                             <FormGroup className='title'>
                                     <Label for="title">Titre <font size="3" color="red">*</font></Label>

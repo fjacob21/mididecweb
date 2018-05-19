@@ -5,7 +5,6 @@ import EventBig from './eventbig'
 import Event from './event'
 import User from './user'
 import createHistory from "history/createHashHistory"
-import { Alert } from 'reactstrap';
 
 const history = createHistory();
 
@@ -14,12 +13,7 @@ class Events extends React.Component{
                 super(props);
                 this.state = {
                         event: null,
-                        invalid: true,
-                        alert: {
-                                visible: false,
-                                message: '',
-                                color: 'success'
-                                }
+                        invalid: true
                         };
                 jquery.ajax({
                 type: 'GET',
@@ -55,10 +49,7 @@ class Events extends React.Component{
         }
 
         showAlert(message, color='success'){
-                this.state.alert.color = color;
-                this.state.alert.visible = true;
-                this.state.alert.message = message;
-                this.setState(this.state);
+                this.props.onError(message, color);
         }
 
         onRegister(userinfo){
@@ -132,9 +123,6 @@ class Events extends React.Component{
                 if (this.state.event != null) {
                         return (
                                 <div className='events'>
-                                        <Alert color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss}>
-                                                {this.state.alert.message}
-                                        </Alert>
                                         <EventSmall event={this.state.event} onRegister={this.onRegister} onCancel={this.onCancel}/>
                                         <EventBig event={this.state.event} onRegister={this.onRegister} onCancel={this.onCancel}/>
                                 </div>
@@ -143,9 +131,6 @@ class Events extends React.Component{
                 else {
                         return (
                                 <div className='events'>
-                                        <Alert color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss}>
-                                                {this.state.alert.message}
-                                        </Alert>
                                 </div>)
 
                 }

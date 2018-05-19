@@ -54,6 +54,14 @@ html, body {
         color: red;
 }
 
+.error {
+        display: flex;
+        padding-top: 80px;
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+}
+
 .content {
         display: flex;
         padding-top: 90px;
