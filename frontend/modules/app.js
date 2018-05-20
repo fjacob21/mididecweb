@@ -8,9 +8,11 @@ import Navbar from './navbar'
 import Home from './home'
 import Events from './events'
 import CreateEvent from './createevent'
+import UpdateEvent from './updateevent'
 import CreateUser from './createuser'
 import UpdateUser from './updateuser'
 import UsersAdmin from './usersadmin'
+import EventsAdmin from './eventsadmin'
 import Login from './login'
 
 class App extends React.Component{
@@ -62,11 +64,13 @@ class App extends React.Component{
                                 <div className='content'>
                                         <Route exact path="/" render={(props) => <Home {...props} onError={this.onError}/>} />
                                         <Route path="/login" render={(props) => <Login {...props} onError={this.onError}/>} />
-                                        <Route path="/events/:id" render={(props) => <Events {...props} onError={this.onError}/>} />
+                                        <Route exact path="/events/:id" render={(props) => <Events {...props} onError={this.onError}/>} />
+                                        <Route path="/events/:id/update" render={(props) => <UpdateEvent {...props} onError={this.onError}/>} />
                                         <Route path="/createevent" render={(props) => <CreateEvent {...props} onError={this.onError}/>} />
                                         <Route path="/users/:id/update" render={(props) => <UpdateUser {...props} onError={this.onError}/>} />
                                         <Route path="/createuser" render={(props) => <CreateUser {...props} onError={this.onError}/>} />
                                         <Route path="/usersadmin" render={(props) => <UsersAdmin {...props} onError={this.onError}/>} />
+                                        <Route path="/eventsadmin" render={(props) => <EventsAdmin {...props} onError={this.onError}/>} />
                                 </div>
 
                         </div>)

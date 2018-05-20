@@ -14,8 +14,8 @@ def test_complete_event_json_encoder():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
     a = users.add("test@test.com", 'name', 'alias', 'psw')
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test', a)
     a.validated = True
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e, True).encode('dict')
@@ -29,6 +29,7 @@ def test_complete_event_json_encoder():
     assert jsonobj['location'] == "test"
     assert jsonobj['organizer_name'] == "test"
     assert jsonobj['organizer_email'] == "test@test.com"
+    assert jsonobj['owner_id'] == a.user_id
     assert len(jsonobj['attendees']) == 1
 
 
@@ -39,8 +40,8 @@ def test_event_json_encoder():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
     a = users.add("test@test.com", 'name', 'alias', 'psw')
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test', a)
     a.validated = True
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e).encode('dict')
@@ -54,6 +55,7 @@ def test_event_json_encoder():
     assert jsonobj['location'] == "test"
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
+    assert jsonobj['owner_id'] == a.user_id
     assert len(jsonobj['attendees']) == 1
 
 
@@ -64,8 +66,8 @@ def test_event_no_attendees_json_encoder():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
     a = users.add("test@test.com", 'name', 'alias', 'psw')
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test', a)
     a.validated = True
     e.register_attendee(a)
     jsonobj = EventJsonEncoder(e, show_attendee=False).encode('dict')
@@ -79,6 +81,7 @@ def test_event_no_attendees_json_encoder():
     assert jsonobj['location'] == "test"
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
+    assert jsonobj['owner_id'] == a.user_id
     assert 'attendees' not in jsonobj
 
 
@@ -89,8 +92,8 @@ def test_complete_event_json_encoder_string():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
     a = users.add("test@test.com", 'name', 'alias', 'psw')
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test', a)
     a.validated = True
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e, True).encode('string')
@@ -106,6 +109,7 @@ def test_complete_event_json_encoder_string():
     assert jsonobj['location'] == "test"
     assert jsonobj['organizer_name'] == "test"
     assert jsonobj['organizer_email'] == "test@test.com"
+    assert jsonobj['owner_id'] == a.user_id
     assert len(jsonobj['attendees']) == 1
 
 
@@ -116,8 +120,8 @@ def test_event_json_encoder_string():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
     a = users.add("test@test.com", 'name', 'alias', 'psw')
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test', a)
     a.validated = True
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e).encode('string')
@@ -133,6 +137,7 @@ def test_event_json_encoder_string():
     assert jsonobj['location'] == "test"
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
+    assert jsonobj['owner_id'] == a.user_id
     assert len(jsonobj['attendees']) == 1
 
 
@@ -143,8 +148,8 @@ def test_event_no_attendees_json_encoder_string():
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
     end = start + dur
-    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test')
     a = users.add("test@test.com", 'name', 'alias', 'psw')
+    e = events.add("test", "test", 30, start, dur, 'test', 'test', 'test@test.com', 'test', a)
     a.validated = True
     e.register_attendee(a)
     jsonstr = EventJsonEncoder(e, show_attendee=False).encode('string')
@@ -160,4 +165,5 @@ def test_event_no_attendees_json_encoder_string():
     assert jsonobj['location'] == "test"
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
+    assert jsonobj['owner_id'] == a.user_id
     assert 'attendees' not in jsonobj

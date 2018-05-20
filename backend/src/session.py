@@ -9,6 +9,7 @@ from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
+from access import EventUpdateAccess
 from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
 import errors
@@ -108,7 +109,27 @@ class Session(object):
         return {'result': True}
 
     def update_event(self, event_id):
-        pass
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        if not EventUpdateAccess(self, event).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+
+        if 'title' in self._params:
+            event.title = self._params['title']
+        if 'desc' in self._params:
+            event.desc = self._params['desc']
+        if 'max_attendee' in self._params:
+            event.max_attendee = self._params['max_attendee']
+        if 'start' in self._params:
+            start = self._params["start"]
+            event.start = start
+        if 'duration' in self._params:
+            duration = int(self._params["duration"])
+            event.duration = duration
+        if 'location' in self._params:
+            event.location = self._params['location']
+        return {'event': EventJsonEncoder(event, True).encode('dict')}
 
     def register_event(self, event_id):
         event = self._events.get(event_id)

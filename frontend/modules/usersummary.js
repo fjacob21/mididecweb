@@ -32,7 +32,6 @@ class UserSummary extends React.Component {
                 var loggedStatus = <i class="material-icons md-light">cloud_off</i>;
                 if (islogged)
                         loggedStatus = <i class="material-icons md-light">cloud_queue</i>;
-                console.debug(islogged);
                 return (
                   <div className='user-summary'>
                       <div className='user-name'>{this.props.user.name}</div>

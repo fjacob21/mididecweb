@@ -6,7 +6,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 const history = createHistory();
 
-class CreateEvent extends React.Component{
+class UpdateEvent extends React.Component{
         constructor(props) {
             super(props);
             var user = User.getSession();
@@ -22,13 +22,42 @@ class CreateEvent extends React.Component{
                       organizer_name: user.alias,
                       organizer_email: user.email}
             };
+            var user = User.getSession();
+            jquery.ajax({
+            type: 'GET',
+            url: "/mididec/api/v1.0/events/"+ this.props.match.params.id+'?loginkey='+user.loginkey,
+            success: this.success.bind(this),
+            error: this.error.bind(this),
+            contentType: "application/json",
+            dataType: 'json'
+            });
             this.onCancel = this.onCancel.bind(this);
-            this.onAdd = this.onAdd.bind(this);
+            this.onUpdate = this.onUpdate.bind(this);
             this.onChange = this.onChange.bind(this);
-            this.addSuccess = this.addSuccess.bind(this);
-            this.addError = this.addError.bind(this);
+            this.updateSuccess = this.updateSuccess.bind(this);
+            this.updateError = this.updateError.bind(this);
             this.onDismiss = this.onDismiss.bind(this);
             this.onKeyPress = this.onKeyPress.bind(this);
+        }
+
+        success(data){
+
+                this.state.values = data.event;
+                var d = new Date(this.state.values.start);
+                var dateParts = this.state.values.start.split('T');
+                this.state.values.startDate = dateParts[0];
+                var time = dateParts[1].substring(0, dateParts[1].length-1);
+                this.state.values.time = time;
+                var durationHour = this.state.values.duration / 3600;
+                var durationMinute = this.state.values.duration - (durationHour*3600);
+                this.state.values.durationString = durationHour.toString() + 'h' + durationMinute.toString();
+                this.state.invalid = false;
+                this.setState(this.state);
+        }
+
+        error(data){
+                var errorCode = data.responseJSON.code;
+                this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onDismiss() {
@@ -36,12 +65,11 @@ class CreateEvent extends React.Component{
                 this.setState(this.state);
         }
 
-        addSuccess(data){
+        updateSuccess(data){
             this.showAlert('l\'événement a été enregistré', 'success')
-            history.replace("/events/" + data.event.event_id);
         }
 
-        addError(data){
+        updateError(data){
                 this.showAlert('Une erreur est survenue lors de la création de l\'événement!', 'danger')
         }
 
@@ -66,17 +94,17 @@ class CreateEvent extends React.Component{
             return (m*60) + (h * 3600);
         }
 
-        onAdd() {
+        onUpdate() {
             this.state.values.start = this.parseDate(this.state.values.startDate, this.state.values.time);
             this.state.values.duration = this.parseDuration(this.state.values.durationString);
             var user = User.getSession();
             this.state.values['loginkey'] = user.loginkey
             jquery.ajax({
             type: 'POST',
-            url: "/mididec/api/v1.0/events",
+            url: "/mididec/api/v1.0/events/" + this.props.match.params.id,
             data: JSON.stringify (this.state.values),
-            success: this.addSuccess,
-            error: this.addError,
+            success: this.updateSuccess,
+            error: this.updateError,
             contentType: "application/json",
             dataType: 'json'
             });
@@ -138,11 +166,11 @@ class CreateEvent extends React.Component{
                                     <Label for="organizer_email">Courriel de l'Organisateur</Label>
                                     <Input onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
-                            <Button color="primary" onClick={this.onAdd} disabled={!this.state.valid}>Ajouter</Button>{' '}
+                            <Button color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>Sauvegarder</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
                     </Form>
                 </div>)
         }
 }
 
-module.exports = CreateEvent;
+module.exports = UpdateEvent;
