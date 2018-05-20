@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request, make_response
 from flask import Response, send_from_directory, redirect
 from events import Events
 from users import Users
-from user import USER_ACCESS_SUPER
+from user import USER_ACCESS_SUPER, USER_ACCESS_MANAGER
 from stores import SqliteStore
 from session import Session
 from config import Config
@@ -31,6 +31,16 @@ else:
                      config.root['alias'], password, '', True, True,
                      access=USER_ACCESS_SUPER, user_id=config.root['user_id'])
     root.validated = True
+
+password = BcryptHash('test').encrypt()
+man1 = users.add('man1', 'man1',
+                 'man1', password, '', True, True,
+                 access=USER_ACCESS_MANAGER, user_id='man1')
+man1.validated = True
+man2 = users.add('man2', 'man2',
+                 'man12', password, '', True, True,
+                 access=USER_ACCESS_MANAGER, user_id='man2')
+man2.validated = True
 
 
 def return_error(code):
@@ -67,8 +77,8 @@ def get_events():
 @application.route(api + 'events/<event_id>')
 def get_event(event_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'), config,
-                          request.url_root)
+        session = Session({}, events, users, request.args.get('loginkey'),
+                          config, request.url_root)
         event_dict = session.get_event(event_id)
         return jsonify(event_dict)
     except SessionError as se:
@@ -78,8 +88,8 @@ def get_event(event_id):
 @application.route(api + 'events/<event_id>/ical')
 def get_event_ical(event_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'), config,
-                          request.url_root)
+        session = Session({}, events, users, request.args.get('loginkey'),
+                          config, request.url_root)
         return Response(
             session.get_event_ical(event_id),
             mimetype="text/csv",
@@ -95,8 +105,22 @@ def add_event():
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.add_event())
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'events/<event_id>', methods=['POST'])
+def update_event(event_id):
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config,
+                          request.url_root)
+        return jsonify(session.update_event(event_id))
     except SessionError as se:
         return return_error(se.code)
 
@@ -104,7 +128,10 @@ def add_event():
 @application.route(api + 'events/<event_id>', methods=['DELETE'])
 def remove_event(event_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'), config,
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, events, users,
+                          request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.remove_event(event_id))
     except SessionError as se:
@@ -117,7 +144,8 @@ def register_event(event_id):
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.register_event(event_id))
     except SessionError as se:
         return return_error(se.code)
@@ -130,10 +158,10 @@ def unregister_event(event_id):
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.unregister_event(event_id))
     except SessionError as se:
-        print(se)
         return return_error(se.code)
 
 
@@ -143,7 +171,8 @@ def publish_event(event_id):
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.publish_event(event_id))
     except SessionError as se:
         return return_error(se.code)
@@ -162,7 +191,8 @@ def add_user():
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.add_user())
     except SessionError as se:
         return return_error(se.code)
@@ -174,7 +204,8 @@ def validate_user_info():
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.validate_user_info())
     except SessionError as se:
         return return_error(se.code)
@@ -183,8 +214,8 @@ def validate_user_info():
 @application.route(api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'), config,
-                          request.url_root)
+        session = Session({}, events, users, request.args.get('loginkey'),
+                          config, request.url_root)
         return jsonify(session.get_user(user_id))
     except SessionError as se:
         return return_error(se.code)
@@ -193,8 +224,8 @@ def get_user(user_id):
 @application.route(api + 'users/<user_id>/validate', methods=['GET'])
 def get_user_validate(user_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'), config,
-                          request.url_root)
+        session = Session({}, events, users, request.args.get('loginkey'),
+                          config, request.url_root)
         return session.validate_user(user_id)
     except SessionError as se:
         return return_error(se.code)
@@ -206,7 +237,8 @@ def update_user(user_id):
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.update_user(user_id))
     except SessionError as se:
         return return_error(se.code)
@@ -218,7 +250,8 @@ def login(user_id):
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.login(user_id))
     except SessionError as se:
         return return_error(se.code)
@@ -230,7 +263,8 @@ def logout(user_id):
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, events, users,
-                          request.args.get('loginkey'), config, request.url_root)
+                          request.args.get('loginkey'), config,
+                          request.url_root)
         return jsonify(session.logout(user_id))
     except SessionError as se:
         return return_error(se.code)

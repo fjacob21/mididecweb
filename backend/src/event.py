@@ -18,6 +18,13 @@ class Event():
     def get_data(self):
         return self._store.events.get(self._event_id)
 
+    def update_data(self, data):
+        self._store.events.update(data['title'],
+                                  data['description'], data['max_attendee'],
+                                  data['start'], data['duration'],
+                                  data['location'], data['organizer_name'],
+                                  data['organizer_email'], self._event_id)
+
     @property
     def owner_id(self):
         return self.get_data()['owner_id']
@@ -30,21 +37,51 @@ class Event():
     def title(self):
         return self.get_data()['title']
 
+    @title.setter
+    def title(self, value):
+        data = self.get_data()
+        data['title'] = value
+        self.update_data(data)
+
     @property
     def description(self):
         return self.get_data()['description']
+
+    @description.setter
+    def description(self, value):
+        data = self.get_data()
+        data['description'] = value
+        self.update_data(data)
 
     @property
     def max_attendee(self):
         return int(self.get_data()['max_attendee'])
 
+    @max_attendee.setter
+    def max_attendee(self, value):
+        data = self.get_data()
+        data['max_attendee'] = value
+        self.update_data(data)
+
     @property
     def start(self):
         return self.get_data()['start']
 
+    @start.setter
+    def start(self, value):
+        data = self.get_data()
+        data['start'] = value
+        self.update_data(data)
+
     @property
     def duration(self):
         return int(self.get_data()['duration'])
+
+    @duration.setter
+    def duration(self, value):
+        data = self.get_data()
+        data['duration'] = value
+        self.update_data(data)
 
     @property
     def end(self):
@@ -57,13 +94,31 @@ class Event():
     def location(self):
         return self.get_data()['location']
 
+    @location.setter
+    def location(self, value):
+        data = self.get_data()
+        data['location'] = value
+        self.update_data(data)
+
     @property
     def organizer_name(self):
         return self.get_data()['organizer_name']
 
+    @organizer_name.setter
+    def organizer_name(self, value):
+        data = self.get_data()
+        data['organizer_name'] = value
+        self.update_data(data)
+
     @property
     def organizer_email(self):
         return self.get_data()['organizer_email']
+
+    @organizer_email.setter
+    def organizer_email(self, value):
+        data = self.get_data()
+        data['organizer_email'] = value
+        self.update_data(data)
 
     def __eq__(self, value):
         return self.get_data() == value.get_data()
@@ -113,7 +168,6 @@ class Event():
                 self._store.waitings.delete(self.waiting_attendees[0].user_id, self._event_id)
                 self.register_attendee(attendee)
                 return attendee
-            print('unregister user')
             return user
         else:
             self._store.waitings.delete(self.waiting_attendees[widx].user_id, self._event_id)

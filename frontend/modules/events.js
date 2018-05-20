@@ -41,7 +41,6 @@ class Events extends React.Component{
         }
 
         error(data){
-                console.debug(data.responseJSON);
                 var errorCode = data.responseJSON.code;
                 this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }

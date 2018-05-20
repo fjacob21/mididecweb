@@ -23,6 +23,7 @@ class Navbar extends React.Component{
                 this.onHome = this.onHome.bind(this);
                 this.onCreate = this.onCreate.bind(this);
                 this.onUsersAdmin = this.onUsersAdmin.bind(this);
+                this.onEventsAdmin = this.onEventsAdmin.bind(this);
                 this.onCreateEvent = this.onCreateEvent.bind(this);
                 this.onLogin = this.onLogin.bind(this);
                 this.onLogout = this.onLogout.bind(this);
@@ -71,6 +72,12 @@ class Navbar extends React.Component{
                 event.preventDefault();
                 this.toggle();
                 history.replace("/usersadmin");
+        }
+
+        onEventsAdmin(event){
+                event.preventDefault();
+                this.toggle();
+                history.replace("/eventsadmin");
         }
 
         onCreateEvent(event){
@@ -126,9 +133,12 @@ class Navbar extends React.Component{
                 var useradmin = "";
                 if (user && user.isSuperUser)
                     useradmin = (<DropdownItem onClick={this.onUsersAdmin}>Gestion des usagers</DropdownItem> );
+                var eventadmin = "";
+                if (user && (user.isSuperUser || user.isManager))
+                        eventadmin = (<DropdownItem onClick={this.onEventsAdmin}>Gestion des rencontres</DropdownItem> );
                 var createevent = "";
                 if (user && (user.isManager || user.isSuperUser))
-                    createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter un événement</DropdownItem> );
+                    createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter une rencontres</DropdownItem> );
                 if (user){
                         userlink = (    <UncontrolledDropdown nav inNavbar>
                                                 <DropdownToggle nav caret>
@@ -142,6 +152,7 @@ class Navbar extends React.Component{
                                                                 Profile
                                                         </DropdownItem>
                                                         {createevent}
+                                                        {eventadmin}
                                                         {useradmin}
                                                         <DropdownItem divider />
                                                         <DropdownItem onClick={this.onLogout}>

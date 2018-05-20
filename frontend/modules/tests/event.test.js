@@ -16,6 +16,7 @@ test('A class to keep event info', () => {
                     location:'location',
                     organizer_name:'organizer_name',
                     organizer_email:'organizer_email',
+                    owner_id: '123',
                     attendees:[userinfo],
                     waitings:[userinfo],
                 };
@@ -23,6 +24,7 @@ test('A class to keep event info', () => {
   var event = new Event(eventinfo);
   expect(event.constructor.name).toBe('Event');
   expect(event.event_id).toBe('event');
+  expect(event.owner_id).toBe('123');
   expect(event.title).toBe('title');
   expect(event.max_attendee).toBe(20);
   expect(event.description).toBe('description');

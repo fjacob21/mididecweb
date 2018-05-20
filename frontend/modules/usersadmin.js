@@ -32,7 +32,6 @@ class UsersAdmin extends React.Component{
         }
 
         success(data){
-                console.debug(data);
                 this.state.users = data.users;
                 this.state.invalid = false;
                 this.setState(this.state);

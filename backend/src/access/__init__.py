@@ -7,6 +7,7 @@ from .access_event_get_complete import EventGetCompleteAccess
 from .access_event_remove import EventRemoveAccess
 from .access_event_register import EventRegisterAccess
 from .access_event_publish import EventPublishAccess
+from .access_event_update import EventUpdateAccess
 
 __all__ = [
     UserAddAccess,
@@ -17,4 +18,5 @@ __all__ = [
     EventAddAccess,
     EventRemoveAccess,
     EventRegisterAccess,
-    EventPublishAccess]
+    EventPublishAccess,
+    EventUpdateAccess]
