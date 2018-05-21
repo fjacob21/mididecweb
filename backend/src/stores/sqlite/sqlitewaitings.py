@@ -9,7 +9,8 @@ class SqliteWaitings():
 
     def get_all(self, event_id):
         try:
-            r = self._conn.execute("select * from waitings")
+            t = (event_id, )
+            r = self._conn.execute("select * from waitings where event_id=?", t)
             res = r.fetchall()
             result = []
             for rec in res:
@@ -22,6 +23,22 @@ class SqliteWaitings():
         try:
             t = (user_id, event_id)
             self._conn.execute("delete from waitings where user_id=? and event_id=?", t)
+            self._conn.commit()
+        except Exception:
+            pass
+
+    def delete_event(self, event_id):
+        try:
+            t = (event_id,)
+            self._conn.execute("delete from waitings where event_id=?", t)
+            self._conn.commit()
+        except Exception:
+            pass
+
+    def delete_user(self, user_id):
+        try:
+            t = (user_id,)
+            self._conn.execute("delete from waitings where user_id=?", t)
             self._conn.commit()
         except Exception:
             pass

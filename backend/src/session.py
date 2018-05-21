@@ -10,6 +10,7 @@ from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
 from access import EventUpdateAccess
+from event import ATTENDEE_LIST, WAITING_LIST
 from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
 import errors
@@ -104,6 +105,7 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventRemoveAccess(self, event).granted():
+            print('Access denied')
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         self._events.remove(event_id)
         return {'result': True}
@@ -140,10 +142,31 @@ class Session(object):
         if not EventRegisterAccess(self, event).granted():
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         result = event.register_attendee(self.user)
+        if result == ATTENDEE_LIST or result == WAITING_LIST:
+            self.send_confirmation_email(result, event, self.user)
         is_owner = event.owner_id == self.user.user_id
         complete = self.user.is_super_user or is_owner
         return {'result': result,
                 'event': EventJsonEncoder(event, complete).encode('dict')}
+
+    def send_confirmation_email(self, list, event, user):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            env = Environment(loader=FileSystemLoader('emails'))
+            if list == ATTENDEE_LIST:
+                t = env.get_template('registerconfirm.html')
+            else:
+                t = env.get_template('waitingconfirm.html')
+            sender = EmailSender(self._config.email_user,
+                                 self._config.email_password,
+                                 user.email,
+                                 'Confirmation MidiDecouverte',
+                                 t.render(user=user,
+                                          event=event,
+                                          server=self._server),
+                                 'html',
+                                 self._config.email_server)
+            sender.send()
 
     def unregister_event(self, event_id):
         event = self._events.get(event_id)
@@ -256,7 +279,7 @@ class Session(object):
                                  user.email,
                                  'Validation MidiDecouverte',
                                  t.render(user=user,
-                                          server=self._server).encode('utf8'),
+                                          server=self._server),
                                  'html',
                                  self._config.email_server)
             sender.send()
