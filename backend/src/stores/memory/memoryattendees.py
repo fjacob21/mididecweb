@@ -20,6 +20,20 @@ class MemoryAttendees():
         if idx != -1:
             del self._attendees[idx]
 
+    def delete_event(self, event_id):
+        newlist = []
+        for attendee in self._attendees:
+            if attendee['event_id'] != event_id:
+                newlist.append(attendee)
+        self._attendees = newlist
+
+    def delete_user(self, user_id):
+        newlist = []
+        for attendee in self._attendees:
+            if attendee['user_id'] != user_id:
+                newlist.append(attendee)
+        self._attendees = newlist
+
     def reset(self):
         self._attendees = []
 

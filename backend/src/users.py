@@ -30,6 +30,8 @@ class Users():
 
     def remove(self, user_id):
         self._store.users.delete(user_id)
+        self._store.attendees.delete_user(user_id)
+        self._store.waitings.delete_user(user_id)
 
     def find_email(self, email):
         for user in self.list:

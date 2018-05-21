@@ -13,7 +13,8 @@ class SqliteAttendees():
 
     def get_all(self, event_id):
         try:
-            r = self._conn.execute("select * from attendees")
+            t = (event_id,)
+            r = self._conn.execute("select * from attendees where event_id=?", t)
             res = r.fetchall()
             result = []
             for rec in res:
@@ -29,6 +30,23 @@ class SqliteAttendees():
             self._conn.commit()
         except Exception:
             pass
+
+    def delete_event(self, event_id):
+        try:
+            t = (event_id,)
+            print('delete event', event_id)
+            self._conn.execute("delete from attendees where event_id=?", t)
+            self._conn.commit()
+        except Exception as e:
+            print('Delete event', e)
+
+    def delete_user(self, user_id):
+        try:
+            t = (user_id,)
+            self._conn.execute("delete from attendees where user_id=?", t)
+            self._conn.commit()
+        except Exception as e:
+            print('Delete user', e)
 
     def reset(self):
         self.clean()
