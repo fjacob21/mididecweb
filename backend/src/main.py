@@ -32,16 +32,6 @@ else:
                      access=USER_ACCESS_SUPER, user_id=config.root['user_id'])
     root.validated = True
 
-password = BcryptHash('test').encrypt()
-man1 = users.add('man1', 'man1',
-                 'man1', password, '', True, True,
-                 access=USER_ACCESS_MANAGER, user_id='man1')
-man1.validated = True
-man2 = users.add('man2', 'man2',
-                 'man12', password, '', True, True,
-                 access=USER_ACCESS_MANAGER, user_id='man2')
-man2.validated = True
-
 
 def return_error(code):
     error = {}
