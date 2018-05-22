@@ -15,7 +15,7 @@ def test_add_event():
     user.validated = True
     params = {}
     params['title'] = 'title'
-    params['desc'] = 'desc'
+    params['description'] = 'description'
     params['max_attendee'] = 1
     params['start'] = '2018-04-26T13:00:00Z'
     params['duration'] = 3600
@@ -36,7 +36,7 @@ def test_add_event_bad_title():
     events = Events(store)
     users = Users(store)
     params = {}
-    params['desc'] = 'desc'
+    params['description'] = 'description'
     params['max_attendee'] = 1
     params['start'] = '2018-04-26T13:00:00Z'
     params['duration'] = 3600
@@ -80,7 +80,7 @@ def test_double_add_event():
     user.validated = True
     params = {}
     params['title'] = 'title'
-    params['desc'] = 'desc'
+    params['description'] = 'description'
     params['max_attendee'] = 1
     params['start'] = '2018-04-26T13:00:00Z'
     params['duration'] = 3600

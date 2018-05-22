@@ -21,7 +21,7 @@ def test_update_event():
     user.validated = True
     params = {}
     params['title'] = 'title2'
-    params['desc'] = 'desc2'
+    params['description'] = 'desc2'
     params['max_attendee'] = 2
     params['start'] = '2018-04-26T13:12:00Z'
     params['duration'] = 3601
