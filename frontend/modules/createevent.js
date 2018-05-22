@@ -13,8 +13,8 @@ class CreateEvent extends React.Component{
             this.state = {
                   valid: false,
                   values: { title: '',
-                      desc: '',
-                      maxAttendee: '20',
+                      description: '',
+                      max_attendee: '20',
                       startDate: '',
                       time: '12:00',
                       durationString: '1h00',
@@ -109,9 +109,9 @@ class CreateEvent extends React.Component{
                                     <Label for="title">Titre <font size="3" color="red">*</font></Label>
                                     <Input onChange={this.onChange} type='text' name="title" id="title" placeholder="title" value={this.state.values.title} />
                             </FormGroup>
-                            <FormGroup className='desc'>
-                                    <Label for="desc">Description <font size="3" color="red">*</font></Label>
-                                    <Input onChange={this.onChange} type='textarea' name="desc" id="desc" placeholder="desc" value={this.state.values.desc} />
+                            <FormGroup className='description'>
+                                    <Label for="description">Description <font size="3" color="red">*</font></Label>
+                                    <Input onChange={this.onChange} type='textarea' name="description" id="description" placeholder="description" value={this.state.values.description} />
                             </FormGroup>
                             <FormGroup className='startDate'>
                                     <Label for="startDate">Début <font size="3" color="red">*</font></Label>
@@ -122,9 +122,9 @@ class CreateEvent extends React.Component{
                                     <Label for="durationString">Durée </Label>
                                     <Input onChange={this.onChange} type='text' name="durationString" id="durationString" placeholder="durationString" value={this.state.values.durationString} />
                             </FormGroup>
-                            <FormGroup className='maxAttendee'>
-                                    <Label for="maxAttendee">Nombre de participants</Label>
-                                    <Input onChange={this.onChange} type='text' name="maxAttendee" id="maxAttendee" placeholder="20" value={this.state.values.maxAttendee} />
+                            <FormGroup className='max_attendee'>
+                                    <Label for="max_attendee">Nombre de participants</Label>
+                                    <Input onChange={this.onChange} type='text' name="max_attendee" id="max_attendee" placeholder="20" value={this.state.values.max_attendee} />
                             </FormGroup>
                             <FormGroup className='location'>
                                     <Label for="location">location</Label>

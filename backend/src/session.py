@@ -64,14 +64,14 @@ class Session(object):
         return iCalGenerator(event).generate()
 
     def add_event(self):
-        if "title" not in self._params or "desc" not in self._params:
+        if "title" not in self._params or "description" not in self._params:
             raise SessionError(errors.ERROR_MISSING_PARAMS)
 
         if not EventAddAccess(self).granted():
             raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         title = self._params["title"]
-        desc = self._params["desc"]
+        description = self._params["description"]
         max_attendee = None
         if "max_attendee" in self._params:
             max_attendee = self._params["max_attendee"]
@@ -95,9 +95,10 @@ class Session(object):
         event_id = ''
         if "event_id" in self._params:
             event_id = self._params["event_id"]
-        e = self._events.add(title, desc, max_attendee, start, duration,
+        e = self._events.add(title, description, max_attendee, start, duration,
                              location, organizer_name, organizer_email,
                              event_id, self._user)
+        print(max_attendee, duration, description)
         return {'event': EventJsonEncoder(e, True).encode('dict')}
 
     def remove_event(self, event_id):
