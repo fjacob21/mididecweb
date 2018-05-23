@@ -209,27 +209,44 @@ class Session(object):
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
-        if ("usr" not in self._params or "psw" not in self._params or
-           'sid' not in self._params or 'token' not in self._params):
-            raise SessionError(errors.ERROR_MISSING_PARAMS)
-        usr = self._params["usr"]
-        psw = self._params["psw"]
-        sid = self._params["sid"]
-        token = self._params["token"]
-        body = EventTextGenerator(event, False).generate()
-        res = True
-        for user in self._users.list:
-            if user.useemail and user.email:
-                sender = EmailSender(usr, psw,
-                                     user.email, event.title, body)
-                res = sender.send()
-            if user.usesms and user.phone:
-                sender = SmsSender(sid, token,
-                                   user.phone, event.title, body)
-                res = sender.send()
-        if not res:
-            raise SessionError(errors.ERROR_SENDING_EMAIL)
+        self.send_publish_event_email(event)
+        self.send_publish_event_sms(event)
         return {'result': True}
+
+    def send_publish_event_email(self, event):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            env = Environment(loader=FileSystemLoader('emails'))
+            t = env.get_template('eventpublish.html')
+            res = True
+            for user in self._users.list:
+                if user.useemail and user.email and user.validated:
+                    sender = EmailSender(self._config.email_user,
+                                         self._config.email_password,
+                                         user.email,
+                                         'Confirmation MidiDecouverte',
+                                         t.render(user=user,
+                                                  event=event,
+                                                  server=self._server),
+                                         'html',
+                                         self._config.email_server)
+                    res = sender.send()
+            if not res:
+                raise SessionError(errors.ERROR_SENDING_EMAIL)
+
+    def send_publish_event_sms(self, event):
+        if self._config and self._config.sms_sid and self._config.sms_token:
+            body = EventTextGenerator(event, False).generate()
+            res = True
+            for user in self._users.list:
+                if (user.usesms and user.phone and user.validated and
+                   user.smsvalidated):
+                    sender = SmsSender(self._config.sms_sid,
+                                       self._config.sms_token, user.phone,
+                                       event.title, body)
+                    res = sender.send()
+            if not res:
+                raise SessionError(errors.ERROR_SENDING_EMAIL)
 
     def get_users(self):
         complete = UserGetCompleteAccess(self).granted()

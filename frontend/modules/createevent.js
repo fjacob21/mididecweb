@@ -38,7 +38,7 @@ class CreateEvent extends React.Component{
 
         addSuccess(data){
             this.showAlert('l\'événement a été enregistré', 'success')
-            history.replace("/events/" + data.event.event_id);
+            history.replace("/events/" + data.event.event_id + '/update');
         }
 
         addError(data){
