@@ -178,13 +178,28 @@ class Session(object):
         if not self.user:
             raise SessionError(errors.ERROR_LOGIN_NEEDED)
         promotee = event.cancel_registration(self.user)
-        print('promotee', promotee)
         if promotee and promotee != self.user:
-            pass  # send email to promotee
+            self.send_promotee_email(event, promotee)
         is_owner = event.owner_id == self.user.user_id
         complete = self.user.is_super_user or is_owner
         return {'result': True,
                 'event': EventJsonEncoder(event, complete).encode('dict')}
+
+    def send_promotee_email(self, event, promotee):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            env = Environment(loader=FileSystemLoader('emails'))
+            t = env.get_template('promotee.html')
+            sender = EmailSender(self._config.email_user,
+                                 self._config.email_password,
+                                 promotee.email,
+                                 'Confirmation MidiDecouverte',
+                                 t.render(user=promotee,
+                                          event=event,
+                                          server=self._server),
+                                 'html',
+                                 self._config.email_server)
+            sender.send()
 
     def publish_event(self, event_id):
         event = self._events.get(event_id)
