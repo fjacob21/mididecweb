@@ -106,15 +106,16 @@ class UpdateUser extends React.Component{
         validateSuccess(data){
                 this.state.validation = data;
                 this.state.valid = false;
-                if (data.emailok && data.aliasok)
-                var at = this.state.values.email.indexOf('@');
-                var dot = this.state.values.email.indexOf('.');
-                if (this.state.values.name != '' &&
-                    this.state.values.email != '' &&
-                    this.state.values.alias != '' &&
-                    at != -1 && dot != -1 && at < dot &&
-                    dot+1 < this.state.values.email.length )
-                        this.state.valid = true;
+                if (data.emailok && data.aliasok) {
+                    var at = this.state.values.email.indexOf('@');
+                    var dot = this.state.values.email.indexOf('.');
+                    if (this.state.values.name != '' &&
+                        this.state.values.email != '' &&
+                        this.state.values.alias != '' &&
+                        at != -1 && dot != -1 && at < dot &&
+                        (dot+1) < this.state.values.email.length )
+                            this.state.valid = true;
+                }
                 this.setState(this.state);
         }
 
