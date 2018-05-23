@@ -204,7 +204,7 @@ class User(object):
             self.set_lastlogin()
             self.loginkey = self.generate_loginkey(self.lastlogin)
             return self.loginkey
-        raise SessionError(errors.ERROR_LOGIN)
+        raise SessionError(errors.ERROR_INVALID_LOGIN)
 
     def logout(self, loginkey):
         if loginkey != self.loginkey:

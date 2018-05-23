@@ -36,6 +36,9 @@ class UpdateEvent extends React.Component{
             this.onChange = this.onChange.bind(this);
             this.updateSuccess = this.updateSuccess.bind(this);
             this.updateError = this.updateError.bind(this);
+            this.onPublish = this.onPublish.bind(this);
+            this.publishSuccess = this.publishSuccess.bind(this);
+            this.publishError = this.publishError.bind(this);
             this.onDismiss = this.onDismiss.bind(this);
             this.onKeyPress = this.onKeyPress.bind(this);
         }
@@ -114,6 +117,28 @@ class UpdateEvent extends React.Component{
                 history.goBack();
         }
 
+        onPublish() {
+            var user = User.getSession();
+            this.state.values['loginkey'] = user.loginkey
+            jquery.ajax({
+            type: 'POST',
+            url: "/mididec/api/v1.0/events/" + this.props.match.params.id + '/publish',
+            data: JSON.stringify (this.state.values),
+            success: this.publishSuccess,
+            error: this.publishError,
+            contentType: "application/json",
+            dataType: 'json'
+            });
+        }
+
+        publishSuccess(data){
+            this.showAlert('l\'événement a été publié', 'success')
+        }
+
+        publishError(data){
+                this.showAlert('Une erreur est survenue lors de la publicaion de l\'événement!', 'danger')
+        }
+
         onChange(e) {
                 this.state.valid = false;
                 this.state.values[e.target.id] = e.target.value;
@@ -167,7 +192,8 @@ class UpdateEvent extends React.Component{
                                     <Input onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
                             <Button color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>Sauvegarder</Button>{' '}
-                            <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
+                            <Button color="secondary" onClick={this.onCancel}>Cancel</Button>{' '}
+                            <Button color="warning" onClick={this.onPublish}>Publier</Button>
                     </Form>
                 </div>)
         }
