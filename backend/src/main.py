@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 from bcrypt_hash import BcryptHash
 from flask import Flask, jsonify, request, make_response
 from flask import Response, send_from_directory, redirect
 from events import Events
 from users import Users
-from user import USER_ACCESS_SUPER, USER_ACCESS_MANAGER
+from user import USER_ACCESS_SUPER
 from stores import SqliteStore
 from session import Session
 from config import Config

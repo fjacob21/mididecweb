@@ -3,6 +3,8 @@ class SqliteWaitings():
 
     def __init__(self, conn):
         self._conn = conn
+        if not self.is_table_exist():
+            self.create_table()
 
     def add(self, user_id, event_id):
         self.insert_object(user_id, event_id)
