@@ -29,16 +29,6 @@ class EventBig extends React.Component{
                 this.props.onRegister();
         }
 
-        onUserInfoChange(obj, userinfo){
-                this.state.userinfo = obj;
-                this.state.valid = false;
-                var at = obj.email.indexOf('@');
-                var dot = obj.email.indexOf('.');
-                if (obj.name != '' && obj.email != '' && at != -1 && dot != -1 && at < dot && dot+1 < obj.email.length )
-                        this.state.valid = true;
-                this.setState(this.state);
-        }
-
         render(){
                 var user = User.getSession();
                 var dateText = this._start.getDateText();
@@ -50,11 +40,11 @@ class EventBig extends React.Component{
                     attendees = this.props.event.attendees.map((attendee) =>
                             <AttendeeIcon key={attendee.user_id} attendee={attendee} />
                     );
-                var registerPanel = <RegisterPanel onRegister={this.onRegister}/>
+                var registerPanel = <RegisterPanel onRegister={this.onRegister} disabled={this.props.disableRegister}/>
                 if (this.props.event.find_attendee(user))
-                    registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} />
+                    registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} disabled={this.props.disableRegister}/>
                 else if (this.props.event.find_waiting(user))
-                    registerPanel = <RegisterStatusPanel status='waiting' onCancel={this.onCancel} />
+                    registerPanel = <RegisterStatusPanel status='waiting' onCancel={this.onCancel} disabled={this.props.disableRegister} />
                 return (
                         <div className='eventbig'>
                                 <div className='head'>

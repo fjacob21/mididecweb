@@ -15,12 +15,15 @@ class RegisterPanel extends React.Component{
         }
 
         render(){
+                var disabled = false;
+                if (this.props.disabled)
+                        disabled = this.props.disabled;
                 return (
                         <div className='registerpanel'>
                                 <Card>
                                         <CardBody>
                                           <CardTitle>Vous y aller?</CardTitle>
-                                          <Button color="success" onClick={this.onRegister}>Oui</Button>
+                                          <Button color="success" onClick={this.onRegister} disabled={disabled}>Oui</Button>
                                         </CardBody>
                                 </Card>
                         </div>
