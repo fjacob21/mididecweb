@@ -27,13 +27,7 @@ class CreateEvent extends React.Component{
             this.onChange = this.onChange.bind(this);
             this.addSuccess = this.addSuccess.bind(this);
             this.addError = this.addError.bind(this);
-            this.onDismiss = this.onDismiss.bind(this);
             this.onKeyPress = this.onKeyPress.bind(this);
-        }
-
-        onDismiss() {
-                this.state.alert.visible = false;
-                this.setState(this.state);
         }
 
         addSuccess(data){
@@ -71,6 +65,8 @@ class CreateEvent extends React.Component{
             this.state.values.duration = this.parseDuration(this.state.values.durationString);
             var user = User.getSession();
             this.state.values['loginkey'] = user.loginkey
+            this.state.valid = false;
+            this.setState(this.state);
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/events",

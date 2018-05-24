@@ -11,7 +11,7 @@ class UpdateUser extends React.Component{
         constructor(props) {
                 super(props);
                 this.state = {
-                      valid: true,
+                      valid: false,
                       validation: {
                               emailok: true,
                               aliasok: true
@@ -44,7 +44,6 @@ class UpdateUser extends React.Component{
                 this.validateError = this.validateError.bind(this);
                 this.onChange = this.onChange.bind(this);
                 this.onCheck = this.onCheck.bind(this);
-                this.onDismiss = this.onDismiss.bind(this);
                 this.onKeyPress = this.onKeyPress.bind(this);
         }
 
@@ -52,11 +51,6 @@ class UpdateUser extends React.Component{
         }
 
         componentWillUnmount(){
-        }
-
-        onDismiss() {
-                this.state.alert.visible = false;
-                this.setState(this.state);
         }
 
         success(data){
@@ -108,7 +102,7 @@ class UpdateUser extends React.Component{
                 this.state.valid = false;
                 if (data.emailok && data.aliasok) {
                     var at = this.state.values.email.indexOf('@');
-                    var dot = this.state.values.email.indexOf('.');
+                    var dot = this.state.values.email.lastIndexOf('.');
                     if (this.state.values.name != '' &&
                         this.state.values.email != '' &&
                         this.state.values.alias != '' &&
@@ -126,6 +120,8 @@ class UpdateUser extends React.Component{
         onUpdate() {
             var user = User.getSession();
             this.state.values.loginkey = user.loginkey;
+            this.state.valid = false;
+            this.setState(this.state);
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/users/" + this.props.match.params.id,
