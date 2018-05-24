@@ -57,6 +57,7 @@ class EventsAdmin extends React.Component{
         }
 
         rmSuccess(data){
+                this.showAlert("La rencontre à bien été effacer", 'success');
                 this.updateEvents();
         }
 
@@ -87,20 +88,27 @@ class EventsAdmin extends React.Component{
                 this.setState(this.state);
         }
 
+        showAlert(message, color='success'){
+                this.props.onError(message, color);
+        }
+
         render(){
                 var loguser = User.getSession();
                 const eventslist = this.state.events.events.filter(event => loguser.isSuperUser || (loguser.isManager && event.owner_id==loguser.user_id));
                 var events = eventslist.map(event =>
                   <EventItem event={event} onDelete={this.onDelete} onEdit={this.onEdit}/>
                 );
+                var modalTitle = "";
+                if (this.state.modalEvent)
+                        modalTitle = this.state.modalEvent.title;
                 return (
                         <div className='eventsadmin'>
                                 <Card body className='events-card'>
-                                        <CardTitle>Events</CardTitle>
+                                        <CardTitle>Rencontres</CardTitle>
                                         {events}
                                 </Card>
                                 <Modal isOpen={this.state.modal}>
-                                        <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                                        <ModalHeader toggle={this.toggle}>{modalTitle}</ModalHeader>
                                         <ModalBody>
                                                 Etes-vous sur de vouloir effacer cette rencontre?
                                         </ModalBody>

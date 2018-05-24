@@ -27,11 +27,15 @@ class UserSummary extends React.Component {
         }
 
         render(){
+                var loguser = User.getSession();
                 var lastlogin = new Date(this.props.user.lastlogin).toLocaleString();
                 var islogged = this.props.user.loginkey != "";
                 var loggedStatus = <i class="material-icons md-light">cloud_off</i>;
                 if (islogged)
                         loggedStatus = <i class="material-icons md-light">cloud_queue</i>;
+                var btRemove = "";
+                if (this.props.user.user_id != loguser.user_id)
+                        btRemove = <div className='user-bt' onClick={this.onDelete}><i class="material-icons md-light">delete</i></div>
                 return (
                   <div className='user-summary'>
                       <div className='user-name'>{this.props.user.name}</div>
@@ -39,7 +43,7 @@ class UserSummary extends React.Component {
                       <div className='user-lastlogin'>{lastlogin}</div>
                       <div className='user-logged'>{loggedStatus}</div>
                       <div className='user-bt' onClick={this.onEdit}><i class="material-icons md-light">edit</i></div>
-                      <div className='user-bt' onClick={this.onDelete}><i class="material-icons md-light">delete</i></div>
+                      {btRemove}
                   </div>)
         }
 }
