@@ -20,12 +20,15 @@ class RegisterStatusPanel extends React.Component{
                         status = 'Vous êtes inscrit';
                 else if (this.props.status == 'waiting')
                         status = 'Vous êtes sur la liste d\'attente';
+                var disabled = false;
+                if (this.props.disabled)
+                        disabled = this.props.disabled;
                 return (
                         <div className='registerpanel'>
                                 <Card>
                                         <CardBody>
                                           <CardTitle>{status}</CardTitle>
-                                          <Button color="danger" onClick={this.onCancel}>Cancelation</Button>
+                                          <Button color="danger" onClick={this.onCancel} disabled={disabled}>Cancelation</Button>
                                         </CardBody>
                                 </Card>
                         </div>

@@ -14,7 +14,8 @@ class Events extends React.Component{
                 super(props);
                 this.state = {
                         event: null,
-                        invalid: true
+                        invalid: true,
+                        disableRegister: false
                         };
                 jquery.ajax({
                 type: 'GET',
@@ -31,7 +32,6 @@ class Events extends React.Component{
                 this.onCancel = this.onCancel.bind(this);
                 this.cancelSuccess = this.cancelSuccess.bind(this);
                 this.cancelError = this.cancelError.bind(this);
-                this.onDismiss = this.onDismiss.bind(this);
         }
 
         success(data){
@@ -45,11 +45,6 @@ class Events extends React.Component{
                 this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
-        onDismiss() {
-                this.state.alert.visible = false;
-                this.setState(this.state);
-        }
-
         showAlert(message, color='success'){
                 this.props.onError(message, color);
         }
@@ -60,6 +55,8 @@ class Events extends React.Component{
                 history.replace("/login");
             }
             else {
+                this.state.disableRegister = true;
+                this.setState(this.state);
                 var data = {'loginkey': user.loginkey};
                 jquery.ajax({
                 type: 'POST',
@@ -89,17 +86,22 @@ class Events extends React.Component{
                 break;
                 };
                 this.state.event = new Event(data.event);
+                this.state.disableRegister = false;
                 this.setState(this.state);
         }
 
         registerError(data){
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
+            this.state.disableRegister = false;
+            this.setState(this.state);
         }
 
         onCancel(){
             var user = User.getSession();
             var data = {'loginkey': user.loginkey};
+            this.state.disableRegister = true;
+            this.setState(this.state);
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/events/"+ this.props.match.params.id + "/unregister",
@@ -114,11 +116,13 @@ class Events extends React.Component{
         cancelSuccess(data){
                 this.showAlert('Vous n\'êtes plus inscrit a cette évènement');
                 this.state.event = new Event(data.event);
+                this.state.disableRegister = false;
                 this.setState(this.state);
         }
 
         cancelError(data){
                 this.showAlert('Une erreur est survenue lors de la cancellation!!!!', 'danger');
+                this.state.disableRegister = false;
                 this.setState(this.state);
         }
 
@@ -126,8 +130,8 @@ class Events extends React.Component{
                 if (this.state.event != null) {
                         return (
                                 <div className='events'>
-                                        <EventSmall event={this.state.event} onRegister={this.onRegister} onCancel={this.onCancel}/>
-                                        <EventBig event={this.state.event} onRegister={this.onRegister} onCancel={this.onCancel}/>
+                                        <EventSmall event={this.state.event} onRegister={this.onRegister} onCancel={this.onCancel} disableRegister={this.state.disableRegister}/>
+                                        <EventBig event={this.state.event} onRegister={this.onRegister} onCancel={this.onCancel} disableRegister={this.state.disableRegister}/>
                                 </div>
                         );
                 }
