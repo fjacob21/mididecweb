@@ -88,6 +88,16 @@ def get_event_ical(event_id):
     except SessionError as se:
         return return_error(se.code)
 
+@application.route(api + 'events/<event_id>/jinja')
+def get_event_jinja(event_id):
+    try:
+        session = Session({}, events, users, request.args.get('loginkey'),
+                          config, request.url_root)
+        event_dict = session.get_event_jinja(event_id)
+        return event_dict
+    except SessionError as se:
+        return return_error(se.code)
+
 
 @application.route(api + 'events', methods=['POST'])
 def add_event():

@@ -14,6 +14,7 @@ from event import ATTENDEE_LIST, WAITING_LIST
 from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
 import errors
+import locale
 
 
 class Session(object):
@@ -62,6 +63,29 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         return iCalGenerator(event).generate()
+
+    def get_event_jinja(self, event_id):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        env = Environment(loader=FileSystemLoader('emails'))
+        t = env.get_template('eventpublish.html')
+
+        event_obj = {}
+        event_obj['title'] = event.title
+        try:
+            locale.setlocale(locale.LC_ALL, 'fr_CA')
+        except Exception:
+            pass
+        start = datetime.strptime(event.start, "%Y-%m-%dT%H:%M:%SZ")
+        end = datetime.strptime(event.end, "%Y-%m-%dT%H:%M:%SZ")
+        event_obj['day'] = start.strftime("%A")
+        event_obj['start'] = start.strftime("%d %B %Y")
+        event_obj['times'] = start.strftime("%H:%M %Z") + ' - ' + end.strftime("%H:%M %Z")
+        event_obj['description'] = event.description
+        event_obj['location'] = event.location
+        event_obj['organizer_name'] = event.organizer_name
+        return t.render(user=self.user, event=event_obj, server=self._server)
 
     def add_event(self):
         if "title" not in self._params or "description" not in self._params:

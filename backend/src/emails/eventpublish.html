@@ -83,8 +83,32 @@
                     Une nouvelle rencontre viens d'etre annoncee
                 </div>
                 <div class="event">
+                    {{event.day}}
+                </div>
+                <div class="event">
                     <a class="event-link" href="{{server}}/#/events/{{event.event_id}}">{{event.title}}</a>
+                </div>
+                <hr>
+                <div class="event-detail">
+                    <div class="event-start">
+                        {{event.start}}
                     </div>
+                    <div class="event-times">
+                        {{event.times}}
+                    </div>
+                    <div class="event-location">
+                        {{event.location}}
+                    </div>
+                    <div class="event-organizer">
+                        {{event.organizer_name}}
+                    </div>
+                </div>
+                <div class="event-description">
+                    {{event.description}}
+                </div>
+
+                <div class="event-signature">
+                    {{event.organizer_name}}
                 </div>
                 <table class="footer">
                     <tr><td class="footer-tr" height="30">
