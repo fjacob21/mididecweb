@@ -39,7 +39,6 @@ class UpdateEvent extends React.Component{
             this.onPublish = this.onPublish.bind(this);
             this.publishSuccess = this.publishSuccess.bind(this);
             this.publishError = this.publishError.bind(this);
-            this.onDismiss = this.onDismiss.bind(this);
             this.onKeyPress = this.onKeyPress.bind(this);
         }
 
@@ -61,11 +60,6 @@ class UpdateEvent extends React.Component{
         error(data){
                 var errorCode = data.responseJSON.code;
                 this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
-        }
-
-        onDismiss() {
-                this.state.alert.visible = false;
-                this.setState(this.state);
         }
 
         updateSuccess(data){
@@ -102,6 +96,8 @@ class UpdateEvent extends React.Component{
             this.state.values.duration = this.parseDuration(this.state.values.durationString);
             var user = User.getSession();
             this.state.values['loginkey'] = user.loginkey
+            this.state.valid = false;
+            this.setState(this.state);
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/events/" + this.props.match.params.id,

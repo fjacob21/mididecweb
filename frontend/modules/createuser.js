@@ -32,7 +32,6 @@ class CreateUser extends React.Component{
                 this.validateError = this.validateError.bind(this);
                 this.onChange = this.onChange.bind(this);
                 this.onCheck = this.onCheck.bind(this);
-                this.onDismiss = this.onDismiss.bind(this);
                 this.onKeyPress = this.onKeyPress.bind(this);
         }
 
@@ -40,11 +39,6 @@ class CreateUser extends React.Component{
         }
 
         componentWillUnmount(){
-        }
-
-        onDismiss() {
-                this.state.alert.visible = false;
-                this.setState(this.state);
         }
 
         onCheck(e){
@@ -80,14 +74,15 @@ class CreateUser extends React.Component{
                 this.state.validation = data;
                 if (data.emailok && data.aliasok) {
                     var at = this.state.values.email.indexOf('@');
-                    var dot = this.state.values.email.indexOf('.');
+                    var dot = this.state.values.email.lastIndexOf('.');
                     if (this.state.values.name != '' &&
                         this.state.values.email != '' &&
                         this.state.values.password != '' &&
                         this.state.values.alias != '' &&
                         at != -1 && dot != -1 && at < dot &&
-                        (dot+1) < this.state.values.email.length )
+                        (dot+1) < this.state.values.email.length ) {
                             this.state.valid = true;
+                    }
                 }
                 this.setState(this.state);
         }
@@ -97,6 +92,8 @@ class CreateUser extends React.Component{
         }
 
         oncCreate() {
+            this.state.valid = false;
+            this.setState(this.state);
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/users",
