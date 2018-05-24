@@ -1,6 +1,7 @@
 import React from 'react'
 import jquery from 'jquery'
 import EventSummary from './eventsummary'
+import Errors from './errors'
 import { Table, NavLink, Card, CardTitle, CardText, Button } from 'reactstrap';
 import createHistory from "history/createHashHistory"
 
@@ -26,8 +27,9 @@ class Home extends React.Component{
                 this.setState(this.state);
         }
 
-        error(){
-
+        error(data){
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onEventDetails(event_id){

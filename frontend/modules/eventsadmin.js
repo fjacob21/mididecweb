@@ -3,6 +3,7 @@ import jquery from 'jquery'
 import User from './user'
 import Event from './event'
 import EventItem from './eventitem'
+import Errors from './errors'
 import { Table, NavLink, Card, CardTitle, CardText, Button, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
 import createHistory from "history/createHashHistory"
 
@@ -40,8 +41,9 @@ class EventsAdmin extends React.Component{
                 this.setState(this.state);
         }
 
-        error(){
-
+        error(data){
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onEdit(event){
@@ -59,7 +61,8 @@ class EventsAdmin extends React.Component{
         }
 
         rmError(data){
-
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onAccept(){

@@ -3,6 +3,7 @@ import { browserHistory} from 'react-router'
 import jquery from 'jquery'
 import createHistory from "history/createHashHistory"
 import User from './user'
+import Errors from './errors'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle, FormFeedback } from 'reactstrap';
 
 const history = createHistory();
@@ -61,7 +62,8 @@ class UpdateUser extends React.Component{
         }
 
         error(data){
-                this.showAlert('Cette événement n\'est pas disponible!', 'danger');
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onCancel(e) {
@@ -114,7 +116,8 @@ class UpdateUser extends React.Component{
         }
 
         validateError(data){
-
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onUpdate() {
@@ -138,7 +141,8 @@ class UpdateUser extends React.Component{
         }
 
         updateError(data){
-                this.showAlert('Une erreur est survenue lors de l\'update', 'danger')
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         showAlert(message, color='success'){

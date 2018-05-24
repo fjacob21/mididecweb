@@ -93,7 +93,8 @@ class Events extends React.Component{
         }
 
         registerError(data){
-                this.showAlert('Une erreur est survenue lors de l\'enregistrement!!!!', 'danger')
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onCancel(){
