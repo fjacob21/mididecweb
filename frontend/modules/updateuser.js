@@ -72,6 +72,7 @@ class UpdateUser extends React.Component{
 
         onCheck(e){
                 this.state.values[e.target.id] = e.target.checked;
+                this.validateUser();
                 this.setState(this.state);
         }
 
