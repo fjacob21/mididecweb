@@ -200,7 +200,9 @@ class User(object):
         return hash.hexdigest()
 
     def login(self, password):
-        if self.password == password and self.validated:
+        if not self.validated:
+            raise SessionError(errors.ERROR_VALIDATION_REQUIRED)
+        if self.password == password:
             self.set_lastlogin()
             self.loginkey = self.generate_loginkey(self.lastlogin)
             return self.loginkey

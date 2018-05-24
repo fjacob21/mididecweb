@@ -2,6 +2,7 @@ import React from 'react'
 import jquery from 'jquery'
 import User from './user'
 import UserSummary from './usersummary'
+import Errors from './errors'
 import { Table, NavLink, Card, CardTitle, CardText, Button } from 'reactstrap';
 import createHistory from "history/createHashHistory"
 
@@ -37,8 +38,9 @@ class UsersAdmin extends React.Component{
                 this.setState(this.state);
         }
 
-        error(){
-
+        error(data){
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onEdit(user){

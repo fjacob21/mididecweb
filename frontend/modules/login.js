@@ -3,6 +3,7 @@ import { browserHistory} from 'react-router'
 import jquery from 'jquery'
 import createHistory from "history/createHashHistory"
 import User from './user'
+import Errors from './errors'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle } from 'reactstrap';
 
 const history = createHistory();
@@ -55,7 +56,8 @@ class Login extends React.Component{
         }
 
         loginError(data){
-                this.showAlert('Une erreur est survenue lors du login', 'danger')
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         showAlert(message, color='success'){

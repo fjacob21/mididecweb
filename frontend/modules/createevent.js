@@ -2,6 +2,7 @@ import React from 'react'
 import jquery from 'jquery'
 import User from './user'
 import createHistory from "history/createHashHistory"
+import Errors from './errors'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 const history = createHistory();
@@ -36,7 +37,8 @@ class CreateEvent extends React.Component{
         }
 
         addError(data){
-                this.showAlert('Une erreur est survenue lors de la création de l\'événement!', 'danger')
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         showAlert(message, color='success'){
