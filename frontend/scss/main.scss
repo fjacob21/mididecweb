@@ -461,7 +461,7 @@ html, body {
 
 }
 
-@media (min-width: 500px) {
+@media (min-width: 800px) {
         .event-summary {
 
                 .es-title{
@@ -496,7 +496,7 @@ html, body {
                 .user-lastlogin {
                         display: flex;
                         margin: 5px;
-                        width: 300px;
+                        width: 200px;
                         visibility: visible;
                 }
         }
