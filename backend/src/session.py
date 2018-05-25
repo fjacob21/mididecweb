@@ -69,7 +69,7 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         env = Environment(loader=FileSystemLoader('emails'))
-        t = env.get_template('waitingconfirm.html')
+        t = env.get_template('registerconfirm.html')
 
         event_obj = self.generate_email_event(event)
         html = t.render(user=self.user, event=event_obj, server=self._server)
@@ -444,6 +444,7 @@ class Session(object):
 
     def generate_email_event(self, event):
         event_obj = {}
+        event_obj['event_id'] = event.event_id
         event_obj['title'] = event.title
         try:
             locale.setlocale(locale.LC_ALL, 'fr_CA')
