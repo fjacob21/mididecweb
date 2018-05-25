@@ -3,6 +3,7 @@ import jquery from 'jquery'
 import User from './user'
 import createHistory from "history/createHashHistory"
 import Errors from './errors'
+import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 const history = createHistory();
@@ -139,7 +140,13 @@ class UpdateEvent extends React.Component{
 
         onChange(e) {
                 this.state.valid = false;
-                this.state.values[e.target.id] = e.target.value;
+                if (FormQuery.isIos()) {
+                        var fq = new FormQuery(this.state.values);
+                        this.state.values = fq.parse();
+                }
+                else {
+                        this.state.values[e.target.id] = e.target.value;
+                }
                 var start = new Date(this.state.values.startDate + " " + this.state.values.time);
                 var isBefore = Date.now() > start;
                 if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '' && !isBefore)

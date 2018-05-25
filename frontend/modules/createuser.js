@@ -4,6 +4,7 @@ import jquery from 'jquery'
 import createHistory from "history/createHashHistory"
 import User from './user'
 import Errors from './errors'
+import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle, FormFeedback } from 'reactstrap';
 
 const history = createHistory();
@@ -26,7 +27,7 @@ class CreateUser extends React.Component{
                                 usesms: false
                         }
                 };
-                this.oncCreate = this.oncCreate.bind(this);
+                this.onCreate = this.onCreate.bind(this);
                 this.createSuccess = this.createSuccess.bind(this);
                 this.createError = this.createError.bind(this);
                 this.validateSuccess = this.validateSuccess.bind(this);
@@ -48,14 +49,20 @@ class CreateUser extends React.Component{
         }
 
         onChange(e) {
-                this.state.values[e.target.id] = e.target.value;
+                if (FormQuery.isIos()) {
+                        var fq = new FormQuery(this.state.values);
+                        this.state.values = fq.parse();
+                }
+                else {
+                        this.state.values[e.target.id] = e.target.value;
+                }
                 this.validateUser();
                 this.setState(this.state);
         }
 
         onKeyPress(e){
                 if (e.key == 'Enter' && this.state.valid)
-                        this.oncCreate();
+                        this.onCreate();
         }
 
         validateUser(){
@@ -92,7 +99,7 @@ class CreateUser extends React.Component{
 
         }
 
-        oncCreate() {
+        onCreate() {
             this.state.valid = false;
             this.setState(this.state);
             jquery.ajax({
