@@ -29,6 +29,7 @@ def test_events_event(events):
     assert event['organizer_name'] == 'test'
     assert event['organizer_email'] == 'test@test.com'
     assert event['owner_id'] == 'owner_id'
+    assert 'create_date' in event
     events.delete('test')
 
 

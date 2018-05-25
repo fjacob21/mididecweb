@@ -18,6 +18,7 @@ class UserJsonEncoder():
         result['user_id'] = self._user.user_id
         result['name'] = self._user.name
         result['alias'] = self._user.alias
+        result['create_date'] = self._user.create_date
         if self._complete:
             result['password'] = self._user.password
             result['phone'] = self._user.phone

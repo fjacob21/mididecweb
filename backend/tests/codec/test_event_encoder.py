@@ -30,6 +30,7 @@ def test_complete_event_json_encoder():
     assert jsonobj['organizer_name'] == "test"
     assert jsonobj['organizer_email'] == "test@test.com"
     assert jsonobj['owner_id'] == a.user_id
+    assert 'create_date' in jsonobj
     assert len(jsonobj['attendees']) == 1
 
 
@@ -56,6 +57,7 @@ def test_event_json_encoder():
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
     assert jsonobj['owner_id'] == a.user_id
+    assert 'create_date' in jsonobj
     assert len(jsonobj['attendees']) == 1
 
 
@@ -82,6 +84,7 @@ def test_event_no_attendees_json_encoder():
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
     assert jsonobj['owner_id'] == a.user_id
+    assert 'create_date' in jsonobj
     assert 'attendees' not in jsonobj
 
 
@@ -110,6 +113,7 @@ def test_complete_event_json_encoder_string():
     assert jsonobj['organizer_name'] == "test"
     assert jsonobj['organizer_email'] == "test@test.com"
     assert jsonobj['owner_id'] == a.user_id
+    assert 'create_date' in jsonobj
     assert len(jsonobj['attendees']) == 1
 
 
@@ -138,6 +142,7 @@ def test_event_json_encoder_string():
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
     assert jsonobj['owner_id'] == a.user_id
+    assert 'create_date' in jsonobj
     assert len(jsonobj['attendees']) == 1
 
 
@@ -166,4 +171,5 @@ def test_event_no_attendees_json_encoder_string():
     assert jsonobj['organizer_name'] == "test"
     assert 'organizer_email' not in jsonobj
     assert jsonobj['owner_id'] == a.user_id
+    assert 'create_date' in jsonobj
     assert 'attendees' not in jsonobj

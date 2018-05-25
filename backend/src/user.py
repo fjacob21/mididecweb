@@ -184,10 +184,14 @@ class User(object):
         return self.get_data()['avatar_path']
 
     @avatar_path.setter
-    def loginkey(self, value):
+    def avatar_path(self, value):
         data = self.get_data()
         data['avatar_path'] = value
         self.update_data(data)
+
+    @property
+    def create_date(self):
+        return self.get_data()['create_date']
 
     def set_lastlogin(self):
         lastlogin = datetime.now(pytz.timezone("America/New_York"))

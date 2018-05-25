@@ -1,3 +1,6 @@
+from datetime import datetime
+import pytz
+
 
 class MemoryUsers():
 
@@ -40,7 +43,10 @@ class MemoryUsers():
         self.reset()
 
     def create_object(self, user_id, email, name, alias, psw, phone, useemail,
-                      usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path=''):
+                      usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path='', create_date=''):
+        if not create_date:
+            create_date_dt = datetime.now(pytz.timezone("America/New_York"))
+            create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
         user = {}
         user['user_id'] = user_id
         user['email'] = email
@@ -57,6 +63,7 @@ class MemoryUsers():
         user['lastlogin'] = lastlogin
         user['loginkey'] = loginkey
         user['avatar_path'] = avatar_path
+        user['create_date'] = create_date
         return user
 
     def index(self, user_id):
