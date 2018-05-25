@@ -88,6 +88,7 @@ def get_event_ical(event_id):
     except SessionError as se:
         return return_error(se.code)
 
+
 @application.route(api + 'events/<event_id>/jinja')
 def get_event_jinja(event_id):
     try:

@@ -1,3 +1,6 @@
+from datetime import datetime
+import pytz
+
 
 class SqliteUsers():
 
@@ -103,10 +106,13 @@ class SqliteUsers():
         user['lastlogin'] = rec[12]
         user['loginkey'] = rec[13]
         user['avatar_path'] = rec[14]
+        user['create_date'] = rec[15]
         return user
 
     def insert_object(self, user_id, email, name, alias, psw, phone, useemail, usesms,
                       profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path):
+        create_date_dt = datetime.now(pytz.timezone("America/New_York"))
+        create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
         sql = "insert into users VALUES ("
         sql += '"' + user_id + '", '
         sql += '"' + email + '", '
@@ -122,7 +128,8 @@ class SqliteUsers():
         sql += '"' + str(smsvalidated) + '", '
         sql += '"' + lastlogin + '", '
         sql += '"' + loginkey + '", '
-        sql += '"' + avatar_path + '") '
+        sql += '"' + avatar_path + '", '
+        sql += '"' + create_date + '") '
         self._conn.execute(sql)
         self._conn.commit()
 
@@ -134,5 +141,5 @@ class SqliteUsers():
             return False
 
     def create_table(self):
-        self._conn.execute("create table users(user_id, email, name, alias, psw, phone, useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path)")
+        self._conn.execute("create table users(user_id, email, name, alias, psw, phone, useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path, create_date)")
         self._conn.commit()

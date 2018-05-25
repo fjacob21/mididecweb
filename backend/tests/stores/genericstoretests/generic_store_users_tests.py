@@ -38,6 +38,7 @@ def test_users_user(users):
     assert user['loginkey'] == 'testkey'
     assert 'avatar_path' in user
     assert user['avatar_path'] == 'avatar'
+    assert 'create_date' in user
     users.delete('test')
 
 

@@ -21,6 +21,7 @@ class EventJsonEncoder():
         result['location'] = self._event.location
         result['organizer_name'] = self._event.organizer_name
         result['owner_id'] = self._event.owner_id
+        result['create_date'] = self._event.create_date
         if self._complete:
             result['organizer_email'] = self._event.organizer_email
         if self._show_attendee:

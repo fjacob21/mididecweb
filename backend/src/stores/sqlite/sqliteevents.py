@@ -1,3 +1,6 @@
+from datetime import datetime
+import pytz
+
 
 class SqliteEvents():
 
@@ -87,11 +90,14 @@ class SqliteEvents():
         event['organizer_name'] = rec[7]
         event['organizer_email'] = rec[8]
         event['owner_id'] = rec[9]
+        event['create_date'] = rec[10]
         return event
 
     def insert_object(self, title, description, max_attendee, start, duration,
                       location, organizer_name, organizer_email, event_id,
                       owner_id):
+        create_date_dt = datetime.now(pytz.timezone("America/New_York"))
+        create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
         sql = "insert into events VALUES ("
         sql += '"' + event_id + '", '
         sql += '"' + title + '", '
@@ -102,7 +108,8 @@ class SqliteEvents():
         sql += '"' + location + '", '
         sql += '"' + organizer_name + '", '
         sql += '"' + organizer_email + '", '
-        sql += '"' + owner_id + '") '
+        sql += '"' + owner_id + '", '
+        sql += '"' + create_date + '") '
         self._conn.execute(sql)
         self._conn.commit()
 
@@ -114,5 +121,5 @@ class SqliteEvents():
             return False
 
     def create_table(self):
-        self._conn.execute("create table events(event_id, title, description, max_attendee, start, duration, location, organizer_name, organizer_email, owner_id)")
+        self._conn.execute("create table events(event_id, title, description, max_attendee, start, duration, location, organizer_name, organizer_email, owner_id, create_date)")
         self._conn.commit()

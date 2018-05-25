@@ -124,6 +124,10 @@ class Event():
         return self.get_data() == value.get_data()
 
     @property
+    def create_date(self):
+        return self.get_data()['create_date']
+
+    @property
     def attendees(self):
         result = []
         attendees = self._store.attendees.get_all(self._event_id)

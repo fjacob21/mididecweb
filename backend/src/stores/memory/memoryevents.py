@@ -1,3 +1,6 @@
+from datetime import datetime
+import pytz
+
 
 class MemoryEvents():
 
@@ -29,7 +32,7 @@ class MemoryEvents():
             obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
                                      organizer_email, event_id,
-                                     current['owner_id'])
+                                     current['owner_id'], current['create_date'])
             self._events[self.index(event_id)] = obj
 
     def delete(self, event_id):
@@ -45,7 +48,10 @@ class MemoryEvents():
 
     def create_object(self, title, description, max_attendee, start, duration,
                       location, organizer_name, organizer_email, event_id,
-                      owner_id):
+                      owner_id, create_date=''):
+        if not create_date:
+            create_date_dt = datetime.now(pytz.timezone("America/New_York"))
+            create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
         event = {}
         event['event_id'] = event_id
         event['title'] = title
@@ -57,6 +63,7 @@ class MemoryEvents():
         event['organizer_name'] = organizer_name
         event['organizer_email'] = organizer_email
         event['owner_id'] = owner_id
+        event['create_date'] = create_date
         return event
 
     def index(self, event_id):

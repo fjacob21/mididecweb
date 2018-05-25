@@ -26,6 +26,7 @@ def test_complete_user_json_encoder():
     assert not jsonobj['smsvalidated']
     assert jsonobj['lastlogin'] == ''
     assert jsonobj['loginkey'] == ''
+    assert 'create_date' in jsonobj
 
 
 def test_user_json_encoder():
@@ -49,6 +50,7 @@ def test_user_json_encoder():
     assert 'smsvalidated' not in jsonobj
     assert 'lastlogin' not in jsonobj
     assert 'loginkey' not in jsonobj
+    assert 'create_date' in jsonobj
 
 
 def test_login_user_json_encoder():
@@ -72,6 +74,7 @@ def test_login_user_json_encoder():
     assert 'validated' not in jsonobj
     assert 'smsvalidated' not in jsonobj
     assert 'lastlogin' not in jsonobj
+    assert 'create_date' in jsonobj
 
 
 def test_complete_user_json_encoder_string():
@@ -97,6 +100,7 @@ def test_complete_user_json_encoder_string():
     assert not jsonobj['smsvalidated']
     assert jsonobj['lastlogin'] == ''
     assert jsonobj['loginkey'] == ''
+    assert 'create_date' in jsonobj
 
 
 def test_user_json_encoder_string():
@@ -122,6 +126,7 @@ def test_user_json_encoder_string():
     assert 'smsvalidated' not in jsonobj
     assert 'lastlogin' not in jsonobj
     assert 'loginkey' not in jsonobj
+    assert 'create_date' in jsonobj
 
 
 def test_login_user_json_encoder_string():
@@ -147,3 +152,4 @@ def test_login_user_json_encoder_string():
     assert 'validated' not in jsonobj
     assert 'smsvalidated' not in jsonobj
     assert 'lastlogin' not in jsonobj
+    assert 'create_date' in jsonobj
