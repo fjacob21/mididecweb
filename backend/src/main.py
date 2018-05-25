@@ -245,6 +245,14 @@ def update_user(user_id):
         return return_error(se.code)
 
 
+@application.route(api + 'users/<user_id>/avatar', methods=['POST'])
+def update_user_avatar(user_id):
+    print(request.files)
+    file = request.files['myFile']
+    file.save('test.jpg')
+    return ""
+
+
 @application.route(api + 'users/<user_id>/login', methods=['POST'])
 def login(user_id):
     try:

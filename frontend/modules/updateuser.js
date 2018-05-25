@@ -47,6 +47,8 @@ class UpdateUser extends React.Component{
                 this.onChange = this.onChange.bind(this);
                 this.onCheck = this.onCheck.bind(this);
                 this.onKeyPress = this.onKeyPress.bind(this);
+                this.handleFileUpload = this.handleFileUpload.bind(this);
+
         }
 
         componentDidMount(){
@@ -157,6 +159,21 @@ class UpdateUser extends React.Component{
                 this.props.onError(message, color);
         }
 
+        handleFileUpload(event){
+                const file = event.target.files[0];
+                console.debug(file);
+                const formData = new FormData()
+                formData.append('myFile', file, file.name);
+                jquery.ajax({
+                type: 'POST',
+                url: "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar",
+                data: formData,
+                processData: false,
+      contentType: false,
+                success: this.updateSuccess,
+                error: this.updateError
+                });
+        }
         render(){
                 var user = User.getSession();
                 var access = "";
@@ -183,6 +200,7 @@ class UpdateUser extends React.Component{
                                         <CardTitle>Profile</CardTitle>
 
                                         <Form className='updateuser-form' onKeyPress={this.onKeyPress}>
+                                                <input type="file" onChange={this.handleFileUpload}/>
                                                 <FormGroup className='name'>
                                                         <Label for="name">Nom <font size="3" color="red">*</font></Label>
                                                         <Input onChange={this.onChange} autocomplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
