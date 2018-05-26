@@ -64,6 +64,10 @@ class User {
                 return this._userinfo.email;
         }
 
+        get have_avatar(){
+                return this._userinfo.have_avatar;
+        }
+
         get loginkey(){
                 return this._userinfo.loginkey;
         }

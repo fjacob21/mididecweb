@@ -9,6 +9,7 @@ from stores import SqliteStore
 from session import Session
 from config import Config
 from session_exception import SessionError
+import os
 import errors
 
 config = Config()
@@ -222,6 +223,18 @@ def get_user(user_id):
         return return_error(se.code)
 
 
+@application.route(api + 'users/<user_id>/avatar', methods=['GET'])
+def get_user_avatar(user_id):
+    try:
+        session = Session({}, events, users, request.args.get('loginkey'),
+                          config, request.url_root)
+        avatar_path = session.get_user_avatar(user_id)
+        print(avatar_path)
+        return send_from_directory(os.path.dirname(avatar_path), os.path.basename(avatar_path))
+    except SessionError as se:
+        return return_error(se.code)
+
+
 @application.route(api + 'users/<user_id>/validate', methods=['GET'])
 def get_user_validate(user_id):
     try:
@@ -241,6 +254,18 @@ def update_user(user_id):
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.update_user(user_id))
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'users/<user_id>/avatar', methods=['POST'])
+def update_user_avatar(user_id):
+    try:
+        session = Session({}, events, users,
+                          request.args.get('loginkey'), config,
+                          request.url_root)
+        file = request.files['avatar']
+        return jsonify(session.update_user_avatar(user_id, file))
     except SessionError as se:
         return return_error(se.code)
 

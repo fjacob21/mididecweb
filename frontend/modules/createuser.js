@@ -177,7 +177,7 @@ class CreateUser extends React.Component{
                                                                 Recevoir alerte par sms
                                                         </Label>
                                                 </FormGroup>
-                                                <Button color="primary" onClick={this.oncCreate} disabled={!this.state.valid}>S'inscrire</Button>{' '}
+                                                <Button color="primary" onClick={this.onCreate} disabled={!this.state.valid}>S'inscrire</Button>{' '}
                                         </Form>
                                 </Card>
                         </div>)

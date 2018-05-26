@@ -111,16 +111,29 @@ html, body {
         display: flex;
         flex-direction: column;
         width: 100px;
-        height: 150px;
+        height: 110px;
         border-radius: 15px;
         background-color: white;
         align-items: center;
-        .attendee-avatar{
-                font-size: 70px;
-        }
-
 }
 
+
+.attendee-avatar-default{
+        font-size: 70px;
+}
+.attendee-avatar{
+        font-size: 70px;
+        width: 50px;
+        height: 50px;
+        margin: 10px;
+}
+
+.file {
+        position:relative;
+        opacity:0;
+        z-index:99;
+        height: 0;
+}
 .login {
         display: flex;
         flex-direction: column;
