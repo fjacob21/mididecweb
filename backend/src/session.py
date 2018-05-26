@@ -284,6 +284,14 @@ class Session(object):
         user_dict = UserJsonEncoder(user, complete).encode('dict')
         return {'user': user_dict}
 
+    def get_user_avatar(self, user_id):
+        user = self._users.get(user_id)
+        if not user:
+            raise SessionError(errors.ERROR_INVALID_USER)
+        if not user.avatar_path:
+            raise SessionError(errors.ERROR_NO_AVATAR)
+        return user.avatar_path
+
     def add_user(self):
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
@@ -414,6 +422,17 @@ class Session(object):
             user.access = self._params['access']
         user_dict = UserJsonEncoder(user).encode('dict')
         return {'user': user_dict}
+
+    def update_user_avatar(self, user_id, avatar):
+        user = self._users.get(user_id)
+        if not user:
+            raise SessionError(errors.ERROR_INVALID_USER)
+        if not UserUpdateAccess(self, user).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        avatar_path = '../data/img/users/' + user.user_id + '.jpg'
+        user.avatar_path = avatar_path
+        avatar.save(avatar_path)
+        return {'result': True}
 
     def login(self, user_id):
         if not self._params:

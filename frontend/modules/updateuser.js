@@ -29,15 +29,7 @@ class UpdateUser extends React.Component{
                                 access: 0,
                         }
                 };
-                var user = User.getSession();
-                jquery.ajax({
-                type: 'GET',
-                url: "/mididec/api/v1.0/users/"+ this.props.match.params.id+'?loginkey='+user.loginkey,
-                success: this.success.bind(this),
-                error: this.error.bind(this),
-                contentType: "application/json",
-                dataType: 'json'
-                });
+                this.getUser();
                 this.onCancel = this.onCancel.bind(this);
                 this.onUpdate = this.onUpdate.bind(this);
                 this.updateSuccess = this.updateSuccess.bind(this);
@@ -48,7 +40,19 @@ class UpdateUser extends React.Component{
                 this.onCheck = this.onCheck.bind(this);
                 this.onKeyPress = this.onKeyPress.bind(this);
                 this.handleFileUpload = this.handleFileUpload.bind(this);
+                this.onFile = this.onFile.bind(this);
+        }
 
+        getUser(){
+                var user = User.getSession();
+                jquery.ajax({
+                type: 'GET',
+                url: "/mididec/api/v1.0/users/"+ this.props.match.params.id+'?loginkey='+user.loginkey,
+                success: this.success.bind(this),
+                error: this.error.bind(this),
+                contentType: "application/json",
+                dataType: 'json'
+                });
         }
 
         componentDidMount(){
@@ -58,6 +62,7 @@ class UpdateUser extends React.Component{
         }
 
         success(data){
+                console.debug('seccess');
                 this.state.values = data.user;
                 this.state.values.password = '';
                 this.state.invalid = false;
@@ -147,7 +152,8 @@ class UpdateUser extends React.Component{
         }
 
         updateSuccess(data){
-            this.showAlert('Update success', 'success')
+            this.showAlert('Update success', 'success');
+            this.getUser();
         }
 
         updateError(data){
@@ -160,19 +166,23 @@ class UpdateUser extends React.Component{
         }
 
         handleFileUpload(event){
+                var user = User.getSession();
                 const file = event.target.files[0];
-                console.debug(file);
                 const formData = new FormData()
-                formData.append('myFile', file, file.name);
+                formData.append('avatar', file, file.name);
                 jquery.ajax({
                 type: 'POST',
-                url: "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar",
+                url: "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?loginkey="+user.loginkey,
                 data: formData,
                 processData: false,
-      contentType: false,
+                contentType: false,
                 success: this.updateSuccess,
                 error: this.updateError
                 });
+        }
+
+        onFile(){
+                document.getElementById('profile_pic').click();
         }
         render(){
                 var user = User.getSession();
@@ -194,13 +204,23 @@ class UpdateUser extends React.Component{
                 var aliasErrorMessage = "";
                 if (!this.state.validation.aliasok)
                         aliasErrorMessage = <FormFeedback>Désolé cet alias est déja utilisé</FormFeedback>
+                var avatar = <i className="material-icons md-light attendee-avatar-default">account_circle</i>
+                if (this.state.values.have_avatar) {
+                        var avatar_path = "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?" + new Date().getTime();
+                        avatar = <img src={avatar_path} className="attendee-avatar"/>
+                }
+                console.debug('render');
                 return (
                         <div className='updateuser'>
                                 <Card body className='updateuser-card'>
                                         <CardTitle>Profile</CardTitle>
 
                                         <Form className='updateuser-form' onKeyPress={this.onKeyPress}>
-                                                <input type="file" onChange={this.handleFileUpload}/>
+                                                {avatar}
+                                                <FormGroup className='name'>
+                                                        <Button onClick={this.onFile}>Changer l'avatar</Button>
+                                                        <Input className="file" type="file" id="profile_pic" name="profile_pic" onChange={this.handleFileUpload} accept="image/*"/>
+                                                </FormGroup>
                                                 <FormGroup className='name'>
                                                         <Label for="name">Nom <font size="3" color="red">*</font></Label>
                                                         <Input onChange={this.onChange} autocomplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
