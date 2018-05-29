@@ -23,7 +23,7 @@ def test_add_event():
     params['organizer_name'] = 'organizer_name'
     params['organizer_email'] = 'organizer_email'
     params['event_id'] = 'event_id'
-    session = Session(params, events, users, 'test')
+    session = Session(params, store, 'test')
 
     event_dict = session.add_event()
     assert event_dict
@@ -34,7 +34,6 @@ def test_add_event():
 def test_add_event_bad_title():
     store = MemoryStore()
     events = Events(store)
-    users = Users(store)
     params = {}
     params['description'] = 'description'
     params['max_attendee'] = 1
@@ -44,7 +43,7 @@ def test_add_event_bad_title():
     params['organizer_name'] = 'organizer_name'
     params['organizer_email'] = 'organizer_email'
     params['event_id'] = 'event_id'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.add_event()
@@ -54,7 +53,6 @@ def test_add_event_bad_title():
 def test_add_event_bad_desc():
     store = MemoryStore()
     events = Events(store)
-    users = Users(store)
     params = {}
     params['title'] = 'title'
     params['max_attendee'] = 1
@@ -64,7 +62,7 @@ def test_add_event_bad_desc():
     params['organizer_name'] = 'organizer_name'
     params['organizer_email'] = 'organizer_email'
     params['event_id'] = 'event_id'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.add_event()
@@ -88,7 +86,7 @@ def test_double_add_event():
     params['organizer_name'] = 'organizer_name'
     params['organizer_email'] = 'organizer_email'
     params['event_id'] = 'event_id'
-    session = Session(params, events, users, 'test')
+    session = Session(params, store, 'test')
 
     event_dict = session.add_event()
     assert event_dict

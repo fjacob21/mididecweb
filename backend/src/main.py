@@ -2,7 +2,7 @@
 from bcrypt_hash import BcryptHash
 from flask import Flask, jsonify, request, make_response
 from flask import Response, send_from_directory, redirect
-from events import Events
+# from events import Events
 from users import Users
 from user import USER_ACCESS_SUPER
 from stores import SqliteStore
@@ -13,25 +13,31 @@ import os
 import errors
 
 config = Config()
-store = SqliteStore(config.database)
 application = Flask(__name__, static_url_path='')
 api = '/mididec/api/v1.0/'
-events = Events(store)
-users = Users(store)
 
 
-password = BcryptHash(config.root['password']).encrypt()
-if users.get(config.root['user_id']):
-    root = users.get(config.root['user_id'])
-    root.email = config.root['email']
-    root.name = config.root['name']
-    root.alias = config.root['alias']
-    root.password = password
-else:
-    root = users.add(config.root['email'], config.root['name'],
-                     config.root['alias'], password, '', True, True,
-                     access=USER_ACCESS_SUPER, user_id=config.root['user_id'])
-    root.validated = True
+def set_root():
+    store = get_store()
+    users = Users(store)
+    password = BcryptHash(config.root['password']).encrypt()
+    if users.get(config.root['user_id']):
+        root = users.get(config.root['user_id'])
+        root.email = config.root['email']
+        root.name = config.root['name']
+        root.alias = config.root['alias']
+        root.password = password
+    else:
+        root = users.add(config.root['email'], config.root['name'],
+                         config.root['alias'], password, '', True, True,
+                         access=USER_ACCESS_SUPER,
+                         user_id=config.root['user_id'])
+        root.validated = True
+    store.close()
+
+
+def get_store():
+    return SqliteStore(config.database)
 
 
 def return_error(code):
@@ -48,19 +54,9 @@ def after_request(response):
     return response
 
 
-@application.before_request
-def before_request():
-    store.open()
-
-
-@application.teardown_request
-def teardown_request(exception):
-    store.close()
-
-
 @application.route(api + 'events')
 def get_events():
-    session = Session({}, events, users, request.args.get('loginkey'), config,
+    session = Session({}, get_store(), request.args.get('loginkey'), config,
                       request.url_root)
     return jsonify(session.get_events())
 
@@ -68,7 +64,7 @@ def get_events():
 @application.route(api + 'events/<event_id>')
 def get_event(event_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'),
+        session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         event_dict = session.get_event(event_id)
         return jsonify(event_dict)
@@ -79,7 +75,7 @@ def get_event(event_id):
 @application.route(api + 'events/<event_id>/ical')
 def get_event_ical(event_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'),
+        session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         return Response(
             session.get_event_ical(event_id),
@@ -93,7 +89,7 @@ def get_event_ical(event_id):
 @application.route(api + 'events/<event_id>/jinja')
 def get_event_jinja(event_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'),
+        session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         event_dict = session.get_event_jinja(event_id)
         return event_dict
@@ -106,7 +102,7 @@ def add_event():
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.add_event())
@@ -119,7 +115,7 @@ def update_event(event_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.update_event(event_id))
@@ -132,7 +128,7 @@ def remove_event(event_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.remove_event(event_id))
@@ -145,7 +141,7 @@ def register_event(event_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.register_event(event_id))
@@ -159,7 +155,7 @@ def unregister_event(event_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.unregister_event(event_id))
@@ -172,7 +168,7 @@ def publish_event(event_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.publish_event(event_id))
@@ -182,7 +178,7 @@ def publish_event(event_id):
 
 @application.route(api + 'users', methods=['GET'])
 def get_users():
-    session = Session({}, events, users, request.args.get('loginkey'), config,
+    session = Session({}, get_store(), request.args.get('loginkey'), config,
                       request.url_root)
     return jsonify(session.get_users())
 
@@ -192,7 +188,7 @@ def add_user():
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.add_user())
@@ -205,7 +201,7 @@ def validate_user_info():
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.validate_user_info())
@@ -216,7 +212,7 @@ def validate_user_info():
 @application.route(api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'),
+        session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         return jsonify(session.get_user(user_id))
     except SessionError as se:
@@ -226,11 +222,12 @@ def get_user(user_id):
 @application.route(api + 'users/<user_id>/avatar', methods=['GET'])
 def get_user_avatar(user_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'),
+        session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         avatar_path = session.get_user_avatar(user_id)
         print(avatar_path)
-        return send_from_directory(os.path.dirname(avatar_path), os.path.basename(avatar_path))
+        return send_from_directory(os.path.dirname(avatar_path),
+                                   os.path.basename(avatar_path))
     except SessionError as se:
         return return_error(se.code)
 
@@ -238,7 +235,7 @@ def get_user_avatar(user_id):
 @application.route(api + 'users/<user_id>/validate', methods=['GET'])
 def get_user_validate(user_id):
     try:
-        session = Session({}, events, users, request.args.get('loginkey'),
+        session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         return session.validate_user(user_id)
     except SessionError as se:
@@ -250,7 +247,7 @@ def update_user(user_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.update_user(user_id))
@@ -261,7 +258,7 @@ def update_user(user_id):
 @application.route(api + 'users/<user_id>/avatar', methods=['POST'])
 def update_user_avatar(user_id):
     try:
-        session = Session({}, events, users,
+        session = Session({}, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         file = request.files['avatar']
@@ -275,7 +272,7 @@ def login(user_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.login(user_id))
@@ -288,7 +285,7 @@ def logout(user_id):
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
-        session = Session(request.json, events, users,
+        session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
         return jsonify(session.logout(user_id))
@@ -302,7 +299,7 @@ def rm_user(user_id):
         params = {}
         if request.json:
             params = request.json
-        session = Session(params, events, users, request.args.get('loginkey'),
+        session = Session(params, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         return jsonify(session.remove_user(user_id))
     except SessionError as se:
@@ -318,6 +315,8 @@ def send_js(path):
 def root():
     return redirect('/html/index.html')
 
+
+set_root()
 
 if __name__ == '__main__':
     application.run(debug=True, host='0.0.0.0', port=5000)

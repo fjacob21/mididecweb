@@ -1,4 +1,3 @@
-from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
 from src.session import Session
@@ -7,7 +6,6 @@ import pytest
 
 def test_logout_user():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
                      user_id='test')
@@ -15,7 +13,7 @@ def test_logout_user():
     loginkey = user.login('password')
     params = {}
     params['loginkey'] = loginkey
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.logout('')
@@ -26,7 +24,6 @@ def test_logout_user():
 
 def test_logout_user_bad_loginkey():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     user = users.add('email', 'name', 'alias', 'password', 'phone', True, True,
                      user_id='test')
@@ -34,7 +31,7 @@ def test_logout_user_bad_loginkey():
     user.login('password')
     params = {}
     params['loginkey'] = ''
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.logout('')

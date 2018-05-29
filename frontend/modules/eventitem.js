@@ -1,9 +1,4 @@
 import React from 'react'
-import createHistory from "history/createHashHistory"
-import jquery from 'jquery'
-import { Table, NavLink, Card, CardTitle, CardText, Button } from 'reactstrap';
-
-const history = createHistory();
 
 class EventItem extends React.Component {
         constructor(props) {

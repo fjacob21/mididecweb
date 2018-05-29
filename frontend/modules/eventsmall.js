@@ -4,16 +4,10 @@ import User from './user'
 import RegisterPanel from './registerpanel'
 import RegisterStatusPanel from './registerstatuspanel'
 import AttendeeIcon from './attendeeicon'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class EventSmall extends React.Component{
         constructor(props) {
                 super(props);
-                this.state = {
-                      valid: false,
-                      modal: false,
-                      userinfo: null
-                };
                 this._start = new DateFormater(this.props.event.start);
                 this._end = new DateFormater(this.props.event.end);
                 this.onCancel = this.onCancel.bind(this);
@@ -21,14 +15,11 @@ class EventSmall extends React.Component{
         }
 
         onCancel() {
-                this.state.modal = false;
-                this.setState(this.state);
+                this.props.onCancel();
         }
 
         onRegister(){
-                this.state.modal = false;
-                this.setState(this.state);
-                this.props.onRegister(this.state.userinfo);
+                this.props.onRegister();
         }
 
         render(){

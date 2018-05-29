@@ -23,7 +23,7 @@ def test_register_event():
     params['useemail'] = True
     params['usesms'] = True
 
-    session = Session(params, events, users, 'test')
+    session = Session(params, store, 'test')
 
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
@@ -46,7 +46,6 @@ def test_register_event():
 def test_register_event_bad_name():
     store = MemoryStore()
     events = Events(store)
-    users = Users(store)
 
     params = {}
     params['email'] = 'email'
@@ -54,7 +53,7 @@ def test_register_event_bad_name():
     params['useemail'] = True
     params['usesms'] = True
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
@@ -67,7 +66,6 @@ def test_register_event_bad_name():
 def test_register_event_bad_email():
     store = MemoryStore()
     events = Events(store)
-    users = Users(store)
 
     params = {}
     params['name'] = 'name'
@@ -75,7 +73,7 @@ def test_register_event_bad_email():
     params['useemail'] = True
     params['usesms'] = True
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
@@ -96,7 +94,7 @@ def test_register_event_waiting():
     params = {}
     params['loginkey'] = loginkey
 
-    session = Session(params, events, users, 'test')
+    session = Session(params, store, 'test')
 
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
@@ -114,7 +112,7 @@ def test_register_event_waiting():
     params = {}
     params['loginkey'] = loginkey2
 
-    session = Session(params, events, users, 'test')
+    session = Session(params, store, 'test')
     result_dict = session.register_event('test')
     assert result_dict
     assert result_dict['result'] == WAITING_LIST

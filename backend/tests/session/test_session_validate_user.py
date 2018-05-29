@@ -1,4 +1,3 @@
-from src.events import Events
 from src.users import Users
 from src.user import USER_ACCESS_MANAGER
 from src.stores import MemoryStore
@@ -7,12 +6,10 @@ from src.session import Session
 
 def test_validate_user_info():
     store = MemoryStore()
-    events = Events(store)
-    users = Users(store)
     params = {}
     params['email'] = 'email'
     params['alias'] = 'alias'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     validation_dict = session.validate_user_info()
     assert validation_dict
@@ -24,14 +21,13 @@ def test_validate_user_info():
 
 def test_invalid_validate_user_info():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     users.add('email', 'name', 'alias', 'password', 'phone', True, True,
               access=USER_ACCESS_MANAGER, user_id='test')
     params = {}
     params['email'] = 'email'
     params['alias'] = 'alias'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     validation_dict = session.validate_user_info()
     assert validation_dict
@@ -43,14 +39,13 @@ def test_invalid_validate_user_info():
 
 def test_invalid_email_validate_user_info():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     users.add('email', 'name', 'alias', 'password', 'phone', True, True,
               access=USER_ACCESS_MANAGER, user_id='test')
     params = {}
     params['email'] = 'email'
     params['alias'] = 'alias2'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     validation_dict = session.validate_user_info()
     assert validation_dict
@@ -62,14 +57,13 @@ def test_invalid_email_validate_user_info():
 
 def test_invalid_alias_validate_user_info():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     users.add('email', 'name', 'alias', 'password', 'phone', True, True,
               access=USER_ACCESS_MANAGER, user_id='test')
     params = {}
     params['email'] = 'email2'
     params['alias'] = 'alias'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     validation_dict = session.validate_user_info()
     assert validation_dict

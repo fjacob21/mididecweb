@@ -18,10 +18,10 @@ def generate_access_data():
     owner = users.get('manager')
     user = users.get('user')
     add_event(events, owner, user)
-    usersession = Session({}, events, users, 'user')
-    managersession = Session({}, events, users, 'manager')
-    supersession = Session({}, events, users, 'super')
-    nonesession = Session({}, events, users, '')
+    usersession = Session({}, store, 'user')
+    managersession = Session({}, store, 'manager')
+    supersession = Session({}, store, 'super')
+    nonesession = Session({}, store, '')
     sessions = {}
     sessions['user'] = usersession
     sessions['manager'] = managersession

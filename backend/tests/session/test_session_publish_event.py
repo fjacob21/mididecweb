@@ -22,7 +22,7 @@ def test_publish_event():
     params['sid'] = 'sid'
     params['token'] = 'token'
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
     with pytest.raises(Exception):
         session.publish_event('')
     with pytest.raises(Exception):
@@ -43,7 +43,7 @@ def test_publish_event_missing_usr():
     params['sid'] = 'sid'
     params['token'] = 'token'
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
     with pytest.raises(Exception):
         session.publish_event('test')
 
@@ -62,7 +62,7 @@ def test_publish_event_missing_psw():
     params['sid'] = 'sid'
     params['token'] = 'token'
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
     with pytest.raises(Exception):
         session.publish_event('test')
 
@@ -81,7 +81,7 @@ def test_publish_event_missing_sid():
     params['psw'] = 'psw'
     params['token'] = 'token'
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
     with pytest.raises(Exception):
         session.publish_event('test')
 
@@ -100,6 +100,6 @@ def test_publish_event_missing_token():
     params['psw'] = 'psw'
     params['sid'] = 'sid'
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
     with pytest.raises(Exception):
         session.publish_event('test')
