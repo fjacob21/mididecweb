@@ -94,8 +94,10 @@ class CreateEvent extends React.Component{
                 else {
                         this.state.values[e.target.id] = e.target.value;
                 }
-                var start = new Date(this.state.values.startDate + " " + this.state.values.time);
-                var isBefore = Date.now() > start;
+                var n = new Date(Date.now());
+                var start = new Date(this.state.values.startDate + "T" + this.state.values.time + 'Z');
+                start = new Date(start.setTime( start.getTime() + start.getTimezoneOffset()*60*1000 ));
+                var isBefore = n > start;
                 if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '' && !isBefore)
                         this.state.valid = true;
                 this.setState(this.state);
