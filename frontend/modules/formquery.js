@@ -12,12 +12,15 @@ class FormQuery {
         }
 
         parse(){
-                for (var prop in this._obj)
-                        this._obj[prop] = jquery('#'+prop)[0].value;
+                for (var prop in this._obj) {
+                        var obj = jquery('#'+prop)[0];
+                        if (obj.type == 'checkbox')
+                            this._obj[prop] = obj.checked
+                        else
+                            this._obj[prop] = obj.value;
+                }
                 return this._obj;
         }
-
-
 }
 
 module.exports = FormQuery;
