@@ -18,7 +18,7 @@ def test_remove_event():
                   access=USER_ACCESS_MANAGER, user_id='test')
     events.add('test', 'test', 30, start, dur, 'test', 'test',
                'test@test.com', 'test', u)
-    session = Session({}, events, users, 'test')
+    session = Session({}, store, 'test')
 
     with pytest.raises(Exception):
         session.remove_event('')

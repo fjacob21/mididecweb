@@ -26,7 +26,7 @@ def test_update_event():
     params['start'] = '2018-04-26T13:12:00Z'
     params['duration'] = 3601
     params['location'] = 'location2'
-    session = Session(params, events, users, 'test')
+    session = Session(params, store, 'test')
 
     with pytest.raises(Exception):
         session.update_event('')

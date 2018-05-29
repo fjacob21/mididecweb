@@ -1,5 +1,4 @@
 import pytest
-from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
 from src.session import Session
@@ -7,9 +6,8 @@ from src.session import Session
 
 def test_get_user():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
-    session = Session({}, events, users, '')
+    session = Session({}, store, '')
 
     user = users.add('email', 'name', 'alias', 'psw', 'phone', True, True,
                      user_id='test')

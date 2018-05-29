@@ -1,6 +1,5 @@
 from bcrypt_hash import BcryptHash
 import pytest
-from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
 from src.session import Session
@@ -8,7 +7,6 @@ from src.session import Session
 
 def test_update_user():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     password = BcryptHash('password').encrypt()
     user = users.add('email', 'name', 'alias', password, 'phone', True, True,
@@ -23,7 +21,7 @@ def test_update_user():
     params['useemail'] = True
     params['usesms'] = True
     params['profile'] = 'profile2'
-    session = Session(params, events, users, 'test')
+    session = Session(params, store, 'test')
 
     with pytest.raises(Exception):
         session.update_user('')

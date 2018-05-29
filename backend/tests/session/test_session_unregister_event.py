@@ -22,7 +22,7 @@ def test_unregister_event():
     params = {}
     params['loginkey'] = loginkey
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
     with pytest.raises(Exception):
         session.unregister_event('')
     assert len(event.attendees) == 1
@@ -47,7 +47,7 @@ def test_unregister_event_bad_email():
     params = {}
     params['email'] = 'bademail'
 
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
     with pytest.raises(Exception):
         session.unregister_event('test')
     assert len(event.attendees) == 1

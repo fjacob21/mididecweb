@@ -1,5 +1,4 @@
 import pytest
-from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
 from src.session import Session
@@ -7,12 +6,11 @@ from src.session import Session
 
 def test_remove_user():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     users.add('email', 'name', 'alias', 'psw', 'phone', True, True,
               user_id='test')
 
-    session = Session({}, events, users, 'test')
+    session = Session({}, store, 'test')
 
     with pytest.raises(Exception):
         session.remove_user('')

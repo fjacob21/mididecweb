@@ -1,20 +1,13 @@
 import React from 'react'
-import jquery from 'jquery'
 import DateFormater from './dateformater'
 import User from './user'
 import RegisterPanel from './registerpanel'
 import RegisterStatusPanel from './registerstatuspanel'
 import AttendeeIcon from './attendeeicon'
-import { Card, CardBody, CardTitle, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class EventBig extends React.Component{
         constructor(props) {
                 super(props);
-                this.state = {
-                      valid: false,
-                      modal: false,
-                      userinfo: null
-                };
                 this._start = new DateFormater(this.props.event.start);
                 this._end = new DateFormater(this.props.event.end);
                 this.onCancel = this.onCancel.bind(this);

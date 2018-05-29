@@ -15,23 +15,25 @@ from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
 import errors
 import locale
+from events import Events
+from users import Users
 
 
 class Session(object):
 
-    def __init__(self, params, events, users, loginkey='', config=None,
+    def __init__(self, params, store, loginkey='', config=None,
                  server='https://mididecouverte.org/'):
         self._params = params
         self._loginkey = loginkey
-        self._events = events
-        self._users = users
+        self._events = Events(store)
+        self._users = Users(store)
         self._user = None
         self._config = config
         self._server = server
         if loginkey:
-            self._user = users.get(loginkey)
+            self._user = self._users.get(loginkey)
         if 'loginkey' in params and self._params["loginkey"]:
-            self._user = users.get(self._params["loginkey"])
+            self._user = self._users.get(self._params["loginkey"])
 
     @property
     def user(self):

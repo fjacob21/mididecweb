@@ -1,5 +1,4 @@
 import pytest
-from src.events import Events
 from src.users import Users
 from src.stores import MemoryStore
 from src.session import Session
@@ -7,7 +6,6 @@ from src.session import Session
 
 def test_add_user():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     params = {}
     params['email'] = 'email'
@@ -18,7 +16,7 @@ def test_add_user():
     params['useemail'] = True
     params['usesms'] = True
     params['profile'] = 'profile'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     user_dict = session.add_user()
     assert user_dict
@@ -31,7 +29,6 @@ def test_add_user():
 
 def test_add_user_missing_email():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     params = {}
     params['name'] = 'name'
@@ -41,7 +38,7 @@ def test_add_user_missing_email():
     params['useemail'] = True
     params['usesms'] = True
     params['profile'] = 'profile'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.add_user()
@@ -50,7 +47,6 @@ def test_add_user_missing_email():
 
 def test_add_user_missing_name():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     params = {}
     params['email'] = 'email'
@@ -60,7 +56,7 @@ def test_add_user_missing_name():
     params['useemail'] = True
     params['usesms'] = True
     params['profile'] = 'profile'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.add_user()
@@ -69,7 +65,6 @@ def test_add_user_missing_name():
 
 def test_add_user_missing_alias():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     params = {}
     params['email'] = 'email'
@@ -79,7 +74,7 @@ def test_add_user_missing_alias():
     params['useemail'] = True
     params['usesms'] = True
     params['profile'] = 'profile'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.add_user()
@@ -88,7 +83,6 @@ def test_add_user_missing_alias():
 
 def test_add_user_missing_password():
     store = MemoryStore()
-    events = Events(store)
     users = Users(store)
     params = {}
     params['email'] = 'email'
@@ -98,7 +92,7 @@ def test_add_user_missing_password():
     params['useemail'] = True
     params['usesms'] = True
     params['profile'] = 'profile'
-    session = Session(params, events, users, '')
+    session = Session(params, store, '')
 
     with pytest.raises(Exception):
         session.add_user()

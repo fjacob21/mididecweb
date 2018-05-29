@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import pytz
 import pytest
 from src.events import Events
-from src.users import Users
 from src.stores import MemoryStore
 from src.session import Session
 
@@ -10,8 +9,7 @@ from src.session import Session
 def test_get_event_ical():
     store = MemoryStore()
     events = Events(store)
-    users = Users(store)
-    session = Session({}, events, users, '')
+    session = Session({}, store, '')
 
     start = datetime.now(pytz.timezone("America/New_York"))
     dur = timedelta(hours=1)
