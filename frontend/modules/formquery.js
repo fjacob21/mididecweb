@@ -14,10 +14,12 @@ class FormQuery {
         parse(){
                 for (var prop in this._obj) {
                         var obj = jquery('#'+prop)[0];
-                        if (obj.type == 'checkbox')
-                            this._obj[prop] = obj.checked
-                        else
-                            this._obj[prop] = obj.value;
+                        if (obj) {
+                            if (obj.type == 'checkbox')
+                                this._obj[prop] = obj.checked
+                            else
+                                this._obj[prop] = obj.value;
+                        }
                 }
                 return this._obj;
         }
