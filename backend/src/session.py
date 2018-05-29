@@ -142,8 +142,8 @@ class Session(object):
 
         if 'title' in self._params:
             event.title = self._params['title']
-        if 'desc' in self._params:
-            event.desc = self._params['desc']
+        if 'description' in self._params:
+            event.description = self._params['description']
         if 'max_attendee' in self._params:
             event.max_attendee = self._params['max_attendee']
         if 'start' in self._params:
