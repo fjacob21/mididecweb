@@ -72,11 +72,11 @@ class Login extends React.Component{
                                         <Form className='form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='userid'>
                                                         <Label for="userid">User</Label>
-                                                        <Input onChange={this.onChange} type='text' name="userid" id="userid" autocomplete="username" value={this.state.values.userid} />
+                                                        <Input onChange={this.onChange} type='text' name="userid" id="userid" autoComplete="username" value={this.state.values.userid} />
                                                 </FormGroup>
                                                 <FormGroup className='password'>
                                                         <Label for="password">Password</Label>
-                                                        <Input onChange={this.onChange} type='password' name="password" id="password" autocomplete="current-password" value={this.state.values.password} />
+                                                        <Input onChange={this.onChange} type='password' name="password" id="password" autoComplete="current-password" value={this.state.values.password} />
                                                 </FormGroup>
                                                 <Button color="success" onClick={this.onLogin}>Login</Button>{' '}
                                         </Form>

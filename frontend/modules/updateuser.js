@@ -6,6 +6,7 @@ import User from './user'
 import Errors from './errors'
 import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle, FormFeedback } from 'reactstrap';
+import {isValidNumber} from 'libphonenumber-js'
 
 const history = createHistory();
 
@@ -43,7 +44,12 @@ class UpdateUser extends React.Component{
                 this.handleFileUpload = this.handleFileUpload.bind(this);
                 this.onFile = this.onFile.bind(this);
                 this.onSendCode = this.onSendCode.bind(this);
+                this.sendCodeSuccess = this.sendCodeSuccess.bind(this);
+                this.sendCodeError = this.sendCodeError.bind(this);
                 this.onValidateCode = this.onValidateCode.bind(this);
+                this.validateCodeSuccess = this.validateCodeSuccess.bind(this);
+                this.validateCodeError = this.validateCodeError.bind(this);
+
         }
 
         getUser(){
@@ -127,7 +133,8 @@ class UpdateUser extends React.Component{
                         this.state.values.email != '' &&
                         this.state.values.alias != '' &&
                         at != -1 && dot != -1 && at < dot &&
-                        (dot+1) < this.state.values.email.length )
+                        (dot+1) < this.state.values.email.length &&
+                        (!this.state.values.phone || this.isPhoneValid(this.state.values.phone)))
                             this.state.valid = true;
                 }
                 this.setState(this.state);
@@ -196,11 +203,21 @@ class UpdateUser extends React.Component{
             type: 'POST',
             url: "/mididec/api/v1.0/users/" + this.props.match.params.id + "/sendcode",
             data: JSON.stringify (this.state.values),
-            success: this.updateSuccess,
-            error: this.updateError,
+            success: this.sendCodeSuccess,
+            error: this.sendCodeError,
             contentType: "application/json",
             dataType: 'json'
             });
+        }
+
+        sendCodeSuccess(data){
+            this.showAlert('Votre code a bien été envoyé', 'success');
+            this.getUser();
+        }
+
+        sendCodeError(data){
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onValidateCode(){
@@ -211,11 +228,25 @@ class UpdateUser extends React.Component{
             type: 'POST',
             url: "/mididec/api/v1.0/users/" + this.props.match.params.id + "/validatecode",
             data: JSON.stringify (this.state.values),
-            success: this.updateSuccess,
-            error: this.updateError,
+            success: this.validateCodeSuccess,
+            error: this.validateCodeError,
             contentType: "application/json",
             dataType: 'json'
             });
+        }
+
+        validateCodeSuccess(data){
+            this.showAlert('Votre cellulaire est maintenant validé', 'success');
+            this.getUser();
+        }
+
+        validateCodeError(data){
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
+        }
+
+        isPhoneValid(phone){
+            return isValidNumber(phone, 'CA');
         }
 
         render(){
@@ -244,15 +275,16 @@ class UpdateUser extends React.Component{
                         avatar = <img src={avatar_path} className="attendee-avatar"/>
                 }
                 var smsvalidation = "";
-                if (!this.state.values.smsvalidated) {
-                    smsvalidation = (<div>
+                if (!this.state.values.smsvalidated && this.state.values.phone && this.isPhoneValid(this.state.values.phone)) {
+                    smsvalidation = (<div className='smsvalidation'>
                                         <Label for="smscode">Code de validation</Label>
-                                        <Input onChange={this.onChange} type='text' name="smscode" id="smscode" value={this.state.values.smscode} />
-                                        <Button onClick={this.onSendCode}>Envoyer code</Button>
-                                        <Button onClick={this.onValidateCode}>Valider votre cell</Button>
+                                        <div className='smsinput'>
+                                            <Input className='smscode' onChange={this.onChange} type='text' name="smscode" id="smscode" value={this.state.values.smscode} />
+                                            <Button color='success' className='smvalidatebt' onClick={this.onValidateCode}>Valider</Button>
+                                            <Button color='warning' className='smssendbt' onClick={this.onSendCode}>Envoyer code</Button>
+                                        </div>
                                     </div>);
                 }
-                console.debug('render');
                 return (
                         <div className='updateuser'>
                                 <Card body className='updateuser-card'>
@@ -266,35 +298,38 @@ class UpdateUser extends React.Component{
                                                 </FormGroup>
                                                 <FormGroup className='name'>
                                                         <Label for="name">Nom <font size="3" color="red">*</font></Label>
-                                                        <Input onChange={this.onChange} autocomplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
+                                                        <Input onChange={this.onChange} autoComplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
                                                 </FormGroup>
                                                 <FormGroup className='email'>
                                                         <Label for="email">Courriel <font size="3" color="red">*</font></Label>
                                                         <div>
-                                                                <Input invalid={!this.state.validation.emailok} autocomplete='email' onChange={this.onChange} type='email' name="email" id="email" placeholder="test@test.com" value={this.state.values.email} />
+                                                                <Input invalid={!this.state.validation.emailok} autoComplete='email' onChange={this.onChange} type='email' name="email" id="email" placeholder="test@test.com" value={this.state.values.email} />
                                                                 {emailErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='alias'>
                                                         <Label for="alias">Alias <font size="3" color="red">*</font></Label>
                                                         <div>
-                                                                <Input invalid={!this.state.validation.aliasok} autocomplete='alias' onChange={this.onChange} type='text' name="alias" id="alias" placeholder="alias" value={this.state.values.alias} />
+                                                                <Input invalid={!this.state.validation.aliasok} autoComplete='alias' onChange={this.onChange} type='text' name="alias" id="alias" placeholder="alias" value={this.state.values.alias} />
                                                                 {aliasErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='password'>
                                                         <Label for="password">Mot de passe</Label>
-                                                        <Input onChange={this.onChange} autocomplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
+                                                        <Input onChange={this.onChange} autoComplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
                                                 </FormGroup>
                                                 <FormGroup className='phone'>
-                                                        <Label for="phone">Cell.</Label>
-                                                        <div><Input onChange={this.onChange} autocomplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} /></div>
+                                                        <div className='phone-input'>
+                                                            <Label for="phone">Cell.</Label>
+                                                            <Input onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} />
+                                                        </div>
                                                         {smsvalidation}
+
                                                 </FormGroup>
                                                 <FormGroup className='profile'>
                                                         <Label for="profile">Profile</Label>
                                                         <div>
-                                                                <Input autocomplete='profile' onChange={this.onChange} type='text' name="profile" id="profile" placeholder="profile" value={this.state.values.profile} />
+                                                                <Input autoComplete='profile' onChange={this.onChange} type='text' name="profile" id="profile" placeholder="profile" value={this.state.values.profile} />
                                                         </div>
                                                 </FormGroup>
                                                 {access}

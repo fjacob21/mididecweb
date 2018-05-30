@@ -94,7 +94,7 @@ class UsersAdmin extends React.Component{
 
         render(){
                 var users = this.state.users.users.map(user =>
-                  <UserSummary user={user} onDelete={this.onDelete} onEdit={this.onEdit}/>
+                  <UserSummary key={user.user_id} user={user} onDelete={this.onDelete} onEdit={this.onEdit}/>
                 );
                 var modalTitle = "";
                 if (this.state.modalUser)

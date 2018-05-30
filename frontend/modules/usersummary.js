@@ -30,19 +30,19 @@ class UserSummary extends React.Component {
                 var loguser = User.getSession();
                 var lastlogin = new Date(this.props.user.lastlogin).toLocaleString();
                 var islogged = this.props.user.loginkey != "";
-                var loggedStatus = <i class="material-icons md-light">cloud_off</i>;
+                var loggedStatus = <i className="material-icons md-light">cloud_off</i>;
                 if (islogged)
-                        loggedStatus = <i class="material-icons md-light">cloud_queue</i>;
+                        loggedStatus = <i className="material-icons md-light">cloud_queue</i>;
                 var btRemove = "";
                 if (this.props.user.user_id != loguser.user_id)
-                        btRemove = <div className='user-bt' onClick={this.onDelete}><i class="material-icons md-light">delete</i></div>
+                        btRemove = <div className='user-bt' onClick={this.onDelete}><i className="material-icons md-light">delete</i></div>
                 return (
                   <div className='user-summary'>
                       <div className='user-name'>{this.props.user.name}</div>
                       <div className='user-email'>{this.props.user.email}</div>
                       <div className='user-lastlogin'>{lastlogin}</div>
                       <div className='user-logged'>{loggedStatus}</div>
-                      <div className='user-bt' onClick={this.onEdit}><i class="material-icons md-light">edit</i></div>
+                      <div className='user-bt' onClick={this.onEdit}><i className="material-icons md-light">edit</i></div>
                       {btRemove}
                   </div>)
         }

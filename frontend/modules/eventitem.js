@@ -19,8 +19,8 @@ class EventItem extends React.Component {
                 return (
                   <div className='event-item'>
                       <div className='event-title'>{this.props.event.title}</div>
-                      <div className='event-bt' onClick={this.onEdit}><i class="material-icons md-light">edit</i></div>
-                      <div className='event-bt' onClick={this.onDelete}><i class="material-icons md-light">delete</i></div>
+                      <div className='event-bt' onClick={this.onEdit}><i className="material-icons md-light">edit</i></div>
+                      <div className='event-bt' onClick={this.onDelete}><i className="material-icons md-light">delete</i></div>
                   </div>)
         }
 }
