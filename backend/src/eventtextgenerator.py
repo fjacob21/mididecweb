@@ -26,6 +26,7 @@ class EventTextGenerator():
         text += '\nDate: ' + self.generate_date_string(self._startdt)
         text += '\nHeure: ' + self.generate_time_string(self._startdt)
         text += '\nDuree: ' + self.generate_timedelta_string(self._event.duration)
+        text += '\nEvent: https://mididecouverte.org/#/events/' + self._event.event_id
         return text
 
     def generate_long(self):
@@ -34,6 +35,7 @@ class EventTextGenerator():
         text += '\nDate: ' + self.generate_date_string(self._startdt)
         text += '\nHeure: ' + self.generate_time_string(self._startdt)
         text += '\nDuree: ' + self.generate_timedelta_string(self._event.duration)
+        text += '\nEvent: https://mididecouverte.org/#/events/' + self._event.event_id
         return text
 
     def generate_datetime(self, dt):

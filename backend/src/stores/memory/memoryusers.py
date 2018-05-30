@@ -8,10 +8,10 @@ class MemoryUsers():
         self._users = []
 
     def create(self, user_id, email, name, alias, psw, phone, useemail, usesms,
-               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path=''):
+               profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path='', smscode=''):
         if not self.get(user_id):
             obj = self.create_object(user_id, email, name, alias, psw, phone,
-                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path)
+                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path, '', smscode)
             self._users.append(obj)
 
     def get_all(self):
@@ -24,11 +24,11 @@ class MemoryUsers():
         return None
 
     def update(self, user_id, email, name, alias, psw, phone, useemail, usesms,
-               profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path):
+               profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path, smscode):
         user = self.get(user_id)
         if user:
             obj = self.create_object(user_id, email, name, alias, psw, phone,
-                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path)
+                                     useemail, usesms, profile, access, validated, smsvalidated, lastlogin, loginkey, avatar_path, user['create_date'], smscode)
             self._users[self.index(user_id)] = obj
 
     def delete(self, user_id):
@@ -43,7 +43,7 @@ class MemoryUsers():
         self.reset()
 
     def create_object(self, user_id, email, name, alias, psw, phone, useemail,
-                      usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path='', create_date=''):
+                      usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path='', create_date='', smscode=''):
         if not create_date:
             create_date_dt = datetime.now(pytz.timezone("America/New_York"))
             create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -64,6 +64,7 @@ class MemoryUsers():
         user['loginkey'] = loginkey
         user['avatar_path'] = avatar_path
         user['create_date'] = create_date
+        user['smscode'] = smscode
         return user
 
     def index(self, user_id):

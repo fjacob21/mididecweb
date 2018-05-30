@@ -244,7 +244,9 @@ def get_user_validate(user_id):
 @application.route(api + 'users/<user_id>/sendcode', methods=['POST'])
 def send_user_code(user_id):
     try:
-        session = Session({}, get_store(), request.args.get('loginkey'),
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         return jsonify(session.sendcode(user_id))
     except SessionError as se:
@@ -254,7 +256,9 @@ def send_user_code(user_id):
 @application.route(api + 'users/<user_id>/validatecode', methods=['POST'])
 def validate_user_code(user_id):
     try:
-        session = Session({}, get_store(), request.args.get('loginkey'),
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         return jsonify(session.validatecode(user_id))
     except SessionError as se:

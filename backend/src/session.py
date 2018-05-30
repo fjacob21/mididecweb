@@ -367,9 +367,20 @@ class Session(object):
             raise SessionError(errors.ERROR_INVALID_USER)
         if not UserAddAccess(self).granted():
             raise SessionError(errors.ERROR_ACCESS_DENIED)
-        generate_sms_code()
-        send_sms_code()
+        code = user.generate_sms_code()
+        self.send_sms_code(user, code)
         return {'result': True}
+
+    def send_sms_code(self, user, code):
+        if self._config and self._config.sms_sid and self._config.sms_token:
+            res = False
+            if user.phone and user.validated:
+                    sender = SmsSender(self._config.sms_sid,
+                                       self._config.sms_token, user.phone,
+                                       'validation code', code)
+                    res = sender.send()
+            if not res:
+                raise SessionError(errors.ERROR_SENDING_EMAIL)
 
     def validatecode(self, user_id):
         if not self._params:
@@ -382,7 +393,7 @@ class Session(object):
         if 'smscode' not in self._params:
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         smscode = self._params["smscode"]
-        return {'result': True}
+        return {'result': user.validate_sms_code(smscode)}
 
     def validate_user_info(self):
         if not self._params:
