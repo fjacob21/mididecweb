@@ -4,6 +4,7 @@ import jquery from 'jquery'
 import createHistory from "history/createHashHistory"
 import User from './user'
 import Errors from './errors'
+import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle } from 'reactstrap';
 
 const history = createHistory();
@@ -29,7 +30,13 @@ class Login extends React.Component{
         }
 
         onChange(e) {
-                this.state.values[e.target.id] = e.target.value;
+                if (FormQuery.isIos()) {
+                        var fq = new FormQuery(this.state.values);
+                        this.state.values = fq.parse();
+                }
+                else {
+                        this.state.values[e.target.id] = e.target.value;
+                }
                 this.setState(this.state);
         }
 
