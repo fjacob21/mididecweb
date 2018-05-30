@@ -95,6 +95,32 @@ html, body {
         }
 }
 
+.phone {
+    display: flex;
+    flex-direction: row;
+}
+
+.smsvalidation {
+        display: flex;
+        flex-direction: column;
+
+        .smsinput {
+            display: flex;
+            flex-direction: row;
+            margin-left: 5px;
+
+            .smscode{
+                margin-left: 5px;
+            }
+            .smvalidatebt{
+                margin-left: 5px;
+            }
+            .smssendbt{
+                margin-left: 5px;
+            }
+        }
+}
+
 .attendees-title {
         margin-top: 20px;
         font-size: 1.5em;

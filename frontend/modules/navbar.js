@@ -142,7 +142,7 @@ class Navbar extends React.Component{
                 if (user){
                         userlink = (    <UncontrolledDropdown nav inNavbar>
                                                 <DropdownToggle nav caret>
-                                                        <i class="material-icons md-light">account_circle</i>
+                                                        <i className="material-icons md-light">account_circle</i>
                                                 </DropdownToggle>
                                                 <DropdownMenu right>
                                                         <DropdownItem header>

@@ -57,7 +57,7 @@ class App extends React.Component{
                         <div className='app'>
                                 <Navbar prev='' next=''></Navbar>
                                 <div className='error'>
-                                        <Alert className='error' color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss} transitionAppearTimeout={150} transitionLeaveTimeout={150}>
+                                        <Alert className='error' color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss} transitionappeartimeout={150} transitionappeartimeout={150}>
                                                 {this.state.alert.message}
                                         </Alert>
                                 </div>

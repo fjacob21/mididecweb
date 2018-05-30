@@ -4,6 +4,7 @@ import hashlib
 import random
 from session_exception import SessionError
 import errors
+from random import randint
 
 
 USER_ACCESS_NORMAL = 0x1
@@ -30,7 +31,7 @@ class User(object):
                                  data['profile'], data['access'],
                                  data['validated'], data['smsvalidated'],
                                  data['lastlogin'], data['loginkey'],
-                                 data['avatar_path'])
+                                 data['avatar_path'], data['smscode'])
 
     @property
     def user_id(self):
@@ -193,6 +194,10 @@ class User(object):
     def create_date(self):
         return self.get_data()['create_date']
 
+    @property
+    def smscode(self):
+        return self.get_data()['smscode']
+
     def set_lastlogin(self):
         lastlogin = datetime.now(pytz.timezone("America/New_York"))
         self.lastlogin = lastlogin.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -202,6 +207,18 @@ class User(object):
         salt = str(random.randint(1, 1000))
         hash.update((lastlogin + salt).encode())
         return hash.hexdigest()
+
+    def generate_sms_code(self):
+        data = self.get_data()
+        data['smscode'] = str(randint(1000, 9999))
+        self.update_data(data)
+        return data['smscode']
+
+    def validate_sms_code(self, smscode):
+        if self.get_data()['smscode'] == smscode:
+            self.smsvalidated = True
+            return True
+        return False
 
     def login(self, password):
         if not self.validated:
