@@ -361,6 +361,29 @@ class Session(object):
         t = env.get_template('uservalidated.html')
         return t.render(user=user, server=self._server)
 
+    def sendcode(self, user_id):
+        user = self._users.get(user_id)
+        if not user:
+            raise SessionError(errors.ERROR_INVALID_USER)
+        if not UserAddAccess(self).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        generate_sms_code()
+        send_sms_code()
+        return {'result': True}
+
+    def validatecode(self, user_id):
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        user = self._users.get(user_id)
+        if not user:
+            raise SessionError(errors.ERROR_INVALID_USER)
+        if not UserAddAccess(self).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        if 'smscode' not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        smscode = self._params["smscode"]
+        return {'result': True}
+
     def validate_user_info(self):
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)

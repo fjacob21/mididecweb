@@ -225,7 +225,6 @@ def get_user_avatar(user_id):
         session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         avatar_path = session.get_user_avatar(user_id)
-        print(avatar_path)
         return send_from_directory(os.path.dirname(avatar_path),
                                    os.path.basename(avatar_path))
     except SessionError as se:
@@ -238,6 +237,26 @@ def get_user_validate(user_id):
         session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request.url_root)
         return session.validate_user(user_id)
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'users/<user_id>/sendcode', methods=['POST'])
+def send_user_code(user_id):
+    try:
+        session = Session({}, get_store(), request.args.get('loginkey'),
+                          config, request.url_root)
+        return jsonify(session.sendcode(user_id))
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'users/<user_id>/validatecode', methods=['POST'])
+def validate_user_code(user_id):
+    try:
+        session = Session({}, get_store(), request.args.get('loginkey'),
+                          config, request.url_root)
+        return jsonify(session.validatecode(user_id))
     except SessionError as se:
         return return_error(se.code)
 

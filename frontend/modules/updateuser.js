@@ -27,6 +27,7 @@ class UpdateUser extends React.Component{
                                 usesms: false,
                                 profile: '',
                                 access: 0,
+                                smscode: ''
                         }
                 };
                 this.getUser();
@@ -41,6 +42,8 @@ class UpdateUser extends React.Component{
                 this.onKeyPress = this.onKeyPress.bind(this);
                 this.handleFileUpload = this.handleFileUpload.bind(this);
                 this.onFile = this.onFile.bind(this);
+                this.onSendCode = this.onSendCode.bind(this);
+                this.onValidateCode = this.onValidateCode.bind(this);
         }
 
         getUser(){
@@ -184,6 +187,37 @@ class UpdateUser extends React.Component{
         onFile(){
                 document.getElementById('profile_pic').click();
         }
+
+        onSendCode(){
+            var user = User.getSession();
+            this.state.values.loginkey = user.loginkey;
+            this.setState(this.state);
+            jquery.ajax({
+            type: 'POST',
+            url: "/mididec/api/v1.0/users/" + this.props.match.params.id + "/sendcode",
+            data: JSON.stringify (this.state.values),
+            success: this.updateSuccess,
+            error: this.updateError,
+            contentType: "application/json",
+            dataType: 'json'
+            });
+        }
+
+        onValidateCode(){
+            var user = User.getSession();
+            this.state.values.loginkey = user.loginkey;
+            this.setState(this.state);
+            jquery.ajax({
+            type: 'POST',
+            url: "/mididec/api/v1.0/users/" + this.props.match.params.id + "/validatecode",
+            data: JSON.stringify (this.state.values),
+            success: this.updateSuccess,
+            error: this.updateError,
+            contentType: "application/json",
+            dataType: 'json'
+            });
+        }
+
         render(){
                 var user = User.getSession();
                 var access = "";
@@ -208,6 +242,15 @@ class UpdateUser extends React.Component{
                 if (this.state.values.have_avatar) {
                         var avatar_path = "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?" + new Date().getTime();
                         avatar = <img src={avatar_path} className="attendee-avatar"/>
+                }
+                var smsvalidation = "";
+                if (!this.state.values.smsvalidated) {
+                    smsvalidation = (<div>
+                                        <Label for="smscode">Code de validation</Label>
+                                        <Input onChange={this.onChange} type='text' name="smscode" id="smscode" value={this.state.values.smscode} />
+                                        <Button onClick={this.onSendCode}>Envoyer code</Button>
+                                        <Button onClick={this.onValidateCode}>Valider votre cell</Button>
+                                    </div>);
                 }
                 console.debug('render');
                 return (
@@ -246,6 +289,7 @@ class UpdateUser extends React.Component{
                                                 <FormGroup className='phone'>
                                                         <Label for="phone">Cell.</Label>
                                                         <div><Input onChange={this.onChange} autocomplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} /></div>
+                                                        {smsvalidation}
                                                 </FormGroup>
                                                 <FormGroup className='profile'>
                                                         <Label for="profile">Profile</Label>
