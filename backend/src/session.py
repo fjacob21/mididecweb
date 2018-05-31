@@ -71,7 +71,7 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         env = Environment(loader=FileSystemLoader('emails'))
-        t = env.get_template('registerconfirm.html')
+        t = env.get_template('promotee.html')
 
         event_obj = self.generate_email_event(event)
         html = t.render(user=self.user, event=event_obj, server=self._server)
@@ -184,7 +184,7 @@ class Session(object):
             sender = EmailSender(self._config.email_user,
                                  self._config.email_password,
                                  user.email,
-                                 'Confirmation MidiDecouverte',
+                                 'Confirmation pour ' + event.title,
                                  t.render(user=user,
                                           event=event_obj,
                                           server=self._server),
@@ -217,7 +217,7 @@ class Session(object):
             sender = EmailSender(self._config.email_user,
                                  self._config.email_password,
                                  promotee.email,
-                                 'Confirmation MidiDecouverte',
+                                 'Confirmation pour' + event.title,
                                  t.render(user=promotee,
                                           event=event_obj,
                                           server=self._server),
@@ -249,7 +249,7 @@ class Session(object):
                     sender = EmailSender(self._config.email_user,
                                          self._config.email_password,
                                          user.email,
-                                         'Confirmation MidiDecouverte',
+                                         'Nouvelle rencontre',
                                          t.render(user=user,
                                                   event=event_obj,
                                                   server=self._server),

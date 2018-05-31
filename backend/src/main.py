@@ -29,7 +29,7 @@ def set_root():
         root.password = password
     else:
         root = users.add(config.root['email'], config.root['name'],
-                         config.root['alias'], password, '', True, True,
+                         config.root['alias'], password, '', False, False,
                          access=USER_ACCESS_SUPER,
                          user_id=config.root['user_id'])
         root.validated = True

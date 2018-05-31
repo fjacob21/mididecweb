@@ -216,6 +216,18 @@ html, body {
         height: 100%;
 }
 
+.eventsadmin{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+}
+
+.usersadmin{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+}
+
 .event-item{
         display: flex;
         flex-direction: row;
@@ -227,7 +239,7 @@ html, body {
         .event-title {
                 display: flex;
                 margin: 5px;
-                width: 100px;
+                width: 100%;
         }
 
         .user-email {
@@ -266,7 +278,7 @@ html, body {
         .user-name {
                 display: flex;
                 margin: 5px;
-                width: 100px;
+                width: 40%;
         }
 
         .user-email {
@@ -283,14 +295,20 @@ html, body {
                 height: 0;
                 visibility: hidden;
         }
-        .user-logged {
+        .user-action{
                 display: flex;
-                margin: 5px;
-        }
-        .user-bt {
-                display: flex;
-                margin: 5px;
-                cursor: pointer;
+                position: absolute;
+                right: 20px;
+
+                .user-logged {
+                        display: flex;
+                        margin: 5px;
+                }
+                .user-bt {
+                        display: flex;
+                        margin: 5px;
+                        cursor: pointer;
+                }
         }
 }
 

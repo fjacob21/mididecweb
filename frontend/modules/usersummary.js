@@ -41,9 +41,11 @@ class UserSummary extends React.Component {
                       <div className='user-name'>{this.props.user.name}</div>
                       <div className='user-email'>{this.props.user.email}</div>
                       <div className='user-lastlogin'>{lastlogin}</div>
-                      <div className='user-logged'>{loggedStatus}</div>
-                      <div className='user-bt' onClick={this.onEdit}><i className="material-icons md-light">edit</i></div>
-                      {btRemove}
+                      <div className='user-action'>
+                              <div className='user-logged'>{loggedStatus}</div>
+                              <div className='user-bt' onClick={this.onEdit}><i className="material-icons md-light">edit</i></div>
+                              {btRemove}
+                      </div>
                   </div>)
         }
 }
