@@ -140,9 +140,14 @@ class Navbar extends React.Component{
                 if (user && (user.isManager || user.isSuperUser))
                     createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter une rencontres</DropdownItem> );
                 if (user){
+                        var avatar = <i className="material-icons md-light">account_circle</i>
+                        if (user.have_avatar) {
+                                var avatar_path = "/mididec/api/v1.0/users/" + user.user_id+"/avatar?" + new Date().getTime();
+                                avatar = <img src={avatar_path} className="nav-avatar"/>
+                        }
                         userlink = (    <UncontrolledDropdown nav inNavbar>
                                                 <DropdownToggle nav caret>
-                                                        <i className="material-icons md-light">account_circle</i>
+                                                        {avatar}
                                                 </DropdownToggle>
                                                 <DropdownMenu right>
                                                         <DropdownItem header>
