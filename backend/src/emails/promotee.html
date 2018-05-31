@@ -62,9 +62,13 @@
                     .event-day {
                         display: flex;
                         margin-top: 20px;
+                        margin-left: 5px;
+                    }
+                    .event-day-div {
+                        display: flex;
+                        margin-top: 20px;
                         color: white;
                         margin-left: 5px;
-                        width: 100px;
                         background-color: #002a5c;
                         font-size: 1.5em;
                     }
@@ -72,7 +76,8 @@
                         display: flex;
                         color: #002a5c;
                         margin-left: 5px;
-                        font-size: 3em;
+                        margin-top: 10px;
+                        font-size: 200%;
                     }
                     .event-link {
                         display: flex;
@@ -208,7 +213,7 @@
                     Il y a eu une annulation et vous êtes maintenant inscrit a l'événement
                 </div>
                 <table class="event-day">
-                    <tr><td>{{event.day}}</td></tr>
+                    <tr><td class='event-day-div'>{{event.day}}</td></tr>
                 </table>
                 <div class="event-title">
                     <a class="event-link" href="{{server}}/#/events/{{event.event_id}}">{{event.title}}</a>
