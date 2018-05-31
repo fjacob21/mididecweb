@@ -72,7 +72,17 @@ class App extends React.Component{
                                         <Route path="/usersadmin" render={(props) => <UsersAdmin {...props} onError={this.onError}/>} />
                                         <Route path="/eventsadmin" render={(props) => <EventsAdmin {...props} onError={this.onError}/>} />
                                 </div>
-
+                                <div className='footer'>
+                                        <div className='footer-issue'>
+                                                <a className='footer-issue-link' href='https://github.com/fjacob21/mididecweb/issues/new' target="_blank">Commentaires</a>
+                                        </div>
+                                        <div className='footer-contrib'>
+                                                <a className='footer-contrib-link' href='https://github.com/fjacob21/mididecweb' target="_blank">Github</a>
+                                        </div>
+                                        <div className='footer-copyright'>
+                                                © 2018 Mididecouverte
+                                        </div>
+                                </div>
                         </div>)
         }
 }
