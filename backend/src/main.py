@@ -79,7 +79,7 @@ def get_event_ical(event_id):
                           config, request.url_root)
         return Response(
             session.get_event_ical(event_id),
-            mimetype="text/csv",
+            mimetype="text/calendar",
             headers={"Content-disposition":
                      "attachment; filename=event.ics"})
     except SessionError as se:
