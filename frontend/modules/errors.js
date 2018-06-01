@@ -16,6 +16,7 @@ Errors.ERROR_SENDING_EMAIL = 8;
 Errors.ERROR_INVALID_USER = 9;
 Errors.ERROR_VALIDATION_REQUIRED = 10;
 Errors.ERROR_NO_AVATAR = 11;
+Errors.ERROR_INVALID_SMS_CODE = 12;
 
 Errors._messages = [];
 Errors._messages[Errors.ERROR_INVALID_EVENT] = "Cet Événement n'existe pas";
@@ -29,4 +30,5 @@ Errors._messages[Errors.ERROR_SENDING_EMAIL] = "Erreur lors de l'envoit des cour
 Errors._messages[Errors.ERROR_INVALID_USER] = "Cet usager n'existe pas";
 Errors._messages[Errors.ERROR_VALIDATION_REQUIRED] = "Vous devez valider votre compte avant de pouvoir vous connecter";
 Errors._messages[Errors.ERROR_NO_AVATAR] = "Cet usager n'a pas d'avatar";
+Errors._messages[Errors.ERROR_INVALID_SMS_CODE] = "Votre code de validation n'est pas bon";
 module.exports = Errors;

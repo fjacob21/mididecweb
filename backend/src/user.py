@@ -218,7 +218,7 @@ class User(object):
         if self.get_data()['smscode'] == smscode:
             self.smsvalidated = True
             return True
-        return False
+        raise SessionError(errors.ERROR_INVALID_SMS_CODE)
 
     def login(self, password):
         if not self.validated:
