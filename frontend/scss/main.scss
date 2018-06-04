@@ -198,6 +198,33 @@ body {
         align-items: center;
 }
 
+.presence-title {
+        display: flex;
+        font-size: 2em;
+}
+
+.presence-icon {
+        height: 60px;
+        width: auto;
+        margin: 0;
+}
+
+.presence-item {
+        height: auto;
+        width: auto;
+}
+
+.attendee-item {
+        align-items: center;
+
+}
+
+.attendee-sign {
+        border-bottom: 1px solid black;
+        width: 200px;
+        height: 20px;
+        margin: 10px;
+}
 
 .attendee-avatar-default{
         font-size: 70px;
