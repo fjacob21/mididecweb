@@ -34,6 +34,7 @@ class CreateUser extends React.Component{
                 this.validateSuccess = this.validateSuccess.bind(this);
                 this.validateError = this.validateError.bind(this);
                 this.onChange = this.onChange.bind(this);
+                this.onBlur = this.onBlur.bind(this);
                 this.onCheck = this.onCheck.bind(this);
                 this.onKeyPress = this.onKeyPress.bind(this);
         }
@@ -59,6 +60,15 @@ class CreateUser extends React.Component{
                 }
                 this.validateUser();
                 this.setState(this.state);
+        }
+
+        onBlur(e){
+            if (FormQuery.isIos()) {
+                    var fq = new FormQuery(this.state.values);
+                    this.state.values = fq.parse();
+                    this.validateUser();
+                    this.setState(this.state);
+            }
         }
 
         onKeyPress(e){
@@ -147,39 +157,39 @@ class CreateUser extends React.Component{
                                         <Form className='createuser-form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='name'>
                                                         <Label for="name">Nom <font size="3" color="red">*</font></Label>
-                                                        <Input onChange={this.onChange} autoComplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
+                                                        <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
                                                 </FormGroup>
                                                 <FormGroup className='email'>
                                                         <Label for="email">Courriel <font size="3" color="red">*</font></Label>
                                                         <div>
-                                                                <Input invalid={!this.state.validation.emailok} autoComplete='email' onChange={this.onChange} type='email' name="email" id="email" placeholder="test@test.com" value={this.state.values.email} />
+                                                                <Input onBlur={this.onBlur} invalid={!this.state.validation.emailok} autoComplete='email' onChange={this.onChange} type='email' name="email" id="email" placeholder="test@test.com" value={this.state.values.email} />
                                                                 {emailErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='alias'>
                                                         <Label for="alias">Alias <font size="3" color="red">*</font></Label>
                                                         <div>
-                                                                <Input invalid={!this.state.validation.aliasok} autoComplete='alias' onChange={this.onChange} type='text' name="alias" id="alias" placeholder="alias" value={this.state.values.alias} />
+                                                                <Input onBlur={this.onBlur} invalid={!this.state.validation.aliasok} autoComplete='alias' onChange={this.onChange} type='text' name="alias" id="alias" placeholder="alias" value={this.state.values.alias} />
                                                                 {aliasErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='password'>
                                                         <Label for="password">Mot de passe <font size="3" color="red">*</font></Label>
-                                                        <Input onChange={this.onChange} autoComplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
+                                                        <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
                                                 </FormGroup>
                                                 <FormGroup className='phone'>
                                                         <Label for="phone">Cell.</Label>
-                                                        <div><Input onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} /></div>
+                                                        <div><Input onBlur={this.onChange} onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} /></div>
                                                 </FormGroup>
                                                 <FormGroup check  className='use'>
                                                         <Label>
-                                                                <Input onChange={this.onCheck} type='checkbox' id="useemail" checked={this.state.values.useemail} />
+                                                                <Input onBlur={this.onChange} onChange={this.onCheck} type='checkbox' id="useemail" checked={this.state.values.useemail} />
                                                                 Recevoir alerte par courriel
                                                         </Label>
                                                 </FormGroup>
                                                 <FormGroup check>
                                                         <Label>
-                                                                <Input onChange={this.onCheck} type='checkbox' id="usesms" checked={this.state.values.usesms} />
+                                                                <Input onBlur={this.onBlur} onChange={this.onCheck} type='checkbox' id="usesms" checked={this.state.values.usesms} />
                                                                 Recevoir alerte par sms
                                                         </Label>
                                                 </FormGroup>

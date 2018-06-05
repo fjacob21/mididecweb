@@ -42,6 +42,7 @@ class UpdateEvent extends React.Component{
             this.publishSuccess = this.publishSuccess.bind(this);
             this.publishError = this.publishError.bind(this);
             this.onKeyPress = this.onKeyPress.bind(this);
+            this.onBlur = this.onBlur.bind(this);
         }
 
         success(data){
@@ -156,6 +157,20 @@ class UpdateEvent extends React.Component{
                 this.setState(this.state);
         }
 
+        onBlur(e){
+            if (FormQuery.isIos()) {
+                    var fq = new FormQuery(this.state.values);
+                    this.state.values = fq.parse();
+                    var n = new Date(Date.now());
+                    var start = new Date(this.state.values.startDate + "T" + this.state.values.time + 'Z');
+                    start = new Date(start.setTime( start.getTime() + start.getTimezoneOffset()*60*1000 ));
+                    var isBefore = n > start;
+                    if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '' && !isBefore)
+                            this.state.valid = true;
+                    this.setState(this.state);
+            }
+        }
+
         onKeyPress(e){
                 if (e.key == 'Enter' && this.state.valid)
                         this.onAdd();
@@ -167,36 +182,36 @@ class UpdateEvent extends React.Component{
                     <Form className='form' onKeyPress={this.onKeyPress}>
                             <FormGroup className='title'>
                                     <Label for="title">Titre <font size="3" color="red">*</font></Label>
-                                    <Input onChange={this.onChange} type='text' name="title" id="title" placeholder="title" value={this.state.values.title} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="title" id="title" placeholder="title" value={this.state.values.title} />
                             </FormGroup>
                             <FormGroup className='description'>
                                     <Label for="description">Description <font size="3" color="red">*</font></Label>
-                                    <Input onChange={this.onChange} type='textarea' name="description" id="description" placeholder="description" value={this.state.values.description} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='textarea' name="description" id="description" placeholder="description" value={this.state.values.description} />
                             </FormGroup>
                             <FormGroup className='startDate'>
                                     <Label for="startDate">Début <font size="3" color="red">*</font></Label>
-                                    <div><Input onChange={this.onChange} type='date' name="startDate" id="startDate" placeholder="startDate" value={this.state.values.startDate} />
-                                    <Input onChange={this.onChange} type='time' name="time" id="time" placeholder="time" value={this.state.values.time} /></div>
+                                    <div><Input onBlur={this.onBlur} onChange={this.onChange} type='date' name="startDate" id="startDate" placeholder="startDate" value={this.state.values.startDate} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='time' name="time" id="time" placeholder="time" value={this.state.values.time} /></div>
                             </FormGroup>
                             <FormGroup className='durationString'>
                                     <Label for="durationString">Durée </Label>
-                                    <Input onChange={this.onChange} type='text' name="durationString" id="durationString" placeholder="durationString" value={this.state.values.durationString} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="durationString" id="durationString" placeholder="durationString" value={this.state.values.durationString} />
                             </FormGroup>
                             <FormGroup className='max_attendee'>
                                     <Label for="max_attendee">Nombre de participants</Label>
-                                    <Input onChange={this.onChange} type='text' name="max_attendee" id="max_attendee" placeholder="20" value={this.state.values.max_attendee} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="max_attendee" id="max_attendee" placeholder="20" value={this.state.values.max_attendee} />
                             </FormGroup>
                             <FormGroup className='location'>
                                     <Label for="location">location</Label>
-                                    <Input onChange={this.onChange} type='text' name="location" id="location" placeholder="location" value={this.state.values.location} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="location" id="location" placeholder="location" value={this.state.values.location} />
                             </FormGroup>
                             <FormGroup className='organizer_name'>
                                     <Label for="organizer_name">Organisateur</Label>
-                                    <Input onChange={this.onChange} type='text' name="organizer_name" id="organizer_name" placeholder="organizerName" value={this.state.values.organizer_name} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="organizer_name" id="organizer_name" placeholder="organizerName" value={this.state.values.organizer_name} />
                             </FormGroup>
                             <FormGroup className='organizer_email'>
                                     <Label for="organizer_email">Courriel de l'Organisateur</Label>
-                                    <Input onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
                             <Button color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>Sauvegarder</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>Cancel</Button>{' '}

@@ -20,6 +20,7 @@ class Login extends React.Component{
                 this.loginSuccess = this.loginSuccess.bind(this);
                 this.loginError = this.loginError.bind(this);
                 this.onChange = this.onChange.bind(this);
+                this.onBlur = this.onBlur.bind(this);
                 this.onKeyPress = this.onKeyPress.bind(this);
         }
 
@@ -38,6 +39,14 @@ class Login extends React.Component{
                         this.state.values[e.target.id] = e.target.value;
                 }
                 this.setState(this.state);
+        }
+
+        onBlur(e){
+            if (FormQuery.isIos()) {
+                    var fq = new FormQuery(this.state.values);
+                    this.state.values = fq.parse();
+                    this.setState(this.state);
+            }
         }
 
         onKeyPress(e){
@@ -79,11 +88,11 @@ class Login extends React.Component{
                                         <Form className='form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='userid'>
                                                         <Label for="userid">User</Label>
-                                                        <Input onChange={this.onChange} type='text' name="userid" id="userid" autoComplete="username" value={this.state.values.userid} />
+                                                        <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="userid" id="userid" autoComplete="username" value={this.state.values.userid} />
                                                 </FormGroup>
                                                 <FormGroup className='password'>
                                                         <Label for="password">Password</Label>
-                                                        <Input onChange={this.onChange} type='password' name="password" id="password" autoComplete="current-password" value={this.state.values.password} />
+                                                        <Input onBlur={this.onBlur} onChange={this.onChange} type='password' name="password" id="password" autoComplete="current-password" value={this.state.values.password} />
                                                 </FormGroup>
                                                 <Button color="success" onClick={this.onLogin}>Login</Button>{' '}
                                         </Form>
