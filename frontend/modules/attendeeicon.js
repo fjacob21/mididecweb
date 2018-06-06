@@ -12,10 +12,14 @@ class AttendeeIcon extends React.Component{
                         var avatar_path = "/mididec/api/v1.0/users/" + this.props.attendee.user_id+"/avatar?" + new Date().getTime();
                         avatar = <img src={avatar_path} className="attendee-avatar"/>
                 }
+                var alias = this.props.attendee.alias;
+                if (this.props.noname)
+                        alias = "";
+                var className = this.props.className + " attendeeicon " ;
                 return (
-                        <div className='attendeeicon'>
+                        <div className={className}>
                                 {avatar}
-                                {this.props.attendee.alias}
+                                {alias}
                         </div>
                 );
         }

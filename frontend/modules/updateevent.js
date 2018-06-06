@@ -38,6 +38,7 @@ class UpdateEvent extends React.Component{
             this.onChange = this.onChange.bind(this);
             this.updateSuccess = this.updateSuccess.bind(this);
             this.updateError = this.updateError.bind(this);
+            this.onPrint = this.onPrint.bind(this);
             this.onPublish = this.onPublish.bind(this);
             this.publishSuccess = this.publishSuccess.bind(this);
             this.publishError = this.publishError.bind(this);
@@ -115,6 +116,10 @@ class UpdateEvent extends React.Component{
 
         onCancel() {
                 history.goBack();
+        }
+
+        onPrint() {
+                history.replace("/events/"+this.props.match.params.id+"/presence");
         }
 
         onPublish() {
@@ -215,7 +220,8 @@ class UpdateEvent extends React.Component{
                             </FormGroup>
                             <Button color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>Sauvegarder</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>Cancel</Button>{' '}
-                            <Button color="warning" onClick={this.onPublish}>Publier</Button>
+                            <Button color="warning" onClick={this.onPublish}>Publier</Button>{' '}
+                            <Button color="warning" onClick={this.onPrint}>Imprimer</Button>
                     </Form>
                 </div>)
         }

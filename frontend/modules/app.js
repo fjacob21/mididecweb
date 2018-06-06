@@ -13,6 +13,7 @@ import CreateUser from './createuser'
 import UpdateUser from './updateuser'
 import UsersAdmin from './usersadmin'
 import EventsAdmin from './eventsadmin'
+import Presence from './presence'
 import Login from './login'
 
 class App extends React.Component{
@@ -71,6 +72,7 @@ class App extends React.Component{
                                         <Route path="/createuser" render={(props) => <CreateUser {...props} onError={this.onError}/>} />
                                         <Route path="/usersadmin" render={(props) => <UsersAdmin {...props} onError={this.onError}/>} />
                                         <Route path="/eventsadmin" render={(props) => <EventsAdmin {...props} onError={this.onError}/>} />
+                                        <Route path="/events/:id/presence" render={(props) => <Presence {...props} onError={this.onError}/>} />
                                 </div>
                                 <div className='footer'>
                                         <div className='footer-issue'>

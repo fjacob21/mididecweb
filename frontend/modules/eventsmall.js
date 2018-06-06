@@ -31,7 +31,7 @@ class EventSmall extends React.Component{
                 var attendees = "";
                 if (user)
                     attendees = this.props.event.attendees.map((attendee) =>
-                            <AttendeeIcon key={attendee.user_id} attendee={attendee} />
+                            <AttendeeIcon key={attendee.user_id} attendee={attendee} className='attendee-icon'/>
                     );
                 var registerPanel = <RegisterPanel onRegister={this.onRegister} disabled={this.props.disableRegister}/>
                 if (this.props.event.find_attendee(user))
