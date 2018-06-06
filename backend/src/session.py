@@ -15,6 +15,7 @@ from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
 import errors
 import locale
+import os
 from events import Events
 from users import Users
 
@@ -426,6 +427,8 @@ class Session(object):
             raise SessionError(errors.ERROR_INVALID_USER)
         if not UserRemoveAccess(self, user).granted():
             raise SessionError(errors.ERROR_ACCESS_DENIED)
+        if user.avatar_path:
+            os.remove(user.avatar_path)
         self._users.remove(user.user_id)
         return {'result': True}
 
