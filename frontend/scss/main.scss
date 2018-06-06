@@ -188,52 +188,68 @@ body {
 }
 
 .attendeeicon {
-        margin: 10px;
         display: flex;
         flex-direction: column;
-        width: 100px;
-        height: 110px;
         border-radius: 15px;
         background-color: white;
         align-items: center;
 }
-
-.presence-title {
-        display: flex;
-        font-size: 2em;
-}
-
-.presence-icon {
-        height: 60px;
-        width: auto;
-        margin: 0;
-}
-
-.presence-item {
-        height: auto;
-        width: auto;
-}
-
-.attendee-item {
-        align-items: center;
-
-}
-
-.attendee-sign {
-        border-bottom: 1px solid black;
-        width: 200px;
-        height: 20px;
+.attendee-icon {
+        height: 110px;
+        width: 100px;
         margin: 10px;
 }
-
 .attendee-avatar-default{
         font-size: 70px;
 }
 .attendee-avatar{
         font-size: 70px;
-        width: 50px;
-        height: 50px;
-        margin: 10px;
+        width: 70%;
+        height: 60%;
+        margin: 5px;
+}
+.presence {
+        .presence-title {
+                display: flex;
+                font-size: 2em;
+        }
+        .presence-item {
+                height: auto;
+                width: auto;
+                display: flex;
+                flex-direction: row;
+                margin: 5px;
+                .presence-icon-item {
+                        width: 70px;
+                        height: 70px;
+                        .presence-icon {
+                                height: 70px;
+                                width: 70px;
+                                margin: 0;
+                        }
+                }
+                .presence-name-item {
+                        width: 150px;
+                        height: 20px;
+                        margin: 5px;
+                }
+                .presence-sign-item {
+                        width: 200px;
+                        height: 20px;
+                        margin: 5px;
+                        .presence-sign {
+                                border-bottom: 1px solid black;
+                                width: 200px;
+                                height: 20px;
+                                margin: 5px;
+                        }
+                }
+        }
+}
+
+.attendee-item {
+        align-items: center;
+
 }
 
 .file {
@@ -479,7 +495,7 @@ body {
 
 .eventbig{
         display: flex;
-        flex-direction: column;
+        flex-direction: initial;
         height: 100%;
         width: 100%;
         visibility: hidden;
@@ -621,11 +637,13 @@ body {
         .eventsmall {
                 visibility: hidden;
                 height: 0;
+                flex-direction: initial;
         }
 
         .eventbig {
                 visibility: visible;
                 height: 100%;
+                flex-direction: column;
         }
 
         .user-summary{

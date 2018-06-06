@@ -5,7 +5,7 @@ import User from './user'
 import createHistory from "history/createHashHistory"
 import AttendeeIcon from './attendeeicon'
 import Errors from './errors'
-import { Table } from 'reactstrap';
+import { Table, Button } from 'reactstrap';
 var PrintTemplate = require ('react-print');
 
 const history = createHistory();
@@ -26,6 +26,7 @@ class Presence extends React.Component{
                 contentType: "application/json",
                 dataType: 'json'
                 });
+                this.onPrint = this.onPrint.bind(this);
         }
 
         success(data){
@@ -39,6 +40,10 @@ class Presence extends React.Component{
                 this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
+        onPrint() {
+                window.print();
+        }
+
         showAlert(message, color='success'){
                 this.props.onError(message, color);
         }
@@ -48,39 +53,22 @@ class Presence extends React.Component{
                 var attendees = "";
                 if (user && this.state.event)
                     attendees = this.state.event.attendees.map((attendee) =>
-                            <tr key={attendee.user_id} className='attendee-item'>
-                              <th className='presence-item'><AttendeeIcon className='presence-icon' attendee={attendee} noname/></th>
-                              <td className='presence-item'>{attendee.name}</td>
-                              <td className='presence-item'><div className='attendee-sign'></div></td>
-                            </tr>
+                            <div key={attendee.user_id} className='presence-item'>
+                              <div className='presence-icon-item'><AttendeeIcon className='presence-icon' attendee={attendee} noname/></div>
+                              <div className='presence-name-item'>{attendee.name}</div>
+                              <div className='presence-sign-item'><div className='presence-sign'></div></div>
+                            </div>
                     );
-                    // <div className='attendee-item'>
-                    //         <AttendeeIcon key={attendee.user_id} attendee={attendee} noname/>
-                    //         <div>{attendee.name}</div>
-                    //         <div className='attendee-sign'></div>
-                    // </div>
                 return (
                         <div className='presence'>
                                 <div className='presence-title'>Présences</div>
-
-                                <Table>
-                                <thead>
-                                  <tr>
-                                    <th></th>
-                                    <th>Nom</th>
-                                    <th>Signature</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
+                                <div className='presence-item'>
+                                        <div className='presence-icon-item'></div>
+                                        <div className='presence-name-item'>Nom</div>
+                                        <div className='presence-sign-item'>Signature</div>
+                                </div>
                                 {attendees}
-                                {attendees}
-                                {attendees}
-                                {attendees}
-                                {attendees}
-                                {attendees}
-
-                                </tbody>
-                              </Table>
+                                <Button color="warning" onClick={this.onPrint}>Imprimer</Button>
                         </div>
                 );
         }
