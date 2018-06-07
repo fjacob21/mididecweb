@@ -54,5 +54,6 @@ class iCalGenerator():
     def generate_datetime(self, dts):
         dt = datetime.strptime(dts, "%Y-%m-%dT%H:%M:%SZ")
         dt.replace(tzinfo=pytz.timezone('America/New_York'))
-        dtu = dt.astimezone(timezone.utc)
+        now_aware = pytz.timezone('America/New_York').localize(dt)
+        dtu = now_aware.astimezone(timezone.utc)
         return dtu
