@@ -23,15 +23,22 @@ class App extends React.Component{
                       alert: {
                               visible: false,
                               message: '',
-                              color: 'success'
+                              color: 'success',
+                              refresh: false
                           }
                 };
                 this.onError = this.onError.bind(this);
+                this.refresh = this.refresh.bind(this);
                 this.hideAlert = this.hideAlert.bind(this);
         }
 
         onError(message, color){
                 this.showAlert(message, color);
+        }
+
+        refresh(){
+                this.state.refresh = !this.state.refresh;
+                this.setState(this.state);
         }
 
         hideAlert(){
@@ -44,7 +51,7 @@ class App extends React.Component{
                 this.state.alert.visible = true;
                 this.state.alert.message = message;
                 this.setState(this.state);
-                setTimeout(this.hideAlert, 3000);
+                setTimeout(this.hideAlert, 6000);
         }
 
         componentDidMount(){
@@ -56,7 +63,7 @@ class App extends React.Component{
         render(){
                 return (
                         <div className='app'>
-                                <Navbar prev='' next=''></Navbar>
+                                <Navbar prev='' next='' refresh={this.refresh}></Navbar>
                                 <div className='error'>
                                         <Alert className='error' color={this.state.alert.color} isOpen={this.state.alert.visible} toggle={this.onDismiss} transitionappeartimeout={150} transitionappeartimeout={150}>
                                                 {this.state.alert.message}
