@@ -1,5 +1,6 @@
 from icalendar import Calendar, Event, vCalAddress, vText, Alarm
 from datetime import datetime, timedelta, timezone
+import pytz
 
 
 class iCalGenerator():
@@ -52,5 +53,6 @@ class iCalGenerator():
 
     def generate_datetime(self, dts):
         dt = datetime.strptime(dts, "%Y-%m-%dT%H:%M:%SZ")
+        dt.replace(tzinfo=pytz.timezone('America/New_York'))
         dtu = dt.astimezone(timezone.utc)
         return dtu
