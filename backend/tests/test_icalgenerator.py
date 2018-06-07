@@ -23,9 +23,11 @@ def test_generate_ical():
     cal = Calendar.from_ical(ical)
     assert cal.to_ical().decode() == ical
     startdt = datetime.strptime(e.start, "%Y-%m-%dT%H:%M:%SZ")
+    startdt = pytz.timezone('America/New_York').localize(startdt)
     startutc = startdt.astimezone(timezone.utc)
     startutcstr = startutc.strftime("%Y-%m-%dT%H:%M:%SZ")
     enddt = datetime.strptime(e.end, "%Y-%m-%dT%H:%M:%SZ")
+    enddt = pytz.timezone('America/New_York').localize(enddt)
     endutc = enddt.astimezone(timezone.utc)
     endutcstr = endutc.strftime("%Y-%m-%dT%H:%M:%SZ")
     assert cal.get('DTSTART').dt.strftime("%Y-%m-%dT%H:%M:%SZ") == startutcstr
