@@ -5,6 +5,7 @@ import UserSummary from './usersummary'
 import Errors from './errors'
 import { Table, NavLink, Card, CardTitle, CardText, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import createHistory from "history/createHashHistory"
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -56,7 +57,7 @@ class UsersAdmin extends React.Component{
         }
 
         rmSuccess(data){
-                this.showAlert("L'usager a bien été effacer", 'success');
+                this.showAlert(Text.text.user_delete_success, 'success');
                 this.updateUsers();
         }
 
@@ -102,17 +103,17 @@ class UsersAdmin extends React.Component{
                 return (
                         <div className='usersadmin'>
                             <Card body className='users-card'>
-                                <CardTitle>Usagers</CardTitle>
+                                <CardTitle>{Text.text.users}</CardTitle>
                                 {users}
                             </Card>
                             <Modal isOpen={this.state.modal}>
                                     <ModalHeader toggle={this.toggle}>{modalTitle}</ModalHeader>
                                     <ModalBody>
-                                            Etes-vous sur de vouloir effacer cet usager?
+                                            {Text.text.user_delete_confirmation}
                                     </ModalBody>
                                     <ModalFooter>
-                                            <Button color="primary" onClick={this.onAccept}>Oui</Button>{' '}
-                                            <Button color="secondary" onClick={this.onRefuse}>Non</Button>
+                                            <Button color="primary" onClick={this.onAccept}>{Text.text.yes}</Button>{' '}
+                                            <Button color="secondary" onClick={this.onRefuse}>{Text.text.no}</Button>
                                     </ModalFooter>
                             </Modal>
                         </div>)

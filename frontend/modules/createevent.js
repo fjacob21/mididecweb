@@ -5,6 +5,7 @@ import createHistory from "history/createHashHistory"
 import Errors from './errors'
 import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -24,6 +25,7 @@ class CreateEvent extends React.Component{
                       organizer_name: user.alias,
                       organizer_email: user.email}
             };
+            this.text = new Text('fr-CA');
             this.onCancel = this.onCancel.bind(this);
             this.onAdd = this.onAdd.bind(this);
             this.onChange = this.onChange.bind(this);
@@ -34,7 +36,7 @@ class CreateEvent extends React.Component{
         }
 
         addSuccess(data){
-            this.showAlert('l\'événement a été enregistré', 'success')
+            this.showAlert(this.text.event_add_success, 'success')
             history.replace("/events/" + data.event.event_id + '/update');
         }
 
@@ -128,40 +130,40 @@ class CreateEvent extends React.Component{
                 <div className='createevent'>
                     <Form className='form' onKeyPress={this.onKeyPress}>
                             <FormGroup className='title'>
-                                    <Label for="title">Titre <font size="3" color="red">*</font></Label>
+                                    <Label for="title">{this.text.event_title_label} <font size="3" color="red">*</font></Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="title" id="title" placeholder="title" value={this.state.values.title} />
                             </FormGroup>
                             <FormGroup className='description'>
-                                    <Label for="description">Description <font size="3" color="red">*</font></Label>
+                                    <Label for="description">{this.text.event_description_label} <font size="3" color="red">*</font></Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='textarea' name="description" id="description" placeholder="description" value={this.state.values.description} />
                             </FormGroup>
                             <FormGroup className='startDate'>
-                                    <Label for="startDate">Début <font size="3" color="red">*</font></Label>
+                                    <Label for="startDate">{this.text.event_start_date_label} <font size="3" color="red">*</font></Label>
                                     <div><Input onBlur={this.onBlur} onChange={this.onChange} type='date' name="startDate" id="startDate" placeholder="startDate" value={this.state.values.startDate} />
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='time' name="time" id="time" placeholder="time" value={this.state.values.time} /></div>
                             </FormGroup>
                             <FormGroup className='durationString'>
-                                    <Label for="durationString">Durée </Label>
+                                    <Label for="durationString">{this.text.event_duration_label} </Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="durationString" id="durationString" placeholder="durationString" value={this.state.values.durationString} />
                             </FormGroup>
                             <FormGroup className='max_attendee'>
-                                    <Label for="max_attendee">Nombre de participants</Label>
+                                    <Label for="max_attendee">{this.text.event_max_attendee_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="max_attendee" id="max_attendee" placeholder="20" value={this.state.values.max_attendee} />
                             </FormGroup>
                             <FormGroup className='location'>
-                                    <Label for="location">location</Label>
+                                    <Label for="location">{this.text.event_location_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="location" id="location" placeholder="location" value={this.state.values.location} />
                             </FormGroup>
                             <FormGroup className='organizer_name'>
-                                    <Label for="organizer_name">Organisateur</Label>
+                                    <Label for="organizer_name">{this.text.event_organizer_name_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="organizer_name" id="organizer_name" placeholder="organizerName" value={this.state.values.organizer_name} />
                             </FormGroup>
                             <FormGroup className='organizer_email'>
-                                    <Label for="organizer_email">Courriel de l'Organisateur</Label>
+                                    <Label for="organizer_email">{this.text.event_organizer_email_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
-                            <Button color="primary" onClick={this.onAdd} disabled={!this.state.valid}>Ajouter</Button>{' '}
-                            <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
+                            <Button color="primary" onClick={this.onAdd} disabled={!this.state.valid}>{this.text.event_add_add_bt_label}</Button>{' '}
+                            <Button color="secondary" onClick={this.onCancel}>{this.text.cancel}</Button>
                     </Form>
                 </div>)
         }

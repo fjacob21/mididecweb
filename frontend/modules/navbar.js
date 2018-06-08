@@ -3,7 +3,9 @@ import { browserHistory} from 'react-router'
 import jquery from 'jquery'
 import User from './user'
 import createHistory from "history/createHashHistory"
+import Text from './localization/text'
 import {
+  Input,
   Collapse,
   Navbar as NB,
   NavbarToggler,
@@ -12,6 +14,7 @@ import {
   NavItem,
   NavLink,
   UncontrolledDropdown,
+  Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem } from 'reactstrap';
@@ -20,6 +23,9 @@ const history = createHistory();
 class Navbar extends React.Component{
         constructor(props) {
                 super(props);
+                var locale = 'fr-CA';
+                if (localStorage.locale)
+                        locale = localStorage.locale;
                 this.onHome = this.onHome.bind(this);
                 this.onCreate = this.onCreate.bind(this);
                 this.onUsersAdmin = this.onUsersAdmin.bind(this);
@@ -32,7 +38,9 @@ class Navbar extends React.Component{
                 this.onProfile = this.onProfile.bind(this);
                 this.toggle = this.toggle.bind(this);
                 this.onLeave = this.onLeave.bind(this);
+                this.onChange = this.onChange.bind(this);
                 this.state = {
+                  locale: locale,
                   isOpen: false
                 };
         }
@@ -41,6 +49,14 @@ class Navbar extends React.Component{
         }
 
         componentWillUnmount(){
+        }
+
+        onChange(e) {
+                console.debug(e.target.value);
+                localStorage.setItem('locale', e.target.value);
+                this.state.locale = e.target.value;
+                this.setState(this.state);
+                this.props.refresh();
         }
 
         onHome(event){
@@ -132,13 +148,13 @@ class Navbar extends React.Component{
                 var user = User.getSession();
                 var useradmin = "";
                 if (user && user.isSuperUser)
-                    useradmin = (<DropdownItem onClick={this.onUsersAdmin}>Gestion des usagers</DropdownItem> );
+                    useradmin = (<DropdownItem onClick={this.onUsersAdmin}>{Text.text.nav_useradmin_label}</DropdownItem> );
                 var eventadmin = "";
                 if (user && (user.isSuperUser || user.isManager))
-                        eventadmin = (<DropdownItem onClick={this.onEventsAdmin}>Gestion des rencontres</DropdownItem> );
+                        eventadmin = (<DropdownItem onClick={this.onEventsAdmin}>{Text.text.nav_eventadmin_label}</DropdownItem> );
                 var createevent = "";
                 if (user && (user.isManager || user.isSuperUser))
-                    createevent = (<DropdownItem onClick={this.onCreateEvent}>Ajouter une rencontres</DropdownItem> );
+                    createevent = (<DropdownItem onClick={this.onCreateEvent}>{Text.text.nav_create_event_label}</DropdownItem> );
                 if (user){
                         var avatar = <i className="material-icons md-light">account_circle</i>
                         if (user.have_avatar) {
@@ -154,14 +170,14 @@ class Navbar extends React.Component{
                                                                 {user.alias}
                                                         </DropdownItem>
                                                         <DropdownItem onClick={this.onProfile}>
-                                                                Profile
+                                                                {Text.text.profile}
                                                         </DropdownItem>
                                                         {createevent}
                                                         {eventadmin}
                                                         {useradmin}
                                                         <DropdownItem divider />
                                                         <DropdownItem onClick={this.onLogout}>
-                                                                Logout
+                                                                {Text.text.logout}
                                                         </DropdownItem>
                                                 </DropdownMenu>
                                         </UncontrolledDropdown>)
@@ -169,15 +185,18 @@ class Navbar extends React.Component{
                 else {
                         subscribelink = (<NavItem>
                                 <NavLink className='subscribe-link' onClick={this.onCreate}>
-                                        S'inscrire
+                                        {Text.text.nav_user_add_label}
                                 </NavLink>
                         </NavItem>);
                         loginlink =(<NavItem>
                                 <NavLink className='home-link' onClick={this.onLogin}>
-                                        Login
+                                        {Text.text.login}
                                 </NavLink>
                         </NavItem>);
                 }
+                var langs = Text.getLocales().map((locale) =>
+                        <option value={locale.id}>{locale.name}</option>
+                  );
                 return (
                         <div className='navbars'>
                         <NB className='navs'  dark expand="md" fixed={'top'} onMouseLeave={this.onLeave}>
@@ -186,7 +205,12 @@ class Navbar extends React.Component{
                           <Collapse isOpen={this.state.isOpen}  navbar>
                             <Nav className="ml-auto" navbar>
                               <NavItem>
-                                      <NavLink className='home-link' onClick={this.onHome}>Home</NavLink>
+                                    <Input type="select" name="locale" id="locale" onChange={this.onChange} value={this.state.locale}>
+                                        {langs}
+                                    </Input>
+                              </NavItem>
+                              <NavItem>
+                                      <NavLink className='home-link' onClick={this.onHome}>{Text.text.nav_home_label}</NavLink>
                               </NavItem>
                               {subscribelink}
                               {loginlink}

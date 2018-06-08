@@ -4,6 +4,7 @@ import User from './user'
 import RegisterPanel from './registerpanel'
 import RegisterStatusPanel from './registerstatuspanel'
 import AttendeeIcon from './attendeeicon'
+import Text from './localization/text'
 
 class EventBig extends React.Component{
         constructor(props) {
@@ -44,7 +45,7 @@ class EventBig extends React.Component{
                                         <div className='head-info'>
                                                 <div className='start'> {dateText} </div>
                                                 <div className='title'> {this.props.event.title} </div>
-                                                <div className='organizer'> Organiser par {this.props.event.organizer_name} </div>
+                                                <div className='organizer'> {Text.text.event_organizer_label} {this.props.event.organizer_name} </div>
                                         </div>
                                         <div className='head-register'>
                                                 {registerPanel}
@@ -52,9 +53,9 @@ class EventBig extends React.Component{
                                 </div>
                                 <div className='body'>
                                         <div className='detail'>
-                                                <div className='detaillabel'> Détail </div>
+                                                <div className='detaillabel'> {Text.text.event_details_label} </div>
                                                 <div className='description'>{this.props.event.description} </div>
-                                                <div className='attendees-title'>Participants</div>
+                                                <div className='attendees-title'>{Text.text.event_attendees_label}</div>
                                                 <div className='attendeesgrid'>
                                                         {attendees}
                                                 </div>
@@ -65,7 +66,7 @@ class EventBig extends React.Component{
                                                         <div className='timetext'>
                                                                 <div className='date'>{dateText}</div>
                                                                 <div className='time'>{timeText}</div>
-                                                                <a href={icalurl}>Ajouter au calendrier</a>
+                                                                <a href={icalurl}>{Text.text.event_add_to_calendar_label}</a>
                                                         </div>
                                                 </div>
                                                 <div className='location'>

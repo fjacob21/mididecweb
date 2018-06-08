@@ -1,7 +1,8 @@
+import Text from './localization/text'
 
 class Errors {
         static getErrorMessage(error){
-                return Errors._messages[error];
+                return Text.text[Errors._messages[error]];
         }
 }
 
@@ -19,16 +20,16 @@ Errors.ERROR_NO_AVATAR = 11;
 Errors.ERROR_INVALID_SMS_CODE = 12;
 
 Errors._messages = [];
-Errors._messages[Errors.ERROR_INVALID_EVENT] = "Cet Événement n'existe pas";
-Errors._messages[Errors.ERROR_INVALID_REQUEST] = "Mauvais format de la requête";
-Errors._messages[Errors.ERROR_MISSING_PARAMS] = "Il manque des paramettres dans la requête";
-Errors._messages[Errors.ERROR_ACCESS_DENIED] = "Vous n'avez pas les accès requis pour effectuer cette opération";
-Errors._messages[Errors.ERROR_INVALID_LOGIN] = "Mot de passe ou usager invalide";
-Errors._messages[Errors.ERROR_LOGIN_NEEDED] = "Vous devez être connecté";
-Errors._messages[Errors.ERROR_NOT_REGISTERED] = "Vous n'etes pas inscrit à cette événement";
-Errors._messages[Errors.ERROR_SENDING_EMAIL] = "Erreur lors de l'envoit des courriels";
-Errors._messages[Errors.ERROR_INVALID_USER] = "Cet usager n'existe pas";
-Errors._messages[Errors.ERROR_VALIDATION_REQUIRED] = "Vous devez valider votre compte avant de pouvoir vous connecter";
-Errors._messages[Errors.ERROR_NO_AVATAR] = "Cet usager n'a pas d'avatar";
-Errors._messages[Errors.ERROR_INVALID_SMS_CODE] = "Votre code de validation n'est pas bon";
+Errors._messages[Errors.ERROR_INVALID_EVENT] = "err_invalid_event_msg";
+Errors._messages[Errors.ERROR_INVALID_REQUEST] = "err_invalid_request_msg";
+Errors._messages[Errors.ERROR_MISSING_PARAMS] = "err_missing_params_msg";
+Errors._messages[Errors.ERROR_ACCESS_DENIED] = "err_access_denied_msg";
+Errors._messages[Errors.ERROR_INVALID_LOGIN] = "err_invalid_login_msg";
+Errors._messages[Errors.ERROR_LOGIN_NEEDED] = "err_login_needed_msg";
+Errors._messages[Errors.ERROR_NOT_REGISTERED] = "err_not_registered_msg";
+Errors._messages[Errors.ERROR_SENDING_EMAIL] = "err_sending_email_msg";
+Errors._messages[Errors.ERROR_INVALID_USER] = "err_invalid_user_msg";
+Errors._messages[Errors.ERROR_VALIDATION_REQUIRED] = "err_validation_required_msg";
+Errors._messages[Errors.ERROR_NO_AVATAR] = "err_no_avatar_msg";
+Errors._messages[Errors.ERROR_INVALID_SMS_CODE] = "err_invalid_sms_code_msg";
 module.exports = Errors;
