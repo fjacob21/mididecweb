@@ -1,7 +1,7 @@
 import React from 'react'
 import jquery from 'jquery'
 import { Card, CardBody, CardTitle, Button } from 'reactstrap';
-
+import Text from './localization/text'
 
 class RegisterStatusPanel extends React.Component{
 
@@ -17,9 +17,9 @@ class RegisterStatusPanel extends React.Component{
         render(){
                 var status = '';
                 if (this.props.status == 'attending')
-                        status = 'Vous êtes inscrit';
+                        status = Text.text.register_status_registered;
                 else if (this.props.status == 'waiting')
-                        status = 'Vous êtes sur la liste d\'attente';
+                        status =Text.text.register_status_waitinglist;
                 var disabled = false;
                 if (this.props.disabled)
                         disabled = this.props.disabled;
@@ -28,7 +28,7 @@ class RegisterStatusPanel extends React.Component{
                                 <Card>
                                         <CardBody>
                                           <CardTitle>{status}</CardTitle>
-                                          <Button color="danger" onClick={this.onCancel} disabled={disabled}>Cancelation</Button>
+                                          <Button color="danger" onClick={this.onCancel} disabled={disabled}>{Text.text.unregister}</Button>
                                         </CardBody>
                                 </Card>
                         </div>

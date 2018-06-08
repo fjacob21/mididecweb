@@ -6,6 +6,7 @@ import User from './user'
 import Errors from './errors'
 import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle } from 'reactstrap';
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -84,17 +85,17 @@ class Login extends React.Component{
                 return (
                         <div className='login'>
                                 <Card body className='login-card'>
-                                        <CardTitle>Login</CardTitle>
+                                        <CardTitle>{Text.text.login}</CardTitle>
                                         <Form className='form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='userid'>
-                                                        <Label for="userid">User</Label>
+                                                        <Label for="userid">{Text.text.user}</Label>
                                                         <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="userid" id="userid" autoComplete="username" value={this.state.values.userid} />
                                                 </FormGroup>
                                                 <FormGroup className='password'>
-                                                        <Label for="password">Password</Label>
+                                                        <Label for="password">{Text.text.password}</Label>
                                                         <Input onBlur={this.onBlur} onChange={this.onChange} type='password' name="password" id="password" autoComplete="current-password" value={this.state.values.password} />
                                                 </FormGroup>
-                                                <Button color="success" onClick={this.onLogin}>Login</Button>{' '}
+                                                <Button color="success" onClick={this.onLogin}>{Text.text.login}</Button>{' '}
                                         </Form>
                                 </Card>
                         </div>)

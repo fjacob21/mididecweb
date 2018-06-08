@@ -15,6 +15,7 @@ import UsersAdmin from './usersadmin'
 import EventsAdmin from './eventsadmin'
 import Presence from './presence'
 import Login from './login'
+import Text from './localization/text'
 
 class App extends React.Component{
         constructor(props) {
@@ -83,10 +84,10 @@ class App extends React.Component{
                                 </div>
                                 <div className='footer'>
                                         <div className='footer-issue'>
-                                                <a className='footer-issue-link' href='https://github.com/fjacob21/mididecweb/issues/new' target="_blank">Commentaires</a>
+                                                <a className='footer-issue-link' href='https://github.com/fjacob21/mididecweb/issues/new' target="_blank">{Text.text.comments}</a>
                                         </div>
                                         <div className='footer-contrib'>
-                                                <a className='footer-contrib-link' href='https://github.com/fjacob21/mididecweb' target="_blank">Github</a>
+                                                <a className='footer-contrib-link' href='https://github.com/fjacob21/mididecweb' target="_blank">{Text.text.github}</a>
                                         </div>
                                         <div className='footer-copyright'>
                                                 © 2018 Mididecouverte

@@ -158,7 +158,7 @@ class CreateUser extends React.Component{
 
                                         <Form className='createuser-form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='name'>
-                                                        <Label for="name">{Text.text.user_name_label} <font size="3" color="red">*</font></Label>
+                                                        <Label for="name">{Text.text.name} <font size="3" color="red">*</font></Label>
                                                         <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
                                                 </FormGroup>
                                                 <FormGroup className='email'>
@@ -176,7 +176,7 @@ class CreateUser extends React.Component{
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='password'>
-                                                        <Label for="password">{Text.text.user_password_label} <font size="3" color="red">*</font></Label>
+                                                        <Label for="password">{Text.text.password} <font size="3" color="red">*</font></Label>
                                                         <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
                                                 </FormGroup>
                                                 <FormGroup className='phone'>

@@ -7,6 +7,7 @@ import Errors from './errors'
 import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle, FormFeedback } from 'reactstrap';
 import {isValidNumber} from 'libphonenumber-js'
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -173,7 +174,7 @@ class UpdateUser extends React.Component{
         }
 
         updateSuccess(data){
-            this.showAlert('Update success', 'success');
+            this.showAlert(Text.text.update_success, 'success');
             this.getUser();
         }
 
@@ -222,7 +223,7 @@ class UpdateUser extends React.Component{
         }
 
         sendCodeSuccess(data){
-            this.showAlert('Votre code a bien été envoyé', 'success');
+            this.showAlert(Text.text.sms_code_send_success, 'success');
             this.getUser();
         }
 
@@ -247,7 +248,7 @@ class UpdateUser extends React.Component{
         }
 
         validateCodeSuccess(data){
-            this.showAlert('Votre cellulaire est maintenant validé', 'success');
+            this.showAlert(Text.text.phone_validated_msg, 'success');
             this.getUser();
         }
 
@@ -265,21 +266,21 @@ class UpdateUser extends React.Component{
                 var access = "";
                 if (user.isSuperUser)
                         access = (<FormGroup className='profile'>
-                                <Label for="access">Access</Label>
+                                <Label for="access">{Text.text.access}</Label>
                                 <div>
                                         <Input type="select" name="access" id="access" onChange={this.onChange} value={this.state.values.access.toString()}>
-                                            <option value='0'>Normal</option>
-                                            <option value='3'>Manager</option>
-                                            <option value='255'>Super</option>
+                                            <option value='0'>{Text.text.normal_access}</option>
+                                            <option value='3'>{Text.text.manager_access}</option>
+                                            <option value='255'>{Text.text.super_access}</option>
                                         </Input>
                                 </div>
                         </FormGroup>);
                 var emailErrorMessage = "";
                 if (!this.state.validation.emailok)
-                        emailErrorMessage = <FormFeedback>Désolé ce courriel est déja utilisé</FormFeedback>
+                        emailErrorMessage = <FormFeedback>{Text.text.email_already_used_msg}</FormFeedback>
                 var aliasErrorMessage = "";
                 if (!this.state.validation.aliasok)
-                        aliasErrorMessage = <FormFeedback>Désolé cet alias est déja utilisé</FormFeedback>
+                        aliasErrorMessage = <FormFeedback>{Text.text.alias_already_used_msg}</FormFeedback>
                 var avatar = <i className="material-icons md-light attendee-avatar-default">account_circle</i>
                 if (this.state.values.have_avatar) {
                         var avatar_path = "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?" + new Date().getTime();
@@ -288,57 +289,57 @@ class UpdateUser extends React.Component{
                 var smsvalidation = "";
                 if (!this.state.values.smsvalidated && this.state.values.phone && this.isPhoneValid(this.state.values.phone)) {
                     smsvalidation = (<div className='smsvalidation'>
-                                        <Label for="smscode">Code de validation</Label>
+                                        <Label for="smscode">{Text.text.validation_code}</Label>
                                         <div className='smsinput'>
                                             <Input className='smscode' onChange={this.onChange} type='text' name="smscode" id="smscode" value={this.state.values.smscode} />
-                                            <Button color='success' className='smvalidatebt' onClick={this.onValidateCode}>Valider</Button>
-                                            <Button color='warning' className='smssendbt' onClick={this.onSendCode}>Envoyer code</Button>
+                                            <Button color='success' className='smvalidatebt' onClick={this.onValidateCode}>{Text.text.validation}</Button>
+                                            <Button color='warning' className='smssendbt' onClick={this.onSendCode}>{Text.text.send_code}</Button>
                                         </div>
                                     </div>);
                 }
                 return (
                         <div className='updateuser'>
                                 <Card body className='updateuser-card'>
-                                        <CardTitle>Profile</CardTitle>
+                                        <CardTitle>{Text.text.profile}</CardTitle>
 
                                         <Form className='updateuser-form' onKeyPress={this.onKeyPress}>
                                                 {avatar}
                                                 <FormGroup className='name'>
-                                                        <Button onClick={this.onFile}>Changer l'avatar</Button>
+                                                        <Button onClick={this.onFile}>{Text.text.change_avatar}</Button>
                                                         <Input onBlur={this.onBlur} className="file" type="file" id="profile_pic" name="profile_pic" onChange={this.handleFileUpload} accept="image/*"/>
                                                 </FormGroup>
                                                 <FormGroup className='name'>
-                                                        <Label for="name">Nom <font size="3" color="red">*</font></Label>
+                                                        <Label for="name">{Text.text.name} <font size="3" color="red">*</font></Label>
                                                         <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
                                                 </FormGroup>
                                                 <FormGroup className='email'>
-                                                        <Label for="email">Courriel <font size="3" color="red">*</font></Label>
+                                                        <Label for="email">{Text.text.user_email_label} <font size="3" color="red">*</font></Label>
                                                         <div>
                                                                 <Input onBlur={this.onBlur} invalid={!this.state.validation.emailok} autoComplete='email' onChange={this.onChange} type='email' name="email" id="email" placeholder="test@test.com" value={this.state.values.email} />
                                                                 {emailErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='alias'>
-                                                        <Label for="alias">Alias <font size="3" color="red">*</font></Label>
+                                                        <Label for="alias">{Text.text.user_alias_label} <font size="3" color="red">*</font></Label>
                                                         <div>
                                                                 <Input onBlur={this.onBlur} invalid={!this.state.validation.aliasok} autoComplete='alias' onChange={this.onChange} type='text' name="alias" id="alias" placeholder="alias" value={this.state.values.alias} />
                                                                 {aliasErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='password'>
-                                                        <Label for="password">Mot de passe</Label>
+                                                        <Label for="password">{Text.text.password}</Label>
                                                         <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
                                                 </FormGroup>
                                                 <FormGroup className='phone'>
                                                         <div className='phone-input'>
-                                                            <Label for="phone">Cell.</Label>
+                                                            <Label for="phone">{Text.text.user_phone_label}</Label>
                                                             <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} />
                                                         </div>
                                                         {smsvalidation}
 
                                                 </FormGroup>
                                                 <FormGroup className='profile'>
-                                                        <Label for="profile">Profile</Label>
+                                                        <Label for="profile">{Text.text.profile}</Label>
                                                         <div>
                                                                 <Input onBlur={this.onBlur} autoComplete='profile' onChange={this.onChange} type='text' name="profile" id="profile" placeholder="profile" value={this.state.values.profile} />
                                                         </div>
@@ -347,17 +348,17 @@ class UpdateUser extends React.Component{
                                                 <FormGroup check>
                                                         <Label>
                                                                 <Input onBlur={this.onBlur} onChange={this.onCheck} type='checkbox' id="useemail" checked={this.state.values.useemail} />{' '}
-                                                                Recevoir alerte par courriel
+                                                                {Text.text.user_useemail_label}
                                                         </Label>
                                                 </FormGroup>
                                                 <FormGroup check>
                                                         <Label>
                                                                 <Input onBlur={this.onBlur} onChange={this.onCheck} type='checkbox' id="usesms" checked={this.state.values.usesms} />
-                                                                Recevoir alerte par sms
+                                                                {Text.text.user_usesms_label}
                                                         </Label>
                                                 </FormGroup>
-                                                <Button className='bt-update' color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>Sauvegarder</Button>
-                                                <Button color="secondary" onClick={this.onCancel} >Cancel</Button>
+                                                <Button className='bt-update' color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>{Text.text.save}</Button>
+                                                <Button color="secondary" onClick={this.onCancel} >{Text.text.cancel}</Button>
                                         </Form>
                                 </Card>
                         </div>)

@@ -36,6 +36,29 @@ exports[`Link changes the class when hovered 1`] = `
         <li
           className="nav-item"
         >
+          <select
+            className="form-control"
+            id="locale"
+            name="locale"
+            onChange={[Function]}
+            type="select"
+            value="fr-CA"
+          >
+            <option
+              value="fr-CA"
+            >
+              Français Canada
+            </option>
+            <option
+              value="en-CA"
+            >
+              English Canada
+            </option>
+          </select>
+        </li>
+        <li
+          className="nav-item"
+        >
           <a
             className="home-link nav-link"
             onClick={[Function]}
@@ -60,7 +83,7 @@ exports[`Link changes the class when hovered 1`] = `
             className="home-link nav-link"
             onClick={[Function]}
           >
-            Login
+            Connection
           </a>
         </li>
         

@@ -6,6 +6,7 @@ import createHistory from "history/createHashHistory"
 import AttendeeIcon from './attendeeicon'
 import Errors from './errors'
 import { Table, Button } from 'reactstrap';
+import Text from './localization/text'
 var PrintTemplate = require ('react-print');
 
 const history = createHistory();
@@ -61,14 +62,14 @@ class Presence extends React.Component{
                     );
                 return (
                         <div className='presence'>
-                                <div className='presence-title'>Présences</div>
+                                <div className='presence-title'>{Text.text.presence}</div>
                                 <div className='presence-item'>
                                         <div className='presence-icon-item'></div>
-                                        <div className='presence-name-item'>Nom</div>
-                                        <div className='presence-sign-item'>Signature</div>
+                                        <div className='presence-name-item'>{Text.text.name}</div>
+                                        <div className='presence-sign-item'>{Text.text.signature}</div>
                                 </div>
                                 {attendees}
-                                <Button color="warning" onClick={this.onPrint}>Imprimer</Button>
+                                <Button color="warning" onClick={this.onPrint}>{Text.text.print}</Button>
                         </div>
                 );
         }

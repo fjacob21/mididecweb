@@ -3,6 +3,7 @@ import jquery from 'jquery'
 import EventSummary from './eventsummary'
 import Errors from './errors'
 import createHistory from "history/createHashHistory"
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -39,13 +40,13 @@ class Home extends React.Component{
                 const n = new Date();
                 const next = this.state.events.events.filter(event => new Date(event.start) >= n);
                 const prev = this.state.events.events.filter(event => new Date(event.start) < n);
-                var nextItems = <div className='nothing-label'>Aucun</div>;
+                var nextItems = <div className='nothing-label'>{Text.text.none}</div>;
                 if(next.length > 0) {
                     nextItems = next.map((event) =>
                             <EventSummary key={event.event_id} event={event} />
                       );
                 }
-                var prevItems = <div className='nothing-label'>Aucun</div>;
+                var prevItems = <div className='nothing-label'>{Text.text.none}</div>;
                 if(prev.length > 0) {
                     prevItems = prev.map((event) =>
                           <EventSummary key={event.event_id} event={event} />
@@ -53,9 +54,9 @@ class Home extends React.Component{
                 }
                 return (
                         <div className='home'>
-                                <div className='next-events'>Prochains Événements</div>
+                                <div className='next-events'>{Text.text.next_events}</div>
                                 {nextItems}
-                                <div className='next-events'>Événements précédents</div>
+                                <div className='next-events'>{Text.text.previous_events}</div>
                                 {prevItems}
                         </div>)
         }

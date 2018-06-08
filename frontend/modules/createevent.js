@@ -163,7 +163,7 @@ class CreateEvent extends React.Component{
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
                             <Button color="primary" onClick={this.onAdd} disabled={!this.state.valid}>{this.text.event_add_add_bt_label}</Button>{' '}
-                            <Button color="secondary" onClick={this.onCancel}>{this.text.event_add_cancel_bt_label}</Button>
+                            <Button color="secondary" onClick={this.onCancel}>{this.text.cancel}</Button>
                     </Form>
                 </div>)
         }

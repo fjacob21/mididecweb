@@ -6,6 +6,7 @@ import EventItem from './eventitem'
 import Errors from './errors'
 import { Table, NavLink, Card, CardTitle, CardText, Button, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
 import createHistory from "history/createHashHistory"
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -57,7 +58,7 @@ class EventsAdmin extends React.Component{
         }
 
         rmSuccess(data){
-                this.showAlert("La rencontre à bien été effacer", 'success');
+                this.showAlert(Text.text.event_delete_success_msg, 'success');
                 this.updateEvents();
         }
 
@@ -104,17 +105,17 @@ class EventsAdmin extends React.Component{
                 return (
                         <div className='eventsadmin'>
                                 <Card body className='events-card'>
-                                        <CardTitle>Rencontres</CardTitle>
+                                        <CardTitle>{Text.text.events_title}</CardTitle>
                                         {events}
                                 </Card>
                                 <Modal isOpen={this.state.modal}>
                                         <ModalHeader toggle={this.toggle}>{modalTitle}</ModalHeader>
                                         <ModalBody>
-                                                Etes-vous sur de vouloir effacer cette rencontre?
+                                                {Text.text.event_delete_confirm_msg}
                                         </ModalBody>
                                         <ModalFooter>
-                                                <Button color="primary" onClick={this.onAccept}>Oui</Button>{' '}
-                                                <Button color="secondary" onClick={this.onRefuse}>Non</Button>
+                                                <Button color="primary" onClick={this.onAccept}>{Text.text.yes}</Button>{' '}
+                                                <Button color="secondary" onClick={this.onRefuse}>{Text.text.no}</Button>
                                         </ModalFooter>
                                 </Modal>
 

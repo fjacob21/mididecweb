@@ -6,6 +6,7 @@ import Event from './event'
 import User from './user'
 import createHistory from "history/createHashHistory"
 import Errors from './errors'
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -73,16 +74,16 @@ class Events extends React.Component{
         registerSuccess(data){
                 switch(data.result){
                 case 1:
-                        this.showAlert('Vous êtes maintenant inscrit a cette événement')
+                        this.showAlert(Text.text.event_register_success_msg)
                 break;
                 case 2:
-                        this.showAlert('Vous êtes déja inscrit a cette événement', 'danger')
+                        this.showAlert(Text.text.event_register_already_registered_msg, 'danger')
                 break;
                 case 3:
-                        this.showAlert('Malheureusement il ne reste plus de place disponible! Vous etes par contre sur la liste d\'attente.', 'warning')
+                        this.showAlert(Text.text.event_register_waiting_msg, 'warning')
                 break;
                 case 4:
-                        this.showAlert('Vous êtes déja sur la liste d\'attente', 'danger')
+                        this.showAlert(Text.text.event_register_already_waiting_msg, 'danger')
                 break;
                 };
                 this.state.event = new Event(data.event);
@@ -114,16 +115,17 @@ class Events extends React.Component{
         }
 
         cancelSuccess(data){
-                this.showAlert('Vous n\'êtes plus inscrit a cette évènement');
+                this.showAlert(Text.text.event_unregister_success_msg);
                 this.state.event = new Event(data.event);
                 this.state.disableRegister = false;
                 this.setState(this.state);
         }
 
         cancelError(data){
-                this.showAlert('Une erreur est survenue lors de la cancellation!!!!', 'danger');
-                this.state.disableRegister = false;
-                this.setState(this.state);
+            var errorCode = data.responseJSON.code;
+            this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
+            this.state.disableRegister = false;
+            this.setState(this.state);
         }
 
         render(){
@@ -139,7 +141,6 @@ class Events extends React.Component{
                         return (
                                 <div className='events'>
                                 </div>)
-
                 }
         }
 }

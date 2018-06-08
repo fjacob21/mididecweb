@@ -4,6 +4,7 @@ import User from './user'
 import RegisterPanel from './registerpanel'
 import RegisterStatusPanel from './registerstatuspanel'
 import AttendeeIcon from './attendeeicon'
+import Text from './localization/text'
 
 class EventSmall extends React.Component{
         constructor(props) {
@@ -43,7 +44,7 @@ class EventSmall extends React.Component{
                                 <div className='title'>{this.props.event.title}</div>
 
                                 <div className='detail'>
-                                        <div className='detaillabel'> Détail </div>
+                                        <div className='detaillabel'> {Text.text.event_details_label} </div>
                                         <div className='description'>{this.props.event.description} </div>
                                 </div>
                                 <div className='register'>
@@ -54,7 +55,7 @@ class EventSmall extends React.Component{
                                         <div className='timetext'>
                                                 <div className='date'>{dateText}</div>
                                                 <div className='time'>{timeText}</div>
-                                                <a href={icalurl}>Ajouter au calendrier</a>
+                                                <a href={icalurl}>{Text.text.event_add_to_calendar_label}</a>
                                         </div>
                                 </div>
                                 <div className='location'>
@@ -63,7 +64,7 @@ class EventSmall extends React.Component{
                                                 {this.props.event.location}
                                         </div>
                                 </div>
-                                <div className='attendees-title'>Participants</div>
+                                <div className='attendees-title'>{Text.text.event_attendees_label}</div>
                                 <div className='attendeesgrid'>
                                         {attendees}
                                 </div>

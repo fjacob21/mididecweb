@@ -170,14 +170,14 @@ class Navbar extends React.Component{
                                                                 {user.alias}
                                                         </DropdownItem>
                                                         <DropdownItem onClick={this.onProfile}>
-                                                                {Text.text.nav_profile_label}
+                                                                {Text.text.profile}
                                                         </DropdownItem>
                                                         {createevent}
                                                         {eventadmin}
                                                         {useradmin}
                                                         <DropdownItem divider />
                                                         <DropdownItem onClick={this.onLogout}>
-                                                                {Text.text.nav_logout_label}
+                                                                {Text.text.logout}
                                                         </DropdownItem>
                                                 </DropdownMenu>
                                         </UncontrolledDropdown>)
@@ -190,7 +190,7 @@ class Navbar extends React.Component{
                         </NavItem>);
                         loginlink =(<NavItem>
                                 <NavLink className='home-link' onClick={this.onLogin}>
-                                        {Text.text.nav_login_label}
+                                        {Text.text.login}
                                 </NavLink>
                         </NavItem>);
                 }

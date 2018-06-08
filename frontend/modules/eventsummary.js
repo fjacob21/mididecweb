@@ -2,6 +2,7 @@ import React from 'react'
 import createHistory from "history/createHashHistory"
 import DateFormater from './dateformater'
 import { Card, CardTitle } from 'reactstrap';
+import Text from './localization/text'
 
 const history = createHistory();
 
@@ -25,7 +26,7 @@ class EventSummary extends React.Component {
                         <Card body className='home-card'>
                                 <CardTitle><div className='es-title'>{this.props.event.title}</div></CardTitle>
                                 <div className='es-start-long'>{start + ' ' + time}</div>
-                                <div className='es-attendees'>{attendeesNumber} personnes inscrites - <font color="red">{attendeesLeft} places disponibles</font></div>
+                                <div className='es-attendees'>{attendeesNumber} {Text.text.event_registered_number_label} - <font color="red">{attendeesLeft} {Text.text.event_left_spots_label}</font></div>
                         </Card>
                   </div>)
         }
