@@ -1,6 +1,6 @@
 {
         "lang": "Français Canada",
-        "event_add_success": "'l'événement a été enregistré'",
+        "event_add_success": "l'événement a été enregistré",
         "event_title_label": "Titre",
         "event_description_label": "Description",
         "event_start_date_label": "Début",
