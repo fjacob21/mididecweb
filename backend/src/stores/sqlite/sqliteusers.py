@@ -21,9 +21,13 @@ class SqliteUsers():
             res = r.fetchall()
             result = []
             for rec in res:
-                result.append(self.create_object(rec))
+                try:
+                    result.append(self.create_object(rec))
+                except Exception:
+                    pass
             return result
         except Exception as e:
+            print(e)
             return []
 
     def find_email(self, email):
@@ -92,23 +96,27 @@ class SqliteUsers():
 
     def create_object(self, rec):
         user = {}
-        user['user_id'] = rec[0]
-        user['email'] = rec[1]
-        user['name'] = rec[2]
-        user['alias'] = rec[3]
-        user['psw'] = rec[4]
-        user['phone'] = rec[5]
-        user['useemail'] = eval(rec[6])
-        user['usesms'] = eval(rec[7])
-        user['profile'] = rec[8]
-        user['access'] = int(rec[9])
-        user['validated'] = eval(rec[10])
-        user['smsvalidated'] = eval(rec[11])
-        user['lastlogin'] = rec[12]
-        user['loginkey'] = rec[13]
-        user['avatar_path'] = rec[14]
-        user['create_date'] = rec[15]
-        user['smscode'] = rec[16]
+        try:
+            user['user_id'] = rec[0]
+            user['email'] = rec[1]
+            user['name'] = rec[2]
+            user['alias'] = rec[3]
+            user['psw'] = rec[4]
+            user['phone'] = rec[5]
+            user['useemail'] = eval(rec[6])
+            user['usesms'] = eval(rec[7])
+            user['profile'] = rec[8]
+            user['access'] = int(rec[9])
+            user['validated'] = eval(rec[10])
+            user['smsvalidated'] = eval(rec[11])
+            user['lastlogin'] = rec[12]
+            user['loginkey'] = rec[13]
+            user['avatar_path'] = rec[14]
+            user['create_date'] = rec[15]
+            user['smscode'] = rec[16]
+        except Exception as e:
+            print('create_object', e, rec[0], rec[2])
+            raise e
         return user
 
     def insert_object(self, user_id, email, name, alias, psw, phone, useemail, usesms,

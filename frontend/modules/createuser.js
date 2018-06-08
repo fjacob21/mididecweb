@@ -181,11 +181,11 @@ class CreateUser extends React.Component{
                                                 </FormGroup>
                                                 <FormGroup className='phone'>
                                                         <Label for="phone">{Text.text.user_phone_label}</Label>
-                                                        <div><Input onBlur={this.onChange} onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} /></div>
+                                                        <div><Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} /></div>
                                                 </FormGroup>
                                                 <FormGroup check  className='use'>
                                                         <Label>
-                                                                <Input onBlur={this.onChange} onChange={this.onCheck} type='checkbox' id="useemail" checked={this.state.values.useemail} />
+                                                                <Input onBlur={this.onBlur} onChange={this.onCheck} type='checkbox' id="useemail" checked={this.state.values.useemail} />
                                                                 {Text.text.user_useemail_label}
                                                         </Label>
                                                 </FormGroup>
