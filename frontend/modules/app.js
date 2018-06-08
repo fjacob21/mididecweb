@@ -87,7 +87,7 @@ class App extends React.Component{
                                                 <a className='footer-issue-link' href='https://github.com/fjacob21/mididecweb/issues/new' target="_blank">{Text.text.comments}</a>
                                         </div>
                                         <div className='footer-contrib'>
-                                                <a className='footer-contrib-link' href='https://github.com/fjacob21/mididecweb' target="_blank">{Text.text.github}</a>
+                                                <a className='footer-contrib-link' href='https://github.com/fjacob21/mididecweb' target="_blank"><img src='res/drawables/GitHub-Mark-Light-32px.png' /></a>
                                         </div>
                                         <div className='footer-copyright'>
                                                 © 2018 Mididecouverte
