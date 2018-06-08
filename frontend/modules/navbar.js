@@ -195,7 +195,7 @@ class Navbar extends React.Component{
                         </NavItem>);
                 }
                 var langs = Text.getLocales().map((locale) =>
-                        <option value={locale.id}>{locale.name}</option>
+                        <option key={locale.id} value={locale.id}>{locale.name}</option>
                   );
                 return (
                         <div className='navbars'>
