@@ -22,6 +22,9 @@ body {
         flex: 1 0 auto;
 }
 
+.empty {
+        visibility: hidden;
+}
 .app {
         height: 100%;
         display: flex;
