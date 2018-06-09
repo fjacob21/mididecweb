@@ -5,7 +5,7 @@ import createHistory from "history/createHashHistory"
 import User from './user'
 import Errors from './errors'
 import FormQuery from './formquery'
-import { Button, Form, FormGroup, Label, Input, Card, CardTitle, FormFeedback } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Card, CardTitle, FormFeedback, UncontrolledTooltip } from 'reactstrap';
 import {isValidNumber} from 'libphonenumber-js'
 import Text from './localization/text'
 
@@ -17,10 +17,18 @@ class CreateUser extends React.Component{
                 super(props);
                 this.state = {
                       valid: false,
+                      localValidation: {
+                              nameok: true,
+                              emailok: true,
+                              aliasok: true,
+                              passwordok: true,
+                              phoneok:true
+                      },
                       validation: {
                               emailok: true,
                               aliasok: true
                       },
+                      tooltipOpen: false,
                       values: { name: '',
                                 email: '',
                                 password: '',
@@ -39,6 +47,8 @@ class CreateUser extends React.Component{
                 this.onBlur = this.onBlur.bind(this);
                 this.onCheck = this.onCheck.bind(this);
                 this.onKeyPress = this.onKeyPress.bind(this);
+                this.toggle = this.toggle.bind(this);
+                this.enter = this.enter.bind(this);
         }
 
         componentDidMount(){
@@ -49,6 +59,7 @@ class CreateUser extends React.Component{
 
         onCheck(e){
                 this.state.values[e.target.id] = e.target.checked;
+                this.updateLocalValidation();
                 this.setState(this.state);
         }
 
@@ -61,6 +72,7 @@ class CreateUser extends React.Component{
                         this.state.values[e.target.id] = e.target.value;
                 }
                 this.validateUser();
+                this.updateLocalValidation();
                 this.setState(this.state);
         }
 
@@ -69,6 +81,11 @@ class CreateUser extends React.Component{
                     var fq = new FormQuery(this.state.values);
                     this.state.values = fq.parse();
                     this.validateUser();
+                    this.updateLocalValidation();
+                    this.setState(this.state);
+            }
+            else {
+                    this.updateLocalValidation(e.target.id);
                     this.setState(this.state);
             }
         }
@@ -76,6 +93,33 @@ class CreateUser extends React.Component{
         onKeyPress(e){
                 if (e.key == 'Enter' && this.state.valid)
                         this.onCreate();
+        }
+
+        updateLocalValidation(target){
+                if (target == 'name' || !target){
+                        this.state.localValidation.nameok = true;
+                        if (!this.state.values.name)
+                                this.state.localValidation.nameok = false;
+                }
+                if (target == 'email' || !target){
+                        this.state.localValidation.emailok = true;
+                        if (!this.state.values.email)
+                                this.state.localValidation.emailok = false;
+                }
+                if (target == 'alias' || !target) {
+                        this.state.localValidation.aliasok = true;
+                        if (!this.state.values.alias)
+                                this.state.localValidation.aliasok = false;
+                }
+                if (target == 'password' || !target) {
+                        this.state.localValidation.passwordok = true;
+                        if (!this.state.values.password)
+                                this.state.localValidation.passwordok = false;
+                }
+                this.state.localValidation.phoneok = true;
+                if (this.state.values.phone && !this.isPhoneValid(this.state.values.phone))
+                        this.state.localValidation.phoneok = false;
+                this.setState(this.state);
         }
 
         validateUser(){
@@ -144,13 +188,35 @@ class CreateUser extends React.Component{
             return isValidNumber(phone, 'CA');
         }
 
+        enter() {
+                this.updateLocalValidation();
+        }
+
+        toggle() {
+                console.debug('toggle');
+                this.state.tooltipOpen = !this.state.tooltipOpen;
+                this.setState(this.state);
+        }
         render(){
-                var emailErrorMessage = "";
+                var emailErrorMessage = <div className='empty'>e</div>;
+                if (!this.state.localValidation.emailok)
+                        emailErrorMessage = <FormFeedback>{Text.text.user_empty_email}</FormFeedback>
                 if (!this.state.validation.emailok)
                         emailErrorMessage = <FormFeedback>{Text.text.user_invalid_email}</FormFeedback>
-                var aliasErrorMessage = "";
+                var aliasErrorMessage = <div className='empty'>e</div>;
+                if (!this.state.localValidation.aliasok)
+                        aliasErrorMessage = <FormFeedback>{Text.text.user_empty_alias}</FormFeedback>
                 if (!this.state.validation.aliasok)
                         aliasErrorMessage = <FormFeedback>{Text.text.user_invalid_alias}</FormFeedback>
+                var nameErrorMessage = <div className='empty'>e</div>;
+                if (!this.state.localValidation.nameok)
+                        nameErrorMessage = <FormFeedback>{Text.text.user_empty_name}</FormFeedback>
+                var passwordErrorMessage = <div className='empty'>e</div>;
+                if (!this.state.localValidation.passwordok)
+                        passwordErrorMessage = <FormFeedback>{Text.text.user_empty_password}</FormFeedback>
+                var phoneErrorMessage = <div className='empty'>e</div>;
+                if (!this.state.localValidation.phoneok)
+                        phoneErrorMessage = <FormFeedback>{Text.text.user_invalid_phone}</FormFeedback>
                 return (
                         <div className='createuser'>
                                 <Card body className='createuser-card'>
@@ -159,29 +225,39 @@ class CreateUser extends React.Component{
                                         <Form className='createuser-form' onKeyPress={this.onKeyPress}>
                                                 <FormGroup className='name'>
                                                         <Label for="name">{Text.text.name} <font size="3" color="red">*</font></Label>
-                                                        <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
+                                                        <div>
+                                                                <Input onBlur={this.onBlur} invalid={!this.state.localValidation.nameok} onChange={this.onChange} autoComplete='name' type='text' name="name" id="name" placeholder="Nom" value={this.state.values.name} />
+                                                                {nameErrorMessage}
+                                                        </div>
                                                 </FormGroup>
                                                 <FormGroup className='email'>
                                                         <Label for="email">{Text.text.user_email_label} <font size="3" color="red">*</font></Label>
                                                         <div>
-                                                                <Input onBlur={this.onBlur} invalid={!this.state.validation.emailok} autoComplete='email' onChange={this.onChange} type='email' name="email" id="email" placeholder="test@test.com" value={this.state.values.email} />
+                                                                <Input onBlur={this.onBlur} invalid={!this.state.validation.emailok||!this.state.localValidation.emailok} autoComplete='email' onChange={this.onChange} type='email' name="email" id="email" placeholder="test@test.com" value={this.state.values.email} />
                                                                 {emailErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='alias'>
                                                         <Label for="alias">{Text.text.user_alias_label} <font size="3" color="red">*</font></Label>
                                                         <div>
-                                                                <Input onBlur={this.onBlur} invalid={!this.state.validation.aliasok} autoComplete='alias' onChange={this.onChange} type='text' name="alias" id="alias" placeholder="alias" value={this.state.values.alias} />
+                                                                <Input onBlur={this.onBlur} invalid={!this.state.validation.aliasok||!this.state.localValidation.aliasok} autoComplete='alias' onChange={this.onChange} type='text' name="alias" id="alias" placeholder="alias" value={this.state.values.alias} />
                                                                 {aliasErrorMessage}
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup className='password'>
                                                         <Label for="password">{Text.text.password} <font size="3" color="red">*</font></Label>
-                                                        <Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
+                                                        <div>
+                                                                <Input onBlur={this.onBlur} invalid={!this.state.localValidation.passwordok} onChange={this.onChange} autoComplete='current-password' type='password' name="password" id="password" value={this.state.values.password} />
+                                                                {passwordErrorMessage}
+                                                        </div>
                                                 </FormGroup>
                                                 <FormGroup className='phone'>
                                                         <Label for="phone">{Text.text.user_phone_label}</Label>
-                                                        <div><Input onBlur={this.onBlur} onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} /></div>
+                                                        <div>
+                                                                <Input onBlur={this.onBlur} invalid={!this.state.localValidation.phoneok} onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} />
+                                                                {phoneErrorMessage}
+
+                                                        </div>
                                                 </FormGroup>
                                                 <FormGroup check  className='use'>
                                                         <Label>
@@ -195,7 +271,9 @@ class CreateUser extends React.Component{
                                                                 {Text.text.user_usesms_label}
                                                         </Label>
                                                 </FormGroup>
-                                                <Button color="primary" onClick={this.onCreate} disabled={!this.state.valid}>{Text.text.user_add_add_label}</Button>{' '}
+                                                <div>
+                                                <Button color="primary"  id='btadd' onMouseEnter={this.enter} onClick={this.onCreate} disabled={!this.state.valid}>{Text.text.user_add_add_label}</Button>{' '}
+                                                </div>
                                         </Form>
                                 </Card>
                         </div>)

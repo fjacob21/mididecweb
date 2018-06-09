@@ -88,5 +88,10 @@
         "users": "Users",
         "user_delete_confirmation": "Are you sure you want to delete this user",
         "comments": "Comments",
-        "github": "Github"
+        "github": "Github",
+        "user_empty_email": "You need to specify an email",
+        "user_empty_alias": "You need to specify an alias",
+        "user_empty_name": "You need to specify an name",
+        "user_empty_password": "You need to specify an password",
+        "user_invalid_phone": "Invalid phone format ex:+15142228888"
 }
