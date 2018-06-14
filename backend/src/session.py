@@ -72,7 +72,7 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         env = Environment(loader=FileSystemLoader('emails'))
-        t = env.get_template('promotee.html')
+        t = env.get_template('eventchangelocation.html')
 
         event_obj = self.generate_email_event(event)
         html = t.render(user=self.user, event=event_obj, server=self._server)
@@ -83,7 +83,7 @@ class Session(object):
                              html,
                              'html',
                              self._config.email_server)
-        sender.send()
+        #sender.send()
         return html
 
     def add_event(self):
@@ -121,7 +121,6 @@ class Session(object):
         e = self._events.add(title, description, max_attendee, start, duration,
                              location, organizer_name, organizer_email,
                              event_id, self._user)
-        print(max_attendee, duration, description)
         return {'event': EventJsonEncoder(e, True).encode('dict')}
 
     def remove_event(self, event_id):
@@ -141,6 +140,9 @@ class Session(object):
         if not EventUpdateAccess(self, event).granted():
             raise SessionError(errors.ERROR_ACCESS_DENIED)
 
+        old_event = event.get_data()
+        date_changed = False
+        location_changed = False
         if 'title' in self._params:
             event.title = self._params['title']
         if 'description' in self._params:
@@ -149,13 +151,70 @@ class Session(object):
             event.max_attendee = self._params['max_attendee']
         if 'start' in self._params:
             start = self._params["start"]
-            event.start = start
+            if start != event.start:
+                event.start = start
+                date_changed = True
         if 'duration' in self._params:
             duration = int(self._params["duration"])
-            event.duration = duration
+            if duration != event.duration:
+                event.duration = duration
+                date_changed = True
         if 'location' in self._params:
-            event.location = self._params['location']
+            location = self._params['location']
+            if location != event.location:
+                event.location = location
+                location_changed = True
+        if location_changed:
+            self.send_location_changed_email(event, old_event)
+        if date_changed:
+            self.send_date_changed_email(event, old_event)
         return {'event': EventJsonEncoder(event, True).encode('dict')}
+
+    def send_location_changed_email(self, event, old_event):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            env = Environment(loader=FileSystemLoader('emails'))
+            t = env.get_template('eventchangelocation.html')
+            event_obj = self.generate_email_event(event)
+            res = True
+            for user in event.attendees:
+                if user.useemail and user.email and user.validated:
+                    sender = EmailSender(self._config.email_user,
+                                         self._config.email_password,
+                                         user.email,
+                                         'Changement dans la location',
+                                         t.render(user=user,
+                                                  event=event_obj,
+                                                  old_event=old_event,
+                                                  server=self._server),
+                                         'html',
+                                         self._config.email_server)
+                    res = sender.send()
+            if not res:
+                raise SessionError(errors.ERROR_SENDING_EMAIL)
+
+    def send_date_changed_email(self, event, old_event):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            env = Environment(loader=FileSystemLoader('emails'))
+            t = env.get_template('eventchangedate.html')
+            event_obj = self.generate_email_event(event)
+            res = True
+            for user in event.attendees:
+                if user.useemail and user.email and user.validated:
+                    sender = EmailSender(self._config.email_user,
+                                         self._config.email_password,
+                                         user.email,
+                                         'Changement dans la date',
+                                         t.render(user=user,
+                                                  event=event_obj,
+                                                  old_event=old_event,
+                                                  server=self._server),
+                                         'html',
+                                         self._config.email_server)
+                    res = sender.send()
+            if not res:
+                raise SessionError(errors.ERROR_SENDING_EMAIL)
 
     def register_event(self, event_id):
         event = self._events.get(event_id)
