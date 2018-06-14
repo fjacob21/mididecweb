@@ -35,11 +35,13 @@ class CreateEvent extends React.Component{
         }
 
         addSuccess(data){
+            this.props.onloading(false);
             this.showAlert(Text.text.event_add_success, 'success')
             history.replace("/events/" + data.event.event_id + '/update');
         }
 
         addError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
@@ -66,6 +68,7 @@ class CreateEvent extends React.Component{
         }
 
         onAdd() {
+            this.props.onloading(true);
             this.state.values.start = this.parseDate(this.state.values.startDate, this.state.values.time);
             this.state.values.duration = this.parseDuration(this.state.values.durationString);
             var user = User.getSession();

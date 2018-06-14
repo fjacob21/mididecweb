@@ -16,6 +16,7 @@ import EventsAdmin from './eventsadmin'
 import Presence from './presence'
 import Login from './login'
 import Text from './localization/text'
+import { BounceLoader } from 'react-spinners';
 
 class App extends React.Component{
         constructor(props) {
@@ -26,15 +27,26 @@ class App extends React.Component{
                               message: '',
                               color: 'success',
                               refresh: false
-                          }
+                          },
+                      spinners: {
+                          loading: false,
+                          color: '#CCC'
+                      }
                 };
                 this.onError = this.onError.bind(this);
                 this.refresh = this.refresh.bind(this);
                 this.hideAlert = this.hideAlert.bind(this);
+                this.onloading = this.onloading.bind(this);
         }
 
         onError(message, color){
                 this.showAlert(message, color);
+        }
+
+        onloading(loading=true, color='#CCC') {
+            this.state.spinners.loading = loading;
+            this.state.spinners.color = color;
+            this.setState(this.state);
         }
 
         refresh(){
@@ -70,17 +82,20 @@ class App extends React.Component{
                                                 {this.state.alert.message}
                                         </Alert>
                                 </div>
+                                <div className='spinners'>
+                                    <BounceLoader color={this.state.spinners.color} loading={this.state.spinners.loading}/>
+                                </div>
                                 <div className='content'>
-                                        <Route exact path="/" render={(props) => <Home {...props} onError={this.onError}/>} />
-                                        <Route path="/login" render={(props) => <Login {...props} onError={this.onError}/>} />
-                                        <Route exact path="/events/:id" render={(props) => <Events {...props} onError={this.onError}/>} />
-                                        <Route path="/events/:id/update" render={(props) => <UpdateEvent {...props} onError={this.onError}/>} />
-                                        <Route path="/createevent" render={(props) => <CreateEvent {...props} onError={this.onError}/>} />
-                                        <Route path="/users/:id/update" render={(props) => <UpdateUser {...props} onError={this.onError}/>} />
-                                        <Route path="/createuser" render={(props) => <CreateUser {...props} onError={this.onError}/>} />
-                                        <Route path="/usersadmin" render={(props) => <UsersAdmin {...props} onError={this.onError}/>} />
-                                        <Route path="/eventsadmin" render={(props) => <EventsAdmin {...props} onError={this.onError}/>} />
-                                        <Route path="/events/:id/presence" render={(props) => <Presence {...props} onError={this.onError}/>} />
+                                        <Route exact path="/" render={(props) => <Home {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/login" render={(props) => <Login {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route exact path="/events/:id" render={(props) => <Events {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/events/:id/update" render={(props) => <UpdateEvent {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/createevent" render={(props) => <CreateEvent {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/users/:id/update" render={(props) => <UpdateUser {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/createuser" render={(props) => <CreateUser {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/usersadmin" render={(props) => <UsersAdmin {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/eventsadmin" render={(props) => <EventsAdmin {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/events/:id/presence" render={(props) => <Presence {...props} onError={this.onError} onloading={this.onloading}/>} />
                                 </div>
                                 <div className='footer'>
                                         <div className='footer-issue'>

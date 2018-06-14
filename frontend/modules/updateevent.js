@@ -68,10 +68,12 @@ class UpdateEvent extends React.Component{
         }
 
         updateSuccess(data){
+            this.props.onloading(false);
             this.showAlert(Text.text.event_add_success, 'success')
         }
 
         updateError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
@@ -98,6 +100,7 @@ class UpdateEvent extends React.Component{
         }
 
         onUpdate() {
+            this.props.onloading(true);
             this.state.values.start = this.parseDate(this.state.values.startDate, this.state.values.time);
             this.state.values.duration = this.parseDuration(this.state.values.durationString);
             var user = User.getSession();

@@ -158,6 +158,7 @@ class CreateUser extends React.Component{
         }
 
         onCreate() {
+            this.props.onloading(true);
             this.state.valid = false;
             this.setState(this.state);
             jquery.ajax({
@@ -172,10 +173,12 @@ class CreateUser extends React.Component{
         }
 
         createSuccess(data){
+            this.props.onloading(false);
             history.replace("/login");
         }
 
         createError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }

@@ -158,6 +158,7 @@ class UpdateUser extends React.Component{
         }
 
         onUpdate() {
+            this.props.onloading(true);
             var user = User.getSession();
             this.state.values.loginkey = user.loginkey;
             this.state.valid = false;
@@ -174,11 +175,13 @@ class UpdateUser extends React.Component{
         }
 
         updateSuccess(data){
+            this.props.onloading(false);
             this.showAlert(Text.text.update_success, 'success');
             this.getUser();
         }
 
         updateError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
@@ -188,19 +191,20 @@ class UpdateUser extends React.Component{
         }
 
         handleFileUpload(event){
-                var user = User.getSession();
-                const file = event.target.files[0];
-                const formData = new FormData()
-                formData.append('avatar', file, file.name);
-                jquery.ajax({
-                type: 'POST',
-                url: "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?loginkey="+user.loginkey,
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: this.updateSuccess,
-                error: this.updateError
-                });
+            this.props.onloading(true);
+            var user = User.getSession();
+            const file = event.target.files[0];
+            const formData = new FormData()
+            formData.append('avatar', file, file.name);
+            jquery.ajax({
+            type: 'POST',
+            url: "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?loginkey="+user.loginkey,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: this.updateSuccess,
+            error: this.updateError
+            });
         }
 
         onFile(){
@@ -208,6 +212,7 @@ class UpdateUser extends React.Component{
         }
 
         onSendCode(){
+            this.props.onloading(true);
             var user = User.getSession();
             this.state.values.loginkey = user.loginkey;
             this.setState(this.state);
@@ -223,16 +228,19 @@ class UpdateUser extends React.Component{
         }
 
         sendCodeSuccess(data){
+            this.props.onloading(false);
             this.showAlert(Text.text.sms_code_send_success, 'success');
             this.getUser();
         }
 
         sendCodeError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
 
         onValidateCode(){
+            this.props.onloading(true);
             var user = User.getSession();
             this.state.values.loginkey = user.loginkey;
             this.setState(this.state);
@@ -248,11 +256,13 @@ class UpdateUser extends React.Component{
         }
 
         validateCodeSuccess(data){
+            this.props.onloading(false);
             this.showAlert(Text.text.phone_validated_msg, 'success');
             this.getUser();
         }
 
         validateCodeError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }
