@@ -56,6 +56,7 @@ class Events extends React.Component{
                 history.replace("/login");
             }
             else {
+                this.props.onloading(true);
                 this.state.disableRegister = true;
                 this.setState(this.state);
                 var data = {'loginkey': user.loginkey};
@@ -72,26 +73,28 @@ class Events extends React.Component{
         }
 
         registerSuccess(data){
-                switch(data.result){
-                case 1:
-                        this.showAlert(Text.text.event_register_success_msg)
-                break;
-                case 2:
-                        this.showAlert(Text.text.event_register_already_registered_msg, 'danger')
-                break;
-                case 3:
-                        this.showAlert(Text.text.event_register_waiting_msg, 'warning')
-                break;
-                case 4:
-                        this.showAlert(Text.text.event_register_already_waiting_msg, 'danger')
-                break;
-                };
-                this.state.event = new Event(data.event);
-                this.state.disableRegister = false;
-                this.setState(this.state);
+            this.props.onloading(false);
+            switch(data.result){
+            case 1:
+                    this.showAlert(Text.text.event_register_success_msg)
+            break;
+            case 2:
+                    this.showAlert(Text.text.event_register_already_registered_msg, 'danger')
+            break;
+            case 3:
+                    this.showAlert(Text.text.event_register_waiting_msg, 'warning')
+            break;
+            case 4:
+                    this.showAlert(Text.text.event_register_already_waiting_msg, 'danger')
+            break;
+            };
+            this.state.event = new Event(data.event);
+            this.state.disableRegister = false;
+            this.setState(this.state);
         }
 
         registerError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
             this.state.disableRegister = false;
@@ -99,6 +102,7 @@ class Events extends React.Component{
         }
 
         onCancel(){
+            this.props.onloading(true);
             var user = User.getSession();
             var data = {'loginkey': user.loginkey};
             this.state.disableRegister = true;
@@ -115,13 +119,15 @@ class Events extends React.Component{
         }
 
         cancelSuccess(data){
-                this.showAlert(Text.text.event_unregister_success_msg);
-                this.state.event = new Event(data.event);
-                this.state.disableRegister = false;
-                this.setState(this.state);
+            this.props.onloading(false);
+            this.showAlert(Text.text.event_unregister_success_msg);
+            this.state.event = new Event(data.event);
+            this.state.disableRegister = false;
+            this.setState(this.state);
         }
 
         cancelError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
             this.state.disableRegister = false;

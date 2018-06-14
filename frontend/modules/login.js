@@ -56,6 +56,7 @@ class Login extends React.Component{
         }
 
         onLogin() {
+            this.props.onloading(true);
             jquery.ajax({
             type: 'POST',
             url: "/mididec/api/v1.0/users/" + this.state.values.userid + '/login',
@@ -68,11 +69,13 @@ class Login extends React.Component{
         }
 
         loginSuccess(data){
+            this.props.onloading(false);
             sessionStorage.setItem('userinfo', JSON.stringify(data.user));
             history.replace("/");
         }
 
         loginError(data){
+            this.props.onloading(false);
             var errorCode = data.responseJSON.code;
             this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
         }

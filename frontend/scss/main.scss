@@ -42,6 +42,13 @@ body {
         }
 }
 
+.spinners {
+    z-index: 2000;
+    position: fixed;
+    align-self: center;
+    top: 10px;
+}
+
 .navs {
   width: 100%;
   background-color: #002a5c;
