@@ -220,19 +220,29 @@ class User(object):
             return True
         raise SessionError(errors.ERROR_INVALID_SMS_CODE)
 
-    def login(self, password):
+    def login(self, password, ip=''):
         if not self.validated:
             raise SessionError(errors.ERROR_VALIDATION_REQUIRED)
         if self.password == password:
             self.set_lastlogin()
-            self.loginkey = self.generate_loginkey(self.lastlogin)
-            return self.loginkey
+            loginkey = self.generate_loginkey(self.lastlogin)
+            self._store.logins.add(self.user_id, loginkey, ip)
+            if not self.loginkey:
+                self.loginkey = loginkey
+            return loginkey
         raise SessionError(errors.ERROR_INVALID_LOGIN)
 
     def logout(self, loginkey):
-        if loginkey != self.loginkey:
+        print('logout', self.user_id, loginkey)
+        login = self._store.logins.get(loginkey)
+        if not login:
             return False
-        self.loginkey = ''
+        self._store.logins.delete(loginkey)
+        if self.loginkey == loginkey:
+            self.loginkey = ''
+            logins = self._store.logins.get_user(self.user_id)
+            if len(logins) > 0:
+                self.loginkey = logins[0]['loginkey']
         return True
 
     def validate_access(self, access):

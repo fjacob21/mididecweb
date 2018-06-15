@@ -83,7 +83,7 @@ class Session(object):
                              html,
                              'html',
                              self._config.email_server)
-        #sender.send()
+        sender.send()
         return html
 
     def add_event(self):
@@ -536,7 +536,7 @@ class Session(object):
         avatar.save(avatar_path)
         return {'result': True}
 
-    def login(self, user_id):
+    def login(self, user_id, ip=''):
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "password" not in self._params:
@@ -546,8 +546,9 @@ class Session(object):
         if not user:
             raise SessionError(errors.ERROR_INVALID_LOGIN)
         password = BcryptHash(password, user.password.encode()).encrypt()
-        user.login(password)
+        loginkey = user.login(password, ip)
         user_dict = UserJsonEncoder(user, False, True).encode('dict')
+        user_dict['loginkey'] = loginkey
         return {'user': user_dict}
 
     def logout(self, user_id):

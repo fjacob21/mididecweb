@@ -292,13 +292,14 @@ def update_user_avatar(user_id):
 
 @application.route(api + 'users/<user_id>/login', methods=['POST'])
 def login(user_id):
+    print(request.headers, 'host', request.remote_addr)
     try:
         if not request.json:
             return return_error(errors.ERROR_INVALID_REQUEST)
         session = Session(request.json, get_store(),
                           request.args.get('loginkey'), config,
                           request.url_root)
-        return jsonify(session.login(user_id))
+        return jsonify(session.login(user_id, request.remote_addr))
     except SessionError as se:
         return return_error(se.code)
 
