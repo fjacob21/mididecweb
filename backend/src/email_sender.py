@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 class EmailSender():
 
     def __init__(self, usr, psw, to, title, body, type='plain',
-                 server='smtp.gmail.com'):
+                 server='smtp.gmail.com', ical=''):
         self._server = server
         self._psw = psw
         self._type = type
@@ -14,6 +14,7 @@ class EmailSender():
         self._to = to
         self._title = title
         self._body = body
+        self._ical = ical
 
     def send(self):
         fromaddr = self._from
@@ -25,6 +26,10 @@ class EmailSender():
 
         body = self._body
         msg.attach(MIMEText(body, self._type))
+        if self._ical:
+            icalmsg = MIMEText(self._ical, 'plain')
+            icalmsg.add_header('Content-Disposition', 'attachment', filename='event.ics')
+            msg.attach(icalmsg)
 
         try:
             server = smtplib.SMTP(self._server, 587)

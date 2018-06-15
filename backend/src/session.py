@@ -196,6 +196,7 @@ class Session(object):
     def send_date_changed_email(self, event, old_event):
         if (self._config and self._config.email_user and
            self._config.email_password and self._config.email_server):
+            ical = iCalGenerator(event).generate()
             env = Environment(loader=FileSystemLoader('emails'))
             t = env.get_template('eventchangedate.html')
             event_obj = self.generate_email_event(event)
@@ -211,7 +212,8 @@ class Session(object):
                                                   old_event=old_event,
                                                   server=self._server),
                                          'html',
-                                         self._config.email_server)
+                                         self._config.email_server,
+                                         ical)
                     res = sender.send()
             if not res:
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
@@ -301,6 +303,7 @@ class Session(object):
         if (self._config and self._config.email_user and
            self._config.email_password and self._config.email_server):
             env = Environment(loader=FileSystemLoader('emails'))
+            ical = iCalGenerator(event).generate()
             t = env.get_template('eventpublish.html')
             event_obj = self.generate_email_event(event)
             res = True
@@ -314,7 +317,8 @@ class Session(object):
                                                   event=event_obj,
                                                   server=self._server),
                                          'html',
-                                         self._config.email_server)
+                                         self._config.email_server,
+                                         ical)
                     res = sender.send()
             if not res:
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
