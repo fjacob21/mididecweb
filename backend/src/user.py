@@ -245,6 +245,12 @@ class User(object):
                 self.loginkey = logins[0]['loginkey']
         return True
 
+    def is_login_key_active(self, loginkey):
+        rec = self._store.logins.get(loginkey)
+        if rec and rec['user_id'] == self.user_id:
+            return True
+        return False
+
     def validate_access(self, access):
         return (self.access & access) == access
 

@@ -47,7 +47,7 @@ class Users():
 
     def find_loginkey(self, loginkey):
         for user in self.list:
-            if user.loginkey == loginkey:
+            if user.is_login_key_active(loginkey):
                 return user
         return None
 
