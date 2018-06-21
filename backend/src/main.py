@@ -3,7 +3,6 @@ import datetime
 from bcrypt_hash import BcryptHash
 from flask import Flask, jsonify, request, make_response
 from flask import Response, send_from_directory, redirect
-# from events import Events
 from users import Users
 from user import USER_ACCESS_SUPER
 from logs import Logs
@@ -13,9 +12,8 @@ from config import Config
 from session_exception import SessionError
 import os
 import errors
-from ua_parser import user_agent_parser
-import requests
-import urllib.request
+from loggenerator import LogGenerator
+
 
 config = Config()
 application = Flask(__name__, static_url_path='')
@@ -54,37 +52,12 @@ def return_error(code):
 
 @application.before_request
 def before_request():
-    parsed_string = user_agent_parser.Parse(request.user_agent.string)
     ip = request.remote_addr
-    if ip == '127.0.0.1':
-        external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-        ip = external_ip
-    r = requests.get('http://api.ipstack.com/{0}?access_key=98e04078598f19c362b9dfa2405885fe'.format(ip))
-    geoip = r.json()
+    generator = LogGenerator(ip, request.user_agent.string)
+    log = generator.generate()
     store = get_store()
     logs = Logs(store)
-    log = {}
-    log['ip'] = ip
-    log['is_eu'] = geoip['location']['is_eu']
-    log['os'] = parsed_string['os']['family']
-    os_version_major = parsed_string['os']['major']
-    os_version_minor = parsed_string['os']['minor']
-    os_version_patch = parsed_string['os']['patch']
-    log['os_version'] = os_version_major + '.' + os_version_minor + '.' + os_version_patch
-    log['browser'] = parsed_string['user_agent']['family']
-    browser_version_major = parsed_string['user_agent']['major']
-    browser_version_minor = parsed_string['user_agent']['minor']
-    browser_version_patch = parsed_string['user_agent']['patch']
-    log['browser_version'] = browser_version_major + '.' + browser_version_minor + '.' + browser_version_patch
-    log['region'] = geoip['region_name']
-    log['city'] = geoip['city']
-    log['country'] = geoip['country_name']
-    log['continent'] = geoip['continent_name']
-    log['country_emoji'] = geoip['location']['country_flag_emoji']
-    log['date'] = datetime.datetime.now().isoformat()
-    print(log)
     logs.add(log['ip'], log['os'], log['os_version'], log['browser'], log['browser_version'], log['continent'], log['is_eu'], log['country'], log['country_emoji'], log['region'], log['city'])
-    # print(log)
 
 
 @application.after_request
