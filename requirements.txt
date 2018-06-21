@@ -5,3 +5,5 @@ twilio
 bcrypt
 jinja2
 flask
+ua_parser
+requests
