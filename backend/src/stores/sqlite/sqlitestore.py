@@ -4,6 +4,7 @@ from .sqlitewaitings import SqliteWaitings
 from .sqliteattendees import SqliteAttendees
 from .sqliteusers import SqliteUsers
 from .sqlitelogins import SqliteLogins
+from .sqlitelogs import SqliteLogs
 
 
 class SqliteStore():
@@ -16,6 +17,7 @@ class SqliteStore():
         self.waitings = SqliteWaitings(self._conn)
         self.users = SqliteUsers(self._conn)
         self.logins = SqliteLogins(self._conn)
+        self.logs = SqliteLogs(self._conn)
 
     def reset(self):
         self.events.reset()
@@ -23,6 +25,7 @@ class SqliteStore():
         self.waitings.reset()
         self.users.reset()
         self.logins.reset()
+        self.logs.reset()
 
     def clean(self):
         self.events.clean()
@@ -30,6 +33,7 @@ class SqliteStore():
         self.waitings.clean()
         self.users.clean()
         self.logins.clean()
+        self.logs.clean()
 
     def open(self):
         self._conn = sqlite3.connect(self._db)
@@ -38,6 +42,7 @@ class SqliteStore():
         self.waitings._conn = self._conn
         self.users._conn = self._conn
         self.logins._conn = self._conn
+        self.logs._conn = self._conn
 
     def close(self):
         self._conn.close()
