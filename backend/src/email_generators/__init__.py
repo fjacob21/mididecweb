@@ -6,3 +6,4 @@ from .user_promote import UserPromoteEmail
 from .event_date_changed import EventDateChangedEmail
 from .event_location_changed import EventLocationChangedEmail
 from .icalgenerator import iCalGenerator
+from .generator import generate_email

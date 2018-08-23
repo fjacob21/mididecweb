@@ -19,7 +19,7 @@ import os
 from events import Events
 from event import Event
 from users import Users
-from email_generator import generate_email
+from email_generators import generate_email
 from email_generators import UserValidationEmail, EventPublishEmail, UserPromoteEmail, UserEventConfirmEmail
 from email_generators import EventDateChangedEmail, EventLocationChangedEmail
 from email_generators import UserEventWaitEmail
