@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 import pytz
 from icalendar import Calendar
 from src.events import Events
-from src.icalgenerator import iCalGenerator
+from src.email_generators.icalgenerator import iCalGenerator
 from src.stores import MemoryStore
 
 

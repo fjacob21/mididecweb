@@ -1,115 +1,46 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html>
-        <head>
-                <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-                <meta NAME="viewport" CONTENT="width=device-width, height=device-height, initial-scale=1, user-scalable=no"/>
-                <meta name="mobile-web-app-capable" content="yes">
-                <meta name="apple-mobile-web-app-capable" content="yes">
-                <title>Confirmation d'usager</title>
-
-
-                <!-- Optional theme -->
-                <style>
-                    html, body {
-                      padding: 0;
-                      margin: 0;
-                      height: 100%;
-                      width: 100%;
-                    }
-                    .logo-container {
-                        display: flex;
-                        background-color: #002a5c;
-                        height: 100px;
-                        max-height:100px;
-                    }
-                    .logo {
-                        display: flex;
-                        width: 80px;
-                        height: 80px;
-                        margin-top: auto;
-                        margin-bottom: auto;
-                    }
-                    .welcome {
-                        display: flex;
-                        margin-top: 10px;
-                        font-size: 2em;
-                        color: #002a5c;
-                        font-family: "Bauhaus 93";
-                        margin-left: 5px;
-                    }
-                    .welcome-message {
-                        display: flex;
-                        margin-top: 10px;
-                        color: #002a5c;
-                        margin-left: 5px;
-                    }
-                    .validate-text {
-                        display: flex;
-                        margin-top: 0px;
-                        color: #002a5c;
-                        margin-left: 5px;
-                    }
-                    .validate-link {
-                        display: flex;
-                        margin-top: 10px;
-                        margin-left: 5px;
-                        margin-bottom: 10px;
-                    }
-                    .validate-link-container {
-                        display: flex;
-                        margin-top: 10px;
-                        margin-left: 5px;
-                        margin-bottom: 100px;
-                    }
-                    .footer {
-                        display: flex;
-                        position:absolute;
-                        margin-top: 70px;
-                        bottom:0;
-                        width:100%;
-                        height:30px;
-                        color: white;
-                        background:#002a5c;
-                    }
-                    .footer-tr {
-                        margin-top: 70px;
-                        bottom:0;
-                        width:100%;
-                        height:30px;
-                        color: white;
-                        background:#002a5c;
-                    }
-                    .site-link {
-                        display: flex;
-                        margin-top: auto;
-                        margin-bottom: auto;
-                        margin-left: 5px;
-                        color: white;
-                    }
-                </style>
-        </head>
-        <body>
-                <table class="logo-container" height="100"  cellpadding="0" cellspacing="0" border="0" style="padding:0px;margin:0px;text-decoration:none;" width="100%">
-                    <tr><td class="logo-container" height="100" style="padding:0px;margin:0px;">
-                        <img class="logo" height="80" src="{{server}}res/drawables/mididec.png" /></td></tr>
-                </table>
-                <div class="welcome">
-                    Bienvenue {{user.name}}
-                </div>
-                <div class="welcome-message">
-                     Nous sommes heureux de vous accueillir dans le groupe MidiDecouverte!
-                </div>
-                <div class="validate-text">
-                    Pour pouvoir utiliser votre compte, vous devez le valider en cliquant sur ce lien
-                </div>
-                <div class="validate-link-container">
-                    <a class="validate-link" href="{{server}}mididec/api/v1.0/users/{{user.user_id}}/validate">Validation</a>
-                </div>
-                <table class="footer">
-                    <tr><td class="footer-tr" height="30">
-                    <a class="site-link" href="{{server}}">Mididecouverte.org</a>
-                    </td></tr>
-                </table>
-        </body>
-</html>
+<style>
+    .welcome {
+        display: flex;
+        margin-top: 10px;
+        font-size: 2em;
+        color: #002a5c;
+        font-family: "Bauhaus 93";
+        margin-left: 5px;
+    }
+    .welcome-message {
+        display: flex;
+        margin-top: 10px;
+        color: #002a5c;
+        margin-left: 5px;
+    }
+    .validate-text {
+        display: flex;
+        margin-top: 0px;
+        color: #002a5c;
+        margin-left: 5px;
+    }
+    .validate-link {
+        display: flex;
+        margin-top: 10px;
+        margin-left: 5px;
+        margin-bottom: 10px;
+    }
+    .validate-link-container {
+        display: flex;
+        margin-top: 10px;
+        margin-left: 5px;
+        margin-bottom: 100px;
+    }
+</style>
+<div class="welcome">
+    Bienvenue {{user.name}}
+</div>
+<div class="welcome-message">
+     Nous sommes heureux de vous accueillir dans le groupe MidiDecouverte!
+</div>
+<div class="validate-text">
+    Pour pouvoir utiliser votre compte, vous devez le valider en cliquant sur ce lien
+</div>
+<div class="validate-link-container">
+    <a class="validate-link" href="{{server}}mididec/api/v1.0/users/{{user.user_id}}/validate">Validation</a>
+</div>

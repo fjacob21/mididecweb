@@ -1,0 +1,193 @@
+<style>
+.time-logo {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    margin: auto;
+    align-items: center;
+    align-content: center;
+}
+.location-logo {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    margin: auto;
+}
+.user {
+    display: flex;
+    margin-top: 10px;
+    font-size: 2em;
+    color: #002a5c;
+    font-family: "Bauhaus 93";
+    margin-left: 5px;
+}
+.register-message {
+    display: flex;
+    margin-top: 10px;
+    color: #002a5c;
+    margin-left: 5px;
+    font-size: 1.5em;
+}
+.event-day {
+    display: flex;
+    margin-top: 20px;
+    margin-left: 5px;
+}
+.event-day-div {
+    display: flex;
+    margin-top: 20px;
+    color: white;
+    width: 200px;
+    padding: 10px;
+    background-color: #002a5c;
+    font-size: 1.5em;
+}
+.event-title {
+    display: flex;
+    color: #002a5c;
+    margin-left: 5px;
+    margin-top: 10px;
+    font-size: 200%;
+}
+.event-link {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 5px;
+    color: #002a5c;
+}
+.event-detail {
+    display: flex;
+    margin-top: 10px;
+    color: #002a5c;
+    margin-left: 5px;
+    border: 1px black solid;
+    flex-direction: column;
+    width: 400px;
+}
+.event-start {
+    margin-top: 10px;
+    color: #002a5c;
+    margin-left: 5px;
+}
+.event-start-table {
+    color: #002a5c;
+}
+.event-start-icon {
+    color: #002a5c;
+    width: 100px;
+    height: 40px;
+    background-color: #d0d7d8;
+    padding: 0;
+    align-items: center;
+    align-content: center;
+}
+.event-start-text {
+    color: #002a5c;
+    margin-left: 5px;
+}
+.event-times {
+    margin-top: 10px;
+    color: #002a5c;
+    margin-left: 5px;
+}
+.event-location-table {
+    color: #002a5c;
+    padding: 0;
+}
+.event-location-icon {
+    color: #002a5c;
+    width: 100px;
+    height: 40px;
+    background-color: #d0d7d8;
+    padding: 0;
+}
+.event-location-text {
+    color: #002a5c;
+    margin-left: 5px;
+}
+.event-location {
+    color: #002a5c;
+    padding: 0;
+}
+.event-organizer-table {
+    color: #002a5c;
+    padding: 0;
+}
+.event-organizer {
+    color: #002a5c;
+    margin-left: 5px;
+}
+.event-organizer-label {
+    color: #002a5c;
+    width: 100px;
+    background-color: #d0d7d8;
+    padding: 0;
+    height: 40px;
+}
+.event-description {
+    display: flex;
+    margin-top: 10px;
+    color: #002a5c;
+    margin-left: 5px;
+}
+.event-description-label {
+    display: flex;
+    margin-top: 10px;
+    color: #002a5c;
+    margin-left: 5px;
+    font-size: 2em;
+}
+.event-signature {
+    display: flex;
+    margin-top: 10px;
+    color: #002a5c;
+    margin-left: 5px;
+}
+</style>
+<div class="user">
+    {{user.name}}
+</div>
+<div class="register-message">
+    Une nouvelle rencontre viens d'être annoncée
+</div>
+<table class="event-day">
+    <tr><td class='event-day-div'>{{event.day}}</td></tr>
+</table>
+<div class="event-title">
+    <a class="event-link" href="{{server}}/#/events/{{event.event_id}}">{{event.title}}</a>
+</div>
+<hr>
+<table class="event-detail" cellspacing="0">
+    <tr class="event-start-table">
+            <td class="event-start-icon">
+                    <img class="time-logo" height="40" src="{{server}}res/drawables/time-icon.png" />
+            </td>
+            <td class="event-start-text">
+                    <div class="event-start">
+                        {{event.start}}
+                    </div>
+                    <div class="event-times">
+                        {{event.times}}
+                    </div>
+            </td>
+    </tr>
+    <tr class="event-location-table">
+        <td class="event-location-icon">
+            <img class="location-logo" height="40" src="{{server}}res/drawables/location-icon.png" />
+        </td>
+        <td class="event-location-text">
+                {{event.location}}
+        </td>
+    </tr>
+    <tr class="event-organizer-table">
+        <td class="event-organizer-label">Organisateur</td>
+        <td class="event-organizer">{{event.organizer_name}}</td>
+    </tr>
+</table>
+<div class="event-description-label">
+    Description
+</div>
+<div class="event-description">
+    {{event.description}}
+</div>

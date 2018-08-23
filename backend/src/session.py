@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from email_sender import EmailSender
 from sms_sender import SmsSender
 from eventtextgenerator import EventTextGenerator
-from icalgenerator import iCalGenerator
+from email_generators import iCalGenerator
 from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
@@ -17,14 +17,19 @@ import errors
 import locale
 import os
 from events import Events
+from event import Event
 from users import Users
-
+from email_generators import generate_email
+from email_generators import UserValidationEmail, EventPublishEmail, UserPromoteEmail, UserEventConfirmEmail
+from email_generators import EventDateChangedEmail, EventLocationChangedEmail
+from email_generators import UserEventWaitEmail
 
 class Session(object):
 
     def __init__(self, params, store, loginkey='', config=None,
                  server='https://mididecouverte.org/'):
         self._params = params
+        self._store = store
         self._loginkey = loginkey
         self._events = Events(store)
         self._users = Users(store)
@@ -71,20 +76,21 @@ class Session(object):
         event = self._events.get(event_id)
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
-        env = Environment(loader=FileSystemLoader('emails'))
-        t = env.get_template('eventchangelocation.html')
 
-        event_obj = self.generate_email_event(event)
-        html = t.render(user=self.user, event=event_obj, server=self._server)
-        sender = EmailSender(self._config.email_user,
-                             self._config.email_password,
-                             'fjacob21@hotmail.com',
-                             'Confirmation MidiDecouverte',
-                             html,
-                             'html',
-                             self._config.email_server)
-        sender.send()
-        return html
+        old_event = event.get_data()
+        old_event = Event(self._store, event_id, static_data=old_event)
+        old_event.start = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        email = EventPublishEmail(event=event, server=self._server)
+        email = UserValidationEmail(server=self._server)
+        email = UserPromoteEmail(event=event, server=self._server)
+        email = UserEventConfirmEmail(event=event, server=self._server)
+        email = UserEventWaitEmail(event=event, server=self._server)
+        html = generate_email('test', 'usertest.html')#, root='../src')
+        #email = EventDateChangedEmail(event=event, old_event=old_event, server=self._server)
+        #email = EventLocationChangedEmail(event=event, old_event=old_event, server=self._server)
+        #self.send_email(email, [self.user])
+        return html #email.generate(user=self.user)
 
     def add_event(self):
         if "title" not in self._params or "description" not in self._params:
@@ -141,6 +147,7 @@ class Session(object):
             raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         old_event = event.get_data()
+        old_event = Event(self._store, event_id, static_data=old_event)
         date_changed = False
         location_changed = False
         if 'title' in self._params:
@@ -171,52 +178,12 @@ class Session(object):
         return {'event': EventJsonEncoder(event, True).encode('dict')}
 
     def send_location_changed_email(self, event, old_event):
-        if (self._config and self._config.email_user and
-           self._config.email_password and self._config.email_server):
-            env = Environment(loader=FileSystemLoader('emails'))
-            t = env.get_template('eventchangelocation.html')
-            event_obj = self.generate_email_event(event)
-            res = True
-            for user in event.attendees:
-                if user.useemail and user.email and user.validated:
-                    sender = EmailSender(self._config.email_user,
-                                         self._config.email_password,
-                                         user.email,
-                                         'Changement dans la location',
-                                         t.render(user=user,
-                                                  event=event_obj,
-                                                  old_event=old_event,
-                                                  server=self._server),
-                                         'html',
-                                         self._config.email_server)
-                    res = sender.send()
-            if not res:
-                raise SessionError(errors.ERROR_SENDING_EMAIL)
+        email = EventLocationChangedEmail(event=event, old_event=old_event, server=self._server)
+        self.send_email(email, event.attendees)
 
     def send_date_changed_email(self, event, old_event):
-        if (self._config and self._config.email_user and
-           self._config.email_password and self._config.email_server):
-            ical = iCalGenerator(event).generate()
-            env = Environment(loader=FileSystemLoader('emails'))
-            t = env.get_template('eventchangedate.html')
-            event_obj = self.generate_email_event(event)
-            res = True
-            for user in event.attendees:
-                if user.useemail and user.email and user.validated:
-                    sender = EmailSender(self._config.email_user,
-                                         self._config.email_password,
-                                         user.email,
-                                         'Changement dans la date',
-                                         t.render(user=user,
-                                                  event=event_obj,
-                                                  old_event=old_event,
-                                                  server=self._server),
-                                         'html',
-                                         self._config.email_server,
-                                         ical)
-                    res = sender.send()
-            if not res:
-                raise SessionError(errors.ERROR_SENDING_EMAIL)
+        email = EventDateChangedEmail(event=event, old_event=old_event, server=self._server)
+        self.send_email(email, event.attendees)
 
     def register_event(self, event_id):
         event = self._events.get(event_id)
@@ -235,24 +202,12 @@ class Session(object):
                 'event': EventJsonEncoder(event, complete).encode('dict')}
 
     def send_confirmation_email(self, list, event, user):
-        if (self._config and self._config.email_user and
-           self._config.email_password and self._config.email_server):
-            env = Environment(loader=FileSystemLoader('emails'))
-            event_obj = self.generate_email_event(event)
-            if list == ATTENDEE_LIST:
-                t = env.get_template('registerconfirm.html')
-            else:
-                t = env.get_template('waitingconfirm.html')
-            sender = EmailSender(self._config.email_user,
-                                 self._config.email_password,
-                                 user.email,
-                                 'Confirmation pour ' + event.title,
-                                 t.render(user=user,
-                                          event=event_obj,
-                                          server=self._server),
-                                 'html',
-                                 self._config.email_server)
-            sender.send()
+        if list == ATTENDEE_LIST:
+            email = UserEventConfirmEmail(event=event, server=self._server)
+        else:
+            email = UserEventWaitEmail(event=event, server=self._server)
+        self.send_email(email, [user])
+
 
     def unregister_event(self, event_id):
         event = self._events.get(event_id)
@@ -271,21 +226,8 @@ class Session(object):
                 'event': EventJsonEncoder(event, complete).encode('dict')}
 
     def send_promotee_email(self, event, promotee):
-        if (self._config and self._config.email_user and
-           self._config.email_password and self._config.email_server):
-            event_obj = self.generate_email_event(event)
-            env = Environment(loader=FileSystemLoader('emails'))
-            t = env.get_template('promotee.html')
-            sender = EmailSender(self._config.email_user,
-                                 self._config.email_password,
-                                 promotee.email,
-                                 'Confirmation pour' + event.title,
-                                 t.render(user=promotee,
-                                          event=event_obj,
-                                          server=self._server),
-                                 'html',
-                                 self._config.email_server)
-            sender.send()
+        email = UserPromoteEmail(event=event, server=self._server)
+        self.send_email(email, [promotee])
 
     def publish_event(self, event_id):
         event = self._events.get(event_id)
@@ -300,28 +242,8 @@ class Session(object):
         return {'result': True}
 
     def send_publish_event_email(self, event):
-        if (self._config and self._config.email_user and
-           self._config.email_password and self._config.email_server):
-            env = Environment(loader=FileSystemLoader('emails'))
-            ical = iCalGenerator(event).generate()
-            t = env.get_template('eventpublish.html')
-            event_obj = self.generate_email_event(event)
-            res = True
-            for user in self._users.list:
-                if user.useemail and user.email and user.validated:
-                    sender = EmailSender(self._config.email_user,
-                                         self._config.email_password,
-                                         user.email,
-                                         'Nouvelle rencontre',
-                                         t.render(user=user,
-                                                  event=event_obj,
-                                                  server=self._server),
-                                         'html',
-                                         self._config.email_server,
-                                         ical)
-                    res = sender.send()
-            if not res:
-                raise SessionError(errors.ERROR_SENDING_EMAIL)
+        email = EventPublishEmail(event=event, server=self._server)
+        self.send_email(email, self._users.list)
 
     def send_publish_event_sms(self, event):
         if self._config and self._config.sms_sid and self._config.sms_token:
@@ -402,17 +324,8 @@ class Session(object):
     def send_validation_email(self, user):
         if (self._config and self._config.email_user and
            self._config.email_password and self._config.email_server):
-            env = Environment(loader=FileSystemLoader('emails'))
-            t = env.get_template('uservalidate.html')
-            sender = EmailSender(self._config.email_user,
-                                 self._config.email_password,
-                                 user.email,
-                                 'Validation MidiDecouverte',
-                                 t.render(user=user,
-                                          server=self._server),
-                                 'html',
-                                 self._config.email_server)
-            sender.send()
+            email = UserValidationEmail(server=self._server)
+            self.send_email(email, [user])
         else:
             user.validated = True
 
@@ -564,20 +477,13 @@ class Session(object):
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         return {'result': True}
 
-    def generate_email_event(self, event):
-        event_obj = {}
-        event_obj['event_id'] = event.event_id
-        event_obj['title'] = event.title
-        try:
-            locale.setlocale(locale.LC_ALL, 'fr_CA')
-        except Exception:
-            pass
-        start = datetime.strptime(event.start, "%Y-%m-%dT%H:%M:%SZ")
-        end = datetime.strptime(event.end, "%Y-%m-%dT%H:%M:%SZ")
-        event_obj['day'] = start.strftime("%A")
-        event_obj['start'] = start.strftime("%d %B %Y")
-        event_obj['times'] = start.strftime("%H:%M %Z") + ' - ' + end.strftime("%H:%M %Z")
-        event_obj['description'] = event.description
-        event_obj['location'] = event.location
-        event_obj['organizer_name'] = event.organizer_name
-        return event_obj
+    def send_email(self, email, users):
+        if (self._config and self._config.email_user and
+           self._config.email_password and self._config.email_server):
+            sender = EmailSender(self._config.email_user,
+                                 self._config.email_password,
+                                 users,
+                                 email,
+                                 self._config.email_server)
+            if not sender.send():
+                raise SessionError(errors.ERROR_SENDING_EMAIL)
