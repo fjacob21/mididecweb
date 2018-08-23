@@ -5,29 +5,33 @@ from email.mime.text import MIMEText
 
 class EmailSender():
 
-    def __init__(self, usr, psw, to, title, body, type='plain',
-                 server='smtp.gmail.com', ical=''):
+    def __init__(self, usr, psw, users, email, server='smtp.gmail.com'):
         self._server = server
         self._psw = psw
-        self._type = type
         self._from = usr
-        self._to = to
-        self._title = title
-        self._body = body
-        self._ical = ical
+        self._users = users
+        self._email = email
 
     def send(self):
+        res = True
+        for user in self._users:
+            res = res and self.send_user(user)
+        return res
+
+    def send_user(self, user):
         fromaddr = self._from
-        toaddr = self._to
+        toaddr = user.email
         msg = MIMEMultipart()
         msg['From'] = fromaddr
         msg['To'] = toaddr
-        msg['Subject'] = self._title
+        msg['Subject'] = self._email.title
 
-        body = self._body
-        msg.attach(MIMEText(body, self._type))
-        if self._ical:
-            icalmsg = MIMEText(self._ical, 'plain')
+        body = self._email.generate(user)
+        ical = self._email.iCal
+        print('Send email', user.email)
+        msg.attach(MIMEText(body, 'html'))
+        if ical:
+            icalmsg = MIMEText(ical, 'plain')
             icalmsg.add_header('Content-Disposition', 'attachment', filename='event.ics')
             msg.attach(icalmsg)
 

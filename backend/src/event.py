@@ -11,19 +11,25 @@ ALREADY_WAITING_LIST = 4
 
 class Event():
 
-    def __init__(self, store, event_id):
+    def __init__(self, store, event_id, static_data=None):
         self._store = store
         self._event_id = event_id
+        self._static_data = static_data
 
     def get_data(self):
+        if self._static_data:
+            return self._static_data
         return self._store.events.get(self._event_id)
 
     def update_data(self, data):
-        self._store.events.update(data['title'],
-                                  data['description'], data['max_attendee'],
-                                  data['start'], data['duration'],
-                                  data['location'], data['organizer_name'],
-                                  data['organizer_email'], self._event_id)
+        if self._static_data:
+            self._static_data = data
+        else:
+            self._store.events.update(data['title'],
+                                      data['description'], data['max_attendee'],
+                                      data['start'], data['duration'],
+                                      data['location'], data['organizer_name'],
+                                      data['organizer_email'], self._event_id)
 
     @property
     def owner_id(self):
