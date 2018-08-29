@@ -343,6 +343,36 @@ def rm_user(user_id):
         return return_error(se.code)
 
 
+@application.route(api + 'users/resetpsw', methods=['POST'])
+def reset_user_psw():
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, get_store(),
+                          request.args.get('loginkey'), config,
+                          request.url_root)
+        return jsonify(session.reset_user_password())
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'users/<user_id>/resetpsw/<resetreq>', methods=['get'])
+def validate_reset_user_psw_req(user_id, resetreq):
+    print('Received validate reset password request', user_id, resetreq)
+    session = Session({}, get_store(), request.args.get('loginkey'),
+                      config, request_server())
+    return jsonify(session.validate_user_password_reset_request(user_id, resetreq))
+
+
+@application.route(api + 'users/<user_id>/resetpsw/<resetreq>', methods=['POST'])
+def reset_user_psw_req(user_id, resetreq):
+    print('Received reset password request', user_id, resetreq)
+    session = Session(request.json, get_store(),
+                      request.args.get('loginkey'), config,
+                      request.url_root)
+    return jsonify(session.user_password_reset_request(user_id, resetreq))
+
+
 @application.route('/html/<path:path>')
 def send_js(path):
     return send_from_directory('../../frontend/', path)

@@ -92,6 +92,7 @@ class App extends React.Component{
                                         <Route path="/events/:id/update" render={(props) => <UpdateEvent {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/createevent" render={(props) => <CreateEvent {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/users/:id/update" render={(props) => <UpdateUser {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/users/:id/resetpsw/:req" render={(props) => <ResetUserPsw {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/createuser" render={(props) => <CreateUser {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/usersadmin" render={(props) => <UsersAdmin {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/eventsadmin" render={(props) => <EventsAdmin {...props} onError={this.onError} onloading={this.onloading}/>} />

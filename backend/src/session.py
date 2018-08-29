@@ -9,7 +9,7 @@ from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
-from access import EventUpdateAccess
+from access import EventUpdateAccess, UserResetPasswordAccess
 from event import ATTENDEE_LIST, WAITING_LIST
 from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
@@ -19,8 +19,10 @@ import os
 from events import Events
 from event import Event
 from users import Users
+from passwordresetrequests import PasswordResetRequests
 from email_generators import generate_email
-from email_generators import UserValidationEmail, EventPublishEmail, UserPromoteEmail, UserEventConfirmEmail
+from email_generators import UserValidationEmail, EventPublishEmail
+from email_generators import UserPromoteEmail, UserEventConfirmEmail
 from email_generators import EventDateChangedEmail, EventLocationChangedEmail
 from email_generators import UserEventWaitEmail
 
@@ -33,6 +35,7 @@ class Session(object):
         self._loginkey = loginkey
         self._events = Events(store)
         self._users = Users(store)
+        self._reset_password_requests = PasswordResetRequests(store)
         self._user = None
         self._config = config
         self._server = server
@@ -387,7 +390,7 @@ class Session(object):
         if 'alias' in self._params:
             alias = self._params['alias']
         sameemail = False
-        if self.user and email == self.user.email or user and user.email == email:
+        if (self.user and email == self.user.email or user and user.email == email):
             sameemail = True
         samealias = False
         if self.user and alias == self.user.alias or user and user.alias == alias:
@@ -487,3 +490,44 @@ class Session(object):
                                  self._config.email_server)
             if not sender.send():
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
+
+    def reset_user_password(self):
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if "username" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        username = self._params["username"]
+        email = ''
+        if 'email' in self._params:
+            email = self._params["email"]
+        user = self._users.get(username)
+        reqid = '123456'
+        if UserResetPasswordAccess(self, user, email).granted():
+            request = self._reset_password_requests.add(username, email)
+            reqid = request.request_id
+            self.send_reset_password_email(user, request)
+        return {'result': True, 'request_id': reqid}
+
+    def validate_user_password_reset_request(self, user_id, resetreq):
+        req = self._reset_password_requests.get(resetreq)
+        if not req:
+            return {'result': False}
+        return {'result': True}
+
+    def user_password_reset_request(self, user_id, resetreq):
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if "password" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        user = self._users.get(user_id)
+        req = self._reset_password_requests.get(resetreq)
+        if not user or not req:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        password = self._params["password"]
+        password = BcryptHash(password).encrypt()
+        user.password = password
+        self._reset_password_requests.delete(resetreq)
+        return {'result': True}
+
+    def send_reset_password_email(self, user, request):
+        pass
