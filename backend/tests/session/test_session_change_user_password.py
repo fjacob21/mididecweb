@@ -1,10 +1,11 @@
 from bcrypt_hash import BcryptHash
+import pytest
 from src.users import Users
 from src.stores import MemoryStore
 from src.session import Session
 
 
-def test_validate():
+def test_request():
     store = MemoryStore()
     users = Users(store)
     password = BcryptHash('password').encrypt()
@@ -25,7 +26,10 @@ def test_validate():
     assert reset_dict['result']
     assert 'request_id' in reset_dict
     assert reset_dict['request_id']
-    validate_dict = session.validate_user_password_reset_request('name', reset_dict['request_id'])
+    params['password'] = 'toto'
+    params['request_id'] = reset_dict['request_id']
+    session = Session(params, store)
+    validate_dict = session.change_user_password()
     assert validate_dict
     assert 'result' in validate_dict
     assert validate_dict['result']
@@ -52,7 +56,10 @@ def test_invalid_request():
     assert reset_dict['result']
     assert 'request_id' in reset_dict
     assert reset_dict['request_id']
-    validate_dict = session.validate_user_password_reset_request('name', '')
-    assert validate_dict
-    assert 'result' in validate_dict
-    assert not validate_dict['result']
+    params['request_id'] = ''
+    session = Session(params, store)
+    with pytest.raises(Exception):
+        validate_dict = session.change_user_password()
+        assert validate_dict
+        assert 'result' in validate_dict
+        assert not validate_dict['result']

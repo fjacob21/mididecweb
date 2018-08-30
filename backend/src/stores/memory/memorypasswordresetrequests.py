@@ -31,12 +31,13 @@ class MemoryPasswordResetRequests():
     def clean(self):
         self.reset()
 
-    def create_object(self, request_id, date, username, email):
+    def create_object(self, request_id, date, username, email, accepted=''):
         request = {}
         request['request_id'] = request_id
         request['date'] = date
         request['username'] = username
         request['email'] = email
+        request['accepted'] = accepted
         return request
 
     def index(self, request_id):

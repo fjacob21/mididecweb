@@ -58,14 +58,16 @@ class SqlitePasswordResetRequests():
         request['date'] = rec[1]
         request['username'] = rec[2]
         request['email'] = rec[3]
+        request['accepted'] = rec[4]
         return request
 
-    def insert_object(self, request_id, date, username, email):
+    def insert_object(self, request_id, date, username, email, accepted=''):
         sql = "insert into reset_password_requests VALUES ("
         sql += '"' + request_id + '", '
         sql += '"' + date + '", '
         sql += '"' + username + '", '
-        sql += '"' + email + '") '
+        sql += '"' + email + '", '
+        sql += '"' + accepted + '") '
         self._conn.execute(sql)
         self._conn.commit()
 
@@ -77,5 +79,5 @@ class SqlitePasswordResetRequests():
             return False
 
     def create_table(self):
-        self._conn.execute("create table reset_password_requests(request_id, date, username, email)")
+        self._conn.execute("create table reset_password_requests(request_id, date, username, email, accepted)")
         self._conn.commit()

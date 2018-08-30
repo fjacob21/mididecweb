@@ -26,3 +26,7 @@ class PasswordResetRequest(object):
     @property
     def email(self):
         return self.get_data()['email']
+
+    @property
+    def accepted(self):
+        return self.get_data()['accepted']

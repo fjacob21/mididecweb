@@ -494,9 +494,9 @@ class Session(object):
     def reset_user_password(self):
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
-        if "username" not in self._params:
-            raise SessionError(errors.ERROR_MISSING_PARAMS)
-        username = self._params["username"]
+        username = ''
+        if 'username' in self._params:
+            username = self._params["username"]
         email = ''
         if 'email' in self._params:
             email = self._params["email"]
@@ -508,25 +508,32 @@ class Session(object):
             self.send_reset_password_email(user, request)
         return {'result': True, 'request_id': reqid}
 
-    def validate_user_password_reset_request(self, user_id, resetreq):
-        req = self._reset_password_requests.get(resetreq)
+    def validate_reset_user_password(self):
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if "request_id" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        request_id = self._params["request_id"]
+        req = self._reset_password_requests.get(request_id)
         if not req:
             return {'result': False}
         return {'result': True}
 
-    def user_password_reset_request(self, user_id, resetreq):
+    def change_user_password(self):
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if "request_id" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
         if "password" not in self._params:
             raise SessionError(errors.ERROR_MISSING_PARAMS)
-        user = self._users.get(user_id)
-        req = self._reset_password_requests.get(resetreq)
-        if not user or not req:
+        request_id = self._params["request_id"]
+        req = self._reset_password_requests.get(request_id)
+        if not req:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
+        user = self._users.get(req.username)
         password = self._params["password"]
         password = BcryptHash(password).encrypt()
         user.password = password
-        self._reset_password_requests.delete(resetreq)
         return {'result': True}
 
     def send_reset_password_email(self, user, request):
