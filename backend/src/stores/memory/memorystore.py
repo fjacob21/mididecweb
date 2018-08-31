@@ -4,6 +4,7 @@ from .memoryattendees import MemoryAttendees
 from .memoryusers import MemoryUsers
 from .memorylogins import MemoryLogins
 from .memorylogs import MemoryLogs
+from .memorypasswordresetrequests import MemoryPasswordResetRequests
 
 
 class MemoryStore():
@@ -15,6 +16,7 @@ class MemoryStore():
         self.users = MemoryUsers()
         self.logins = MemoryLogins()
         self.logs = MemoryLogs()
+        self.reset_password_requests = MemoryPasswordResetRequests()
 
     def reset(self):
         self.events.reset()
@@ -23,6 +25,7 @@ class MemoryStore():
         self.users.reset()
         self.logins.reset()
         self.logs.reset()
+        self.reset_password_requests.reset()
 
     def clean(self):
         self.events.clean()
@@ -31,3 +34,4 @@ class MemoryStore():
         self.users.clean()
         self.logins.clean()
         self.logs.clean()
+        self.reset_password_requests.clean()

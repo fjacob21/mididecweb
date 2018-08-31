@@ -1,11 +1,11 @@
 import locale
-from datetime import datetime, timedelta
+from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 from .icalgenerator import iCalGenerator
 import os
 
+
 def generate_email(title, message_file, root='./', *args, **kwargs):
-    print(os.getcwd())
     env = Environment(loader=FileSystemLoader(os.path.join(root, 'emails')))
     t = env.get_template('template.html')
 
@@ -27,7 +27,8 @@ def generate_email_event(event):
     end = datetime.strptime(event.end, "%Y-%m-%dT%H:%M:%SZ")
     event_obj['day'] = start.strftime("%A")
     event_obj['start'] = start.strftime("%d %B %Y")
-    event_obj['times'] = start.strftime("%H:%M %Z") + ' - ' + end.strftime("%H:%M %Z")
+    event_obj['times'] = start.strftime("%H:%M %Z")
+    event_obj['times'] += ' - ' + end.strftime("%H:%M %Z")
     event_obj['description'] = event.description
     event_obj['location'] = event.location
     event_obj['organizer_name'] = event.organizer_name

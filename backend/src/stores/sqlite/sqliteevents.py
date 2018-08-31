@@ -24,7 +24,7 @@ class SqliteEvents():
             for rec in res:
                 result.append(self.create_object(rec))
             return result
-        except Exception as e:
+        except Exception:
             return []
 
     def get(self, event_id):

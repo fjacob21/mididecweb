@@ -39,7 +39,6 @@ class Events():
         return hash.hexdigest()
 
     def remove(self, event_id):
-        print('Remove event', event_id)
         self._store.events.delete(event_id)
         self._store.attendees.delete_event(event_id)
         self._store.waitings.delete_event(event_id)

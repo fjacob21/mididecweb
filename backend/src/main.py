@@ -343,6 +343,36 @@ def rm_user(user_id):
         return return_error(se.code)
 
 
+@application.route(api + 'users/resetpsw', methods=['POST'])
+def reset_user_password():
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, get_store(),
+                          request.args.get('loginkey'), config,
+                          request.url_root)
+        return jsonify(session.reset_user_password())
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'users/resetpsw/validate', methods=['POST'])
+def validate_reset_user_password():
+    if not request.json:
+        return return_error(errors.ERROR_INVALID_REQUEST)
+    session = Session(request.json, get_store(), request.args.get('loginkey'),
+                      config, request_server())
+    return jsonify(session.validate_reset_user_password())
+
+
+@application.route(api + 'users/resetpsw/change', methods=['POST'])
+def change_user_password():
+    session = Session(request.json, get_store(),
+                      request.args.get('loginkey'), config,
+                      request.url_root)
+    return jsonify(session.change_user_password())
+
+
 @application.route('/html/<path:path>')
 def send_js(path):
     return send_from_directory('../../frontend/', path)
@@ -352,10 +382,12 @@ def send_js(path):
 def root():
     return redirect('/html/index.html')
 
+
 def request_server():
     if inDebug:
         return request.url_root + 'html/'
     return request.url_root
+
 
 set_root()
 

@@ -12,6 +12,8 @@ import UpdateEvent from './updateevent'
 import CreateUser from './createuser'
 import UpdateUser from './updateuser'
 import UsersAdmin from './usersadmin'
+import ResetUserPassword from './resetuserpassword'
+import ChangeUserPassword from './changeuserpassword'
 import EventsAdmin from './eventsadmin'
 import Presence from './presence'
 import Login from './login'
@@ -95,6 +97,8 @@ class App extends React.Component{
                                         <Route path="/createuser" render={(props) => <CreateUser {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/usersadmin" render={(props) => <UsersAdmin {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/eventsadmin" render={(props) => <EventsAdmin {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/resetpsw" render={(props) => <ResetUserPassword {...props} onError={this.onError} onloading={this.onloading}/>} />
+                                        <Route path="/changepsw/:reqid" render={(props) => <ChangeUserPassword {...props} onError={this.onError} onloading={this.onloading}/>} />
                                         <Route path="/events/:id/presence" render={(props) => <Presence {...props} onError={this.onError} onloading={this.onloading}/>} />
                                 </div>
                                 <div className='footer'>

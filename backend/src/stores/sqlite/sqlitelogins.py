@@ -56,7 +56,6 @@ class SqliteLogins():
             t = (loginkey,)
             self._conn.execute("delete from logins where loginkey=?", t)
             self._conn.commit()
-            print('deleted logins', loginkey)
         except Exception as e:
             print(e)
 
@@ -91,7 +90,6 @@ class SqliteLogins():
         sql += '"' + user_id + '", '
         sql += '"' + loginkey + '", '
         sql += '"' + ip + '")'
-        print(sql)
         self._conn.execute(sql)
         self._conn.commit()
 

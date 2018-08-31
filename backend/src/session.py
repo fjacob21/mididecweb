@@ -9,7 +9,7 @@ from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
-from access import EventUpdateAccess
+from access import EventUpdateAccess, UserResetPasswordAccess
 from event import ATTENDEE_LIST, WAITING_LIST
 from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
@@ -19,10 +19,12 @@ import os
 from events import Events
 from event import Event
 from users import Users
+from passwordresetrequests import PasswordResetRequests
 from email_generators import generate_email
-from email_generators import UserValidationEmail, EventPublishEmail, UserPromoteEmail, UserEventConfirmEmail
+from email_generators import UserValidationEmail, EventPublishEmail
+from email_generators import UserPromoteEmail, UserEventConfirmEmail
 from email_generators import EventDateChangedEmail, EventLocationChangedEmail
-from email_generators import UserEventWaitEmail
+from email_generators import UserEventWaitEmail, UserResetPasswordEmail
 
 class Session(object):
 
@@ -33,6 +35,7 @@ class Session(object):
         self._loginkey = loginkey
         self._events = Events(store)
         self._users = Users(store)
+        self._reset_password_requests = PasswordResetRequests(store)
         self._user = None
         self._config = config
         self._server = server
@@ -86,11 +89,12 @@ class Session(object):
         email = UserPromoteEmail(event=event, server=self._server)
         email = UserEventConfirmEmail(event=event, server=self._server)
         email = UserEventWaitEmail(event=event, server=self._server)
-        html = generate_email('test', 'usertest.html')#, root='../src')
+        email = UserResetPasswordEmail(request_id='2609fcd001a971a0436e633ed04336b35ac3974d9bcf098afbe1172b1799d458', server=self._server)
+        #html = generate_email('test', 'usertest.html')#, root='../src')
         #email = EventDateChangedEmail(event=event, old_event=old_event, server=self._server)
         #email = EventLocationChangedEmail(event=event, old_event=old_event, server=self._server)
-        #self.send_email(email, [self.user])
-        return html #email.generate(user=self.user)
+        self.send_email(email, [self.user])
+        return email.generate(user=self.user)
 
     def add_event(self):
         if "title" not in self._params or "description" not in self._params:
@@ -134,7 +138,6 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventRemoveAccess(self, event).granted():
-            print('Access denied')
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         self._events.remove(event_id)
         return {'result': True}
@@ -387,7 +390,7 @@ class Session(object):
         if 'alias' in self._params:
             alias = self._params['alias']
         sameemail = False
-        if self.user and email == self.user.email or user and user.email == email:
+        if (self.user and email == self.user.email or user and user.email == email):
             sameemail = True
         samealias = False
         if self.user and alias == self.user.alias or user and user.alias == alias:
@@ -487,3 +490,54 @@ class Session(object):
                                  self._config.email_server)
             if not sender.send():
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
+
+    def reset_user_password(self):
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        username = ''
+        if 'username' in self._params:
+            username = self._params["username"]
+        email = ''
+        if 'email' in self._params:
+            email = self._params["email"]
+        user = self._users.get(username)
+        reqid = '123456'
+        if UserResetPasswordAccess(self, user, email).granted():
+            request = self._reset_password_requests.add(username, email)
+            reqid = request.request_id
+            self.send_reset_password_email(user, request)
+        return {'result': True, 'request_id': reqid}
+
+    def validate_reset_user_password(self):
+        print('validate')
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if "request_id" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        request_id = self._params["request_id"]
+        req = self._reset_password_requests.get(request_id)
+        if not req or req.accepted:
+            return {'result': False}
+        return {'result': True}
+
+    def change_user_password(self):
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if "request_id" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        if "password" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        request_id = self._params["request_id"]
+        req = self._reset_password_requests.get(request_id)
+        if not req:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        user = self._users.get(req.username)
+        password = self._params["password"]
+        password = BcryptHash(password).encrypt()
+        user.password = password
+        req.accept()
+        return {'result': True}
+
+    def send_reset_password_email(self, user, request):
+        email = UserResetPasswordEmail(request_id=request.request_id, server=self._server)
+        self.send_email(email, [user])
