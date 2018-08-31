@@ -15,14 +15,13 @@ class ChangeUserPassword extends React.Component{
         constructor(props) {
                 super(props);
                 var request_id = this.props.match.params.reqid;
-                this.state = { request_id: request_id,
-                              valid: false,
-                      values: { password: ''}
+                this.state = { valid: false,
+                      values: { request_id: request_id, password: ''}
                 };
                 jquery.ajax({
                 type: 'POST',
                 url: "/mididec/api/v1.0/users/resetpsw/validate",
-                data: JSON.stringify (this.state),
+                data: JSON.stringify (this.state.values),
                 success: this.success.bind(this),
                 error: this.error.bind(this),
                 contentType: "application/json",
@@ -73,7 +72,7 @@ class ChangeUserPassword extends React.Component{
 
         onKeyPress(e){
                 if (e.key == 'Enter')
-                        this.onLogin();
+                        this.onChangePassword();
         }
 
         onChangePassword() {
@@ -91,7 +90,7 @@ class ChangeUserPassword extends React.Component{
 
         changePasswordSuccess(data){
             this.props.onloading(false);
-            this.showAlert('send', 'Mot de passe changé');
+            this.showAlert('Mot de passe changé');
             history.replace("/login");
         }
 
@@ -124,6 +123,7 @@ class ChangeUserPassword extends React.Component{
             else {
               return (
                       <div className='changepsw'>
+                      Invalid request
                       </div>)
             }
         }

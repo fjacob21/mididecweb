@@ -509,13 +509,15 @@ class Session(object):
         return {'result': True, 'request_id': reqid}
 
     def validate_reset_user_password(self):
+        print('validate')
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "request_id" not in self._params:
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         request_id = self._params["request_id"]
         req = self._reset_password_requests.get(request_id)
-        if not req:
+        print('validate', req.accepted)
+        if not req or req.accepted:
             return {'result': False}
         return {'result': True}
 

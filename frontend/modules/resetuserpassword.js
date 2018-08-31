@@ -53,7 +53,7 @@ class ResetUserPassword extends React.Component{
 
         onKeyPress(e){
                 if (e.key == 'Enter')
-                        this.onLogin();
+                        this.onResetPsw();
         }
 
         onResetPsw() {

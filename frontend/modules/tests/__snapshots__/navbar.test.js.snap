@@ -57,32 +57,32 @@ exports[`Link changes the class when hovered 1`] = `
             <option
               value="it"
             >
-              Italiano
+              italiano
             </option>
             <option
               value="ru"
             >
-              Pусский
+              русский
             </option>
             <option
               value="ja"
             >
-              日本の
+              日本語
             </option>
             <option
               value="ar"
             >
-              العربية
+              عربى
             </option>
             <option
               value="de"
             >
-              Deutsch
+              Deutsche
             </option>
             <option
               value="es"
             >
-              español
+              Español
             </option>
           </select>
         </li>
