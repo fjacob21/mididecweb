@@ -96,5 +96,6 @@
         "user_invalid_phone": "Invalid phone format ex:+15142228888",
         "resetpassword": "Reset password",
         "changepassword_label": "Enter your new password",
-        "changepassword_bt": "Change the password"
+        "changepassword_bt": "Change the password",
+        "invalid_request_msg": "Invalid request"
 }

@@ -97,5 +97,6 @@
         "user_invalid_phone": "Mauvais format de telephone ex:+15142228888",
         "resetpassword": "Remise à neuf du mot de passe",
         "changepassword_label": "Entrez votre nouveau mot de passe",
-        "changepassword_bt": "Changer le mot de passe"
+        "changepassword_bt": "Changer le mot de passe",
+        "invalid_request_msg": "Cette requète est invalide"
 }

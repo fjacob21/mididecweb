@@ -37,6 +37,8 @@ class ChangeUserPassword extends React.Component{
 
         success(data){
                 this.state.valid = data.result;
+                if (!this.state.valid)
+                  this.showAlert(Text.text.invalid_request_msg, 'danger');
                 this.setState(this.state);
         }
 
@@ -123,7 +125,6 @@ class ChangeUserPassword extends React.Component{
             else {
               return (
                       <div className='changepsw'>
-                      Invalid request
                       </div>)
             }
         }
