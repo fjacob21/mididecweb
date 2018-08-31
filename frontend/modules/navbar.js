@@ -148,13 +148,13 @@ class Navbar extends React.Component{
                 var user = User.getSession();
                 var useradmin = "";
                 if (user && user.isSuperUser)
-                    useradmin = (<DropdownItem onClick={this.onUsersAdmin}>{Text.text.nav_useradmin_label}</DropdownItem> );
+                    useradmin = (<NavItem><NavLink className='home-link' onClick={this.onUsersAdmin}>{Text.text.nav_useradmin_label}</NavLink></NavItem>);
                 var eventadmin = "";
                 if (user && (user.isSuperUser || user.isManager))
-                        eventadmin = (<DropdownItem onClick={this.onEventsAdmin}>{Text.text.nav_eventadmin_label}</DropdownItem> );
+                        eventadmin = (<NavItem><NavLink className='home-link' onClick={this.onEventsAdmin}>{Text.text.nav_eventadmin_label}</NavLink></NavItem> );
                 var createevent = "";
                 if (user && (user.isManager || user.isSuperUser))
-                    createevent = (<DropdownItem onClick={this.onCreateEvent}>{Text.text.nav_create_event_label}</DropdownItem> );
+                    createevent = (<NavItem><NavLink className='home-link' onClick={this.onCreateEvent}>{Text.text.nav_create_event_label}</NavLink></NavItem> );
                 if (user){
                         var avatar = <i className="material-icons md-light">account_circle</i>
                         if (user.have_avatar) {
@@ -172,9 +172,6 @@ class Navbar extends React.Component{
                                                         <DropdownItem onClick={this.onProfile}>
                                                                 {Text.text.profile}
                                                         </DropdownItem>
-                                                        {createevent}
-                                                        {eventadmin}
-                                                        {useradmin}
                                                         <DropdownItem divider />
                                                         <DropdownItem onClick={this.onLogout}>
                                                                 {Text.text.logout}
@@ -201,6 +198,14 @@ class Navbar extends React.Component{
                         <div className='navbars'>
                         <NB className='navs'  dark expand="md" fixed={'top'} onMouseLeave={this.onLeave}>
                           <NavbarBrand ><img className='logo' src='res/drawables/mididec.png' onClick={this.onHome}/></NavbarBrand>
+                                <Nav className="ml-auto" navbar>
+                                        <NavItem>
+                                        <NavLink className='home-link' onClick={this.onHome}>{Text.text.nav_home_label}</NavLink>
+                                        </NavItem>
+                                        {createevent}
+                                        {eventadmin}
+                                        {useradmin}
+                                </Nav>
                           <NavbarToggler onClick={this.toggle} />
                           <Collapse isOpen={this.state.isOpen}  navbar>
                             <Nav className="ml-auto" navbar>
@@ -209,18 +214,12 @@ class Navbar extends React.Component{
                                         {langs}
                                     </Input>
                               </NavItem>
-                              <NavItem>
-                                      <NavLink className='home-link' onClick={this.onHome}>{Text.text.nav_home_label}</NavLink>
-                              </NavItem>
                               {subscribelink}
                               {loginlink}
                               {userlink}
                             </Nav>
                           </Collapse>
                         </NB>
-
-
-
                         </div>)
         }
 }
