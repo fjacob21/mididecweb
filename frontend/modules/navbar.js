@@ -198,16 +198,16 @@ class Navbar extends React.Component{
                         <div className='navbars'>
                         <NB className='navs'  dark expand="md" fixed={'top'} onMouseLeave={this.onLeave}>
                           <NavbarBrand ><img className='logo' src='res/drawables/mididec.png' onClick={this.onHome}/></NavbarBrand>
-                                <Nav className="ml-auto" navbar>
-                                        <NavItem>
-                                        <NavLink className='home-link' onClick={this.onHome}>{Text.text.nav_home_label}</NavLink>
-                                        </NavItem>
-                                        {createevent}
-                                        {eventadmin}
-                                        {useradmin}
-                                </Nav>
                           <NavbarToggler onClick={this.toggle} />
                           <Collapse isOpen={this.state.isOpen}  navbar>
+                          <Nav className="" navbar>
+                                  <NavItem>
+                                  <NavLink className='home-link' onClick={this.onHome}>{Text.text.nav_home_label}</NavLink>
+                                  </NavItem>
+                                  {createevent}
+                                  {eventadmin}
+                                  {useradmin}
+                          </Nav>
                             <Nav className="ml-auto" navbar>
                               <NavItem>
                                     <Input type="select" name="locale" id="locale" onChange={this.onChange} value={this.state.locale}>

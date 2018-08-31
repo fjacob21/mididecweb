@@ -17,23 +17,6 @@ exports[`Link changes the class when hovered 1`] = `
         src="res/drawables/mididec.png"
       />
     </a>
-    <ul
-      className="ml-auto navbar-nav"
-    >
-      <li
-        className="nav-item"
-      >
-        <a
-          className="home-link nav-link"
-          onClick={[Function]}
-        >
-          Home
-        </a>
-      </li>
-      
-      
-      
-    </ul>
     <button
       className="navbar-toggler"
       onClick={[Function]}
@@ -47,6 +30,23 @@ exports[`Link changes the class when hovered 1`] = `
       className="collapse navbar-collapse"
       style={Object {}}
     >
+      <ul
+        className="navbar-nav"
+      >
+        <li
+          className="nav-item"
+        >
+          <a
+            className="home-link nav-link"
+            onClick={[Function]}
+          >
+            Home
+          </a>
+        </li>
+        
+        
+        
+      </ul>
       <ul
         className="ml-auto navbar-nav"
       >
