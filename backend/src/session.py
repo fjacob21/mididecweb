@@ -24,7 +24,7 @@ from email_generators import generate_email
 from email_generators import UserValidationEmail, EventPublishEmail
 from email_generators import UserPromoteEmail, UserEventConfirmEmail
 from email_generators import EventDateChangedEmail, EventLocationChangedEmail
-from email_generators import UserEventWaitEmail
+from email_generators import UserEventWaitEmail, UserResetPasswordEmail
 
 class Session(object):
 
@@ -89,11 +89,12 @@ class Session(object):
         email = UserPromoteEmail(event=event, server=self._server)
         email = UserEventConfirmEmail(event=event, server=self._server)
         email = UserEventWaitEmail(event=event, server=self._server)
-        html = generate_email('test', 'usertest.html')#, root='../src')
+        email = UserResetPasswordEmail(request_id='2609fcd001a971a0436e633ed04336b35ac3974d9bcf098afbe1172b1799d458', server=self._server)
+        #html = generate_email('test', 'usertest.html')#, root='../src')
         #email = EventDateChangedEmail(event=event, old_event=old_event, server=self._server)
         #email = EventLocationChangedEmail(event=event, old_event=old_event, server=self._server)
-        #self.send_email(email, [self.user])
-        return html #email.generate(user=self.user)
+        self.send_email(email, [self.user])
+        return email.generate(user=self.user)
 
     def add_event(self):
         if "title" not in self._params or "description" not in self._params:
@@ -137,7 +138,6 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventRemoveAccess(self, event).granted():
-            print('Access denied')
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         self._events.remove(event_id)
         return {'result': True}
@@ -537,4 +537,5 @@ class Session(object):
         return {'result': True}
 
     def send_reset_password_email(self, user, request):
-        pass
+        email = UserResetPasswordEmail(request_id=request.request_id, server=self._server)
+        self.send_email(email, [user])
