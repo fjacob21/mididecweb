@@ -93,5 +93,8 @@
         "user_empty_alias": "You need to specify an alias",
         "user_empty_name": "You need to specify an name",
         "user_empty_password": "You need to specify an password",
-        "user_invalid_phone": "Invalid phone format ex:+15142228888"
+        "user_invalid_phone": "Invalid phone format ex:+15142228888",
+        "resetpassword": "Reset password",
+        "changepassword_label": "Enter your new password",
+        "changepassword_bt": "Change the password"
 }

@@ -40,7 +40,6 @@ def test_users_user(users):
     assert user['avatar_path'] == 'avatar'
     assert 'create_date' in user
     assert 'smscode' in user
-    print('code', user['smscode'])
     assert user['smscode'] == 'smscode'
     users.delete('test')
 

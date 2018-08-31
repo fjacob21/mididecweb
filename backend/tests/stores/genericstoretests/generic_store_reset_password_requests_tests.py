@@ -1,7 +1,6 @@
 
 def generate_request(passwordresetrequests):
     r = passwordresetrequests.create('test', 'date', 'username', 'email')
-    print('gen', r)
     return r
 
 
@@ -55,6 +54,22 @@ def test_item(passwordresetrequests):
     assert req['username'] == 'username'
     assert 'email' in req
     assert req['email'] == 'email'
+    assert 'accepted' in req
+    assert req['accepted'] == ''
+    passwordresetrequests.reset()
+
+
+def test_update(passwordresetrequests):
+    request = generate_request(passwordresetrequests)
+    request.update('test2', 'date2', 'username2', 'email2', 'accepted2')
+    assert len(passwordresetrequests.get_all()) == 1
+    request = passwordresetrequests.get_all()[0]
+    assert request
+    assert request['request_id'] == 'test2'
+    assert request['date'] == 'date2'
+    assert request['username'] == 'username2'
+    assert request['email'] == 'email2'
+    assert request['accepted'] == 'accepted2'
     passwordresetrequests.reset()
 
 

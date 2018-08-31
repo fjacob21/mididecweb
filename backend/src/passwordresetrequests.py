@@ -10,15 +10,18 @@ class PasswordResetRequests(object):
         self._store = store
 
     def add(self, username, email):
-        date = datetime.datetime.now()
-        datestr = date.strftime("%Y-%m-%dT%H:%M:%SZ")
-        request_id = self.generate_request_id(date, username, email)
-        self._store.reset_password_requests.create(request_id, datestr,
-                                                   username, email)
+        req = self._find_pending_request(username)
+        if not req:
+            date = datetime.datetime.now()
+            datestr = date.strftime("%Y-%m-%dT%H:%M:%SZ")
+            request_id = self.generate_request_id(date, username, email)
+            self._store.reset_password_requests.create(request_id, datestr,
+                                                       username, email)
+        else:
+            request_id = req.request_id
         return PasswordResetRequest(self._store, request_id)
 
     def generate_request_id(self, date, username, email):
-        print(date)
         hash = hashlib.sha256()
         salt = str(random.randint(1, 1000))
         datestr = date.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -33,6 +36,12 @@ class PasswordResetRequests(object):
         if not req:
             return None
         return PasswordResetRequest(self._store, req['request_id'])
+
+    def _find_pending_request(self, username):
+        for req in self.list:
+            if req.username == username and not req.accepted:
+                return req
+        return None
 
     @property
     def list(self):

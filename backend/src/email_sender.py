@@ -28,7 +28,6 @@ class EmailSender():
 
         body = self._email.generate(user)
         ical = self._email.iCal
-        print('Send email', user.email)
         msg.attach(MIMEText(body, 'html'))
         if ical:
             icalmsg = MIMEText(ical, 'plain')

@@ -1,3 +1,5 @@
+import datetime
+
 
 class PasswordResetRequest(object):
 
@@ -7,6 +9,13 @@ class PasswordResetRequest(object):
 
     def get_data(self):
         return self._store.reset_password_requests.get(self._request_id)
+
+    def update_data(self, data):
+        self._store.reset_password_requests.update(data['request_id'],
+                                                   data['date'],
+                                                   data['username'],
+                                                   data['email'],
+                                                   data['accepted'])
 
     def __eq__(self, value):
         return self.get_data() == value.get_data()
@@ -30,3 +39,10 @@ class PasswordResetRequest(object):
     @property
     def accepted(self):
         return self.get_data()['accepted']
+
+    def accept(self):
+        date = datetime.datetime.now()
+        datestr = date.strftime("%Y-%m-%dT%H:%M:%SZ")
+        data = self.get_data()
+        data['accepted'] = datestr
+        self.update_data(data)

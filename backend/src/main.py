@@ -357,18 +357,16 @@ def reset_user_password():
 
 
 @application.route(api + 'users/resetpsw/validate', methods=['POST'])
-def validate_reset_user_password(resetreq):
-    print('Received validate reset password request')
+def validate_reset_user_password():
     if not request.json:
         return return_error(errors.ERROR_INVALID_REQUEST)
     session = Session(request.json, get_store(), request.args.get('loginkey'),
                       config, request_server())
-    return jsonify(session.validate_reset_user_password_request())
+    return jsonify(session.validate_reset_user_password())
 
 
 @application.route(api + 'users/resetpsw/change', methods=['POST'])
-def change_user_password(user_id, resetreq):
-    print('Received reset password request', user_id, resetreq)
+def change_user_password():
     session = Session(request.json, get_store(),
                       request.args.get('loginkey'), config,
                       request.url_root)

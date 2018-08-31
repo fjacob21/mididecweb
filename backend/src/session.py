@@ -534,6 +534,7 @@ class Session(object):
         password = self._params["password"]
         password = BcryptHash(password).encrypt()
         user.password = password
+        req.accept()
         return {'result': True}
 
     def send_reset_password_email(self, user, request):

@@ -18,6 +18,22 @@ def test_add():
     assert passwordresetrequests.list[0] == r
 
 
+def test_double_add():
+    store = MemoryStore()
+    passwordresetrequests = PasswordResetRequests(store)
+    r = generate_request(passwordresetrequests)
+    assert r
+    assert passwordresetrequests.count == 1
+    assert passwordresetrequests.list[0] == r
+    r2 = generate_request(passwordresetrequests)
+    assert r2
+    assert r == r2
+    r2.accept()
+    r3 = generate_request(passwordresetrequests)
+    assert r3
+    assert r != r3
+
+
 def test_delete():
     store = MemoryStore()
     passwordresetrequests = PasswordResetRequests(store)

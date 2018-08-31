@@ -20,6 +20,13 @@ class MemoryPasswordResetRequests():
                 return request
         return None
 
+    def update(self, request_id, date, username, email, accepted):
+        req = self.get(request_id)
+        if req:
+            obj = self.create_object(request_id, date, username,
+                                     email, accepted)
+            self._requests[self.index(request_id)] = obj
+
     def delete(self, request_id):
         idx = self.index(request_id)
         if idx != -1:

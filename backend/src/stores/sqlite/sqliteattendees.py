@@ -21,6 +21,7 @@ class SqliteAttendees():
                 result.append(self.create_object(rec))
             return result
         except Exception as e:
+            print('get_all', e)
             return []
 
     def delete(self, user_id, event_id):
@@ -34,7 +35,6 @@ class SqliteAttendees():
     def delete_event(self, event_id):
         try:
             t = (event_id,)
-            print('delete event', event_id)
             self._conn.execute("delete from attendees where event_id=?", t)
             self._conn.commit()
         except Exception as e:

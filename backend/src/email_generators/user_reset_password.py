@@ -7,7 +7,6 @@ class UserResetPasswordEmail (object):
         self._server = server
         self._request_id = request_id
         self._root = root
-        print('reset', server)
 
     def generate(self, user):
         html = generate_email(self.title, 'userresetpassword.html',
