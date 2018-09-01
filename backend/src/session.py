@@ -501,12 +501,10 @@ class Session(object):
         if 'email' in self._params:
             email = self._params["email"]
         user = self._users.get(username)
-        reqid = '123456'
         if UserResetPasswordAccess(self, user, email).granted():
             request = self._reset_password_requests.add(username, email)
-            reqid = request.request_id
             self.send_reset_password_email(user, request)
-        return {'result': True, 'request_id': reqid}
+        return {'result': True}
 
     def validate_reset_user_password(self):
         print('validate')

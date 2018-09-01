@@ -24,8 +24,6 @@ def test_reset_password_user():
     assert reset_dict
     assert 'result' in reset_dict
     assert reset_dict['result']
-    assert 'request_id' in reset_dict
-    assert reset_dict['request_id'] != '123456'
 
 
 def test_invalid_user():
@@ -44,8 +42,6 @@ def test_invalid_user():
     assert reset_dict
     assert 'result' in reset_dict
     assert reset_dict['result']
-    assert 'request_id' in reset_dict
-    assert reset_dict['request_id'] == '123456'
 
 
 def test_admin_user():
@@ -70,5 +66,3 @@ def test_admin_user():
     assert reset_dict
     assert 'result' in reset_dict
     assert reset_dict['result']
-    assert 'request_id' in reset_dict
-    assert reset_dict['request_id'] == '123456'
