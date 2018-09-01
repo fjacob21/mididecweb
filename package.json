@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "autolinker": "^1.7.1",
     "babel-preset-react": "^6.24.1",
     "bootstrap": "4.0.0",
     "full-icu": "^1.2.1",

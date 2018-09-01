@@ -5,6 +5,7 @@ import RegisterPanel from './registerpanel'
 import RegisterStatusPanel from './registerstatuspanel'
 import AttendeeIcon from './attendeeicon'
 import Text from './localization/text'
+import Autolinker from 'autolinker'
 
 class EventSmall extends React.Component{
         constructor(props) {
@@ -30,6 +31,8 @@ class EventSmall extends React.Component{
                 timeText += this._end.getTimeText();
                 var icalurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + '/ical';
                 var attendees = "";
+                var linkedText = Autolinker.link( this.props.event.description );
+                linkedText = {__html: linkedText};
                 if (user)
                     attendees = this.props.event.attendees.map((attendee) =>
                             <AttendeeIcon key={attendee.user_id} attendee={attendee} className='attendee-icon'/>
@@ -45,7 +48,7 @@ class EventSmall extends React.Component{
 
                                 <div className='detail'>
                                         <div className='detaillabel'> {Text.text.event_details_label} </div>
-                                        <div className='description'>{this.props.event.description} </div>
+                                        <div className='description' dangerouslySetInnerHTML={linkedText}/>
                                 </div>
                                 <div className='register'>
                                         {registerPanel}
