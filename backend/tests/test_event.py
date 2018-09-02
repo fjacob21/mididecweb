@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytz
+import pytest
 from src.event import WAITING_LIST, ATTENDEE_LIST, ALREADY_ATTENDEE_LIST
 from src.events import Events
 from src.users import Users
@@ -120,3 +121,28 @@ def test_cancel_register():
     e.cancel_registration(u2)
     assert len(e.attendees) == 1
     assert len(e.waiting_attendees) == 0
+
+
+def test_add_attachment():
+    store = MemoryStore()
+    events = Events(store)
+    e = events.add("test", "test")
+    e.add_attachment('path')
+    with pytest.raises(Exception):
+        e.add_attachment('path')
+    assert len(e.attachments) == 1
+    assert e.attachments[0] == 'path'
+
+
+def test_remove_attachment():
+    store = MemoryStore()
+    events = Events(store)
+    e = events.add("test", "test", max_attendee=1)
+    e.add_attachment('path')
+    assert len(e.attachments) == 1
+    with pytest.raises(Exception):
+        e.remove_attachment('')
+    assert len(e.attachments) == 1
+    e.remove_attachment('path')
+    assert len(e.attachments) == 0
+   

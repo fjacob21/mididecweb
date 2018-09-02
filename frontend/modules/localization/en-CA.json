@@ -97,5 +97,7 @@
         "resetpassword": "Reset password",
         "changepassword_label": "Enter your new password",
         "changepassword_bt": "Change the password",
-        "invalid_request_msg": "Invalid request"
+        "invalid_request_msg": "Invalid request",
+        "err_attachment_present_msg": "Attachment already registered",
+        "err_invalid_attachment_msg": "Invalid attachment"
 }
