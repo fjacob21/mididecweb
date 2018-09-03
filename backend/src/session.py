@@ -262,6 +262,39 @@ class Session(object):
             if not res:
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
 
+    def get_event_attachment(self, event_id, attachment):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        aidx = event.find_attachment(attachment)
+        if aidx == -1:
+            raise SessionError(errors.ERROR_INVALID_ATTACHMENT) 
+        return event.attachments[aidx]
+    
+    def add_event_attachment(self, event_id, attachment):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        attachment_path = '../data/events/' + event.event_id + '/' + attachment.filename
+        attachment.save(attachment_path)
+        event.add_attachment(attachment_path)
+        return {'result': True}
+    
+    def remove_event_attachment(self, event_id):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if 'attachment' not in self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        attachment = self._params['attachment']
+        attachment_path = '../data/events/' + event.event_id + '/' + attachment
+        event.remove_attachment(attachment_path)
+        return {'result': True}
+
     def get_users(self):
         complete = UserGetCompleteAccess(self).granted()
         users_dict = UsersJsonEncoder(self._users, complete).encode('dict')
