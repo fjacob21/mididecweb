@@ -189,6 +189,7 @@ def publish_event(event_id):
     except SessionError as se:
         return return_error(se.code)
 
+
 @application.route(api + 'events/<event_id>/attachments/<attachment>', methods=['GET'])
 def get_event_attachment(event_id, attachment):
     try:
@@ -198,7 +199,8 @@ def get_event_attachment(event_id, attachment):
         print('get attachment', attachment)
         attachment_path = session.get_event_attachment(event_id, attachment)
         return send_from_directory(os.path.dirname(attachment_path),
-                                   os.path.basename(attachment_path))
+                                   os.path.basename(attachment_path),
+                                   as_attachment=True)
     except SessionError as se:
         return return_error(se.code)
 

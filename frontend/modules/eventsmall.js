@@ -31,11 +31,17 @@ class EventSmall extends React.Component{
                 timeText += this._end.getTimeText();
                 var icalurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + '/ical';
                 var attendees = "";
+                var attachments = "";
                 var linkedText = Autolinker.link( this.props.event.description );
                 linkedText = {__html: linkedText};
                 if (user)
                     attendees = this.props.event.attendees.map((attendee) =>
                             <AttendeeIcon key={attendee.user_id} attendee={attendee} className='attendee-icon'/>
+                    );
+                var eventurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + "/attachments/";
+                if (user)
+                    attachments = this.props.event.attachments.map((attachment) =>
+                            <a key={attachment} href={eventurl+attachment} className='attachment-item'>{attachment}</a>
                     );
                 var registerPanel = <RegisterPanel onRegister={this.onRegister} disabled={this.props.disableRegister}/>
                 if (this.props.event.find_attendee(user))
@@ -70,6 +76,10 @@ class EventSmall extends React.Component{
                                 <div className='attendees-title'>{Text.text.event_attendees_label}</div>
                                 <div className='attendeesgrid'>
                                         {attendees}
+                                </div>
+                                <div className='attachments-title'>{Text.text.event_attachments_label}</div>
+                                <div className='attachmentsgrid'>
+                                        {attachments}
                                 </div>
                         </div>);
         }

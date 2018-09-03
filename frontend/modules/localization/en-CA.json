@@ -99,5 +99,8 @@
         "changepassword_bt": "Change the password",
         "invalid_request_msg": "Invalid request",
         "err_attachment_present_msg": "Attachment already registered",
-        "err_invalid_attachment_msg": "Invalid attachment"
+        "err_invalid_attachment_msg": "Invalid attachment",
+        "event_attachments_label": "Attachments",
+        "add_attachment": "Add attachment",
+        "attachment_delete_confirmation": "Are you sure you want to delete this attachment"
 }

@@ -83,6 +83,13 @@ class Event {
                     return attendee;
             return null;
         }
+
+        get attachments(){
+            var attachments = [];
+            for (let attachment of this._event.attachments)
+                attachments.push(attachment);
+            return attachments;
+        }
 }
 
 module.exports = Event;
