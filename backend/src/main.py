@@ -16,6 +16,9 @@ from loggenerator import LogGenerator
 
 
 inDebug = False
+os.makedirs('../data', exist_ok=True)
+os.makedirs('../data/img', exist_ok=True)
+os.makedirs('../data/img/users', exist_ok=True)
 config = Config()
 application = Flask(__name__, static_url_path='')
 api = '/mididec/api/v1.0/'
