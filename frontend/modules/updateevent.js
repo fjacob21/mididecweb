@@ -39,6 +39,8 @@ class UpdateEvent extends React.Component{
             this.onChange = this.onChange.bind(this);
             this.updateSuccess = this.updateSuccess.bind(this);
             this.updateError = this.updateError.bind(this);
+            this.handleFileUpload = this.handleFileUpload.bind(this);
+            this.onFile = this.onFile.bind(this);
             this.onPrint = this.onPrint.bind(this);
             this.onPublish = this.onPublish.bind(this);
             this.publishSuccess = this.publishSuccess.bind(this);
@@ -167,6 +169,27 @@ class UpdateEvent extends React.Component{
                 this.setState(this.state);
         }
 
+        handleFileUpload(event){
+                this.props.onloading(true);
+                var user = User.getSession();
+                const file = event.target.files[0];
+                const formData = new FormData()
+                formData.append('attachment', file, file.name);
+                jquery.ajax({
+                type: 'POST',
+                url: "/mididec/api/v1.0/events/" + this.props.match.params.id+"/attachments?loginkey="+user.loginkey,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: this.updateSuccess,
+                error: this.updateError
+                });
+        }
+
+        onFile(){
+                document.getElementById('add_attachment').click();
+        }
+        
         onBlur(e){
             if (FormQuery.isIos()) {
                     var fq = new FormQuery(this.state.values);
@@ -222,6 +245,10 @@ class UpdateEvent extends React.Component{
                             <FormGroup className='organizer_email'>
                                     <Label for="organizer_email">{Text.text.event_organizer_email_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
+                            </FormGroup>
+                            <FormGroup className='add_attachment'>
+                                        <Button onClick={this.onFile}>{Text.text.change_avatar}</Button>
+                                        <Input onBlur={this.onBlur} className="file" type="file" id="add_attachment" name="add_attachment" onChange={this.handleFileUpload} accept="/*"/>
                             </FormGroup>
                             <Button color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>{Text.text.save}</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>{Text.text.cancel}</Button>{' '}

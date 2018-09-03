@@ -42,6 +42,7 @@ class Events():
         self._store.events.delete(event_id)
         self._store.attendees.delete_event(event_id)
         self._store.waitings.delete_event(event_id)
+        self._store.attachments.delete_event(event_id)
 
     @property
     def list(self):

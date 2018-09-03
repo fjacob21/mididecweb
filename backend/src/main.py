@@ -195,6 +195,7 @@ def get_event_attachment(event_id, attachment):
         session = Session({}, get_store(),
                           request.args.get('loginkey'), config,
                           request_server())
+        print('get attachment', attachment)
         attachment_path = session.get_event_attachment(event_id, attachment)
         return send_from_directory(os.path.dirname(attachment_path),
                                    os.path.basename(attachment_path))
@@ -205,7 +206,7 @@ def get_event_attachment(event_id, attachment):
 @application.route(api + 'events/<event_id>/attachments', methods=['POST'])
 def add_event_attachment(event_id):
     try:
-        session = Session(request.json, get_store(),
+        session = Session({}, get_store(),
                           request.args.get('loginkey'), config,
                           request_server())
         attachment = request.files['attachment']
