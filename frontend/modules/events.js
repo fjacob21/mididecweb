@@ -18,9 +18,13 @@ class Events extends React.Component{
                         invalid: true,
                         disableRegister: false
                         };
+                var user = User.getSession();
+                var loginkey = ""
+                if (user)
+                  loginkey = "?loginkey=" + user.loginkey
                 jquery.ajax({
                 type: 'GET',
-                url: "/mididec/api/v1.0/events/"+ this.props.match.params.id,
+                url: "/mididec/api/v1.0/events/"+ this.props.match.params.id + loginkey,
                 success: this.success.bind(this),
                 error: this.error.bind(this),
                 contentType: "application/json",

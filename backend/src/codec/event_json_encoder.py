@@ -1,13 +1,15 @@
 import json
+import os
 from .user_json_encoder import UserJsonEncoder
 
 
 class EventJsonEncoder():
 
-    def __init__(self, event, complete=False, show_attendee=True):
+    def __init__(self, event, complete=False, show_attendee=True, show_attachments=True):
         self._event = event
         self._complete = complete
         self._show_attendee = show_attendee
+        self._show_attachments = show_attachments
 
     def encode(self, format='string'):
         result = {}
@@ -33,6 +35,12 @@ class EventJsonEncoder():
             for a in self._event.waiting_attendees:
                 waitings.append(UserJsonEncoder(a, self._complete).encode('dict'))
             result['waitings'] = waitings
+        if self._show_attachments:
+            attachments = []
+            for a in self._event.attachments:
+                name = os.path.basename(a)
+                attachments.append(name)
+            result['attachments'] = attachments
 
         if format == 'dict':
             return result

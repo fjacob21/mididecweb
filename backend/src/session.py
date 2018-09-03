@@ -41,6 +41,7 @@ class Session(object):
         self._server = server
         if loginkey:
             self._user = self._users.get(loginkey)
+        print(self._params)
         if 'loginkey' in params and self._params["loginkey"]:
             self._user = self._users.get(self._params["loginkey"])
 
@@ -66,7 +67,10 @@ class Session(object):
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
         complete = EventGetCompleteAccess(self, event).granted()
-        event_dict = EventJsonEncoder(event, complete).encode('dict')
+        show_details = False
+        if self.user:
+            show_details = True
+        event_dict = EventJsonEncoder(event, complete, show_details, show_details).encode('dict')
         return {'event': event_dict}
 
     def get_event_ical(self, event_id):
@@ -211,7 +215,6 @@ class Session(object):
             email = UserEventWaitEmail(event=event, server=self._server)
         self.send_email(email, [user])
 
-
     def unregister_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
@@ -261,6 +264,47 @@ class Session(object):
                     res = sender.send()
             if not res:
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
+
+    def get_event_attachment(self, event_id, attachment):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        event_path = '../data/events/' + event.event_id
+        attachment_path = event_path + '/' + attachment
+        aidx = event.find_attachment(attachment_path)
+        if aidx == -1:
+            raise SessionError(errors.ERROR_INVALID_ATTACHMENT)
+        return event.attachments[aidx]
+
+    def add_event_attachment(self, event_id, attachment):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        if not EventUpdateAccess(self, event).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        event_path = '../data/events/' + event.event_id
+        attachment_path = event_path + '/' + attachment.filename
+        os.makedirs(event_path, exist_ok=True)
+        attachment.save(attachment_path)
+        event.add_attachment(attachment_path)
+        return {'result': True}
+
+    def remove_event_attachment(self, event_id):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if not EventUpdateAccess(self, event).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        if 'attachment' not in self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        attachment = self._params['attachment']
+        event_path = '../data/events/' + event.event_id
+        attachment_path = event_path + '/' + attachment
+        event.remove_attachment(attachment_path)
+        os.remove(attachment_path)
+        return {'result': True}
 
     def get_users(self):
         complete = UserGetCompleteAccess(self).granted()

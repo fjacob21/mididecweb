@@ -201,3 +201,29 @@ class Event():
             if attendee.user_id == user.user_id:
                 return True
         return False
+
+    @property
+    def attachments(self):
+        result = []
+        attachments = self._store.attachments.get_all(self._event_id)
+        for attachment in attachments:
+            result.append(attachment['path'])
+        return result
+    
+    def add_attachment(self, path):
+        aidx = self.find_attachment(path)
+        if aidx != -1:
+            raise SessionError(errors.ERROR_ATTACHMENT_PRESENT)
+        self._store.attachments.add(path, self.event_id)
+    
+    def remove_attachment(self, path):
+        aidx = self.find_attachment(path)
+        if aidx == -1:
+            raise SessionError(errors.ERROR_INVALID_ATTACHMENT)
+        self._store.attachments.delete(self.attachments[aidx], self._event_id)
+
+    def find_attachment(self, path):
+        for i in range(len(self.attachments)):
+            if self.attachments[i] == path:
+                return i
+        return -1

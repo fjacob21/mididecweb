@@ -19,6 +19,7 @@ test('A class to keep event info', () => {
                     owner_id: '123',
                     attendees:[userinfo],
                     waitings:[userinfo],
+                    attachments:['file.txt']
                 };
 
   var event = new Event(eventinfo);
@@ -45,4 +46,6 @@ test('A class to keep event info', () => {
   expect(event.find_waiting(user)).toBeDefined();
   expect(event.find_waiting(user2)).toBeNull();
   expect(event.find_waiting(null)).toBeNull();
+  expect(event.attachments.length).toBe(1);
+  expect(event.attachments[0]).toBe('file.txt');
 });

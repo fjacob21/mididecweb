@@ -1,6 +1,7 @@
 from .memoryevents import MemoryEvents
 from .memorywaitings import MemoryWaitings
 from .memoryattendees import MemoryAttendees
+from .memoryattachments import MemoryAttachments
 from .memoryusers import MemoryUsers
 from .memorylogins import MemoryLogins
 from .memorylogs import MemoryLogs
@@ -13,6 +14,7 @@ class MemoryStore():
         self.events = MemoryEvents()
         self.attendees = MemoryAttendees()
         self.waitings = MemoryWaitings()
+        self.attachments = MemoryAttachments()
         self.users = MemoryUsers()
         self.logins = MemoryLogins()
         self.logs = MemoryLogs()
@@ -22,6 +24,7 @@ class MemoryStore():
         self.events.reset()
         self.attendees.reset()
         self.waitings.reset()
+        self.attachments.reset()
         self.users.reset()
         self.logins.reset()
         self.logs.reset()
@@ -31,6 +34,7 @@ class MemoryStore():
         self.events.clean()
         self.attendees.clean()
         self.waitings.clean()
+        self.attachments.clean()
         self.users.clean()
         self.logins.clean()
         self.logs.clean()

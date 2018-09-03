@@ -4,8 +4,9 @@ import User from './user'
 import createHistory from "history/createHashHistory"
 import Errors from './errors'
 import FormQuery from './formquery'
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
 import Text from './localization/text'
+import AttachmentSummary from './attachmentsummary'
 
 const history = createHistory();
 
@@ -14,6 +15,7 @@ class UpdateEvent extends React.Component{
             super(props);
             var user = User.getSession();
             this.state = {
+                  modal: false,
                   valid: false,
                   values: { title: '',
                       description: '',
@@ -23,28 +25,41 @@ class UpdateEvent extends React.Component{
                       durationString: '1h00',
                       location: '3b6',
                       organizer_name: user.alias,
-                      organizer_email: user.email}
+                      organizer_email: user.email,
+                      attachments: []}
             };
             var user = User.getSession();
-            jquery.ajax({
-            type: 'GET',
-            url: "/mididec/api/v1.0/events/"+ this.props.match.params.id+'?loginkey='+user.loginkey,
-            success: this.success.bind(this),
-            error: this.error.bind(this),
-            contentType: "application/json",
-            dataType: 'json'
-            });
+            this.getEvent();
             this.onCancel = this.onCancel.bind(this);
             this.onUpdate = this.onUpdate.bind(this);
             this.onChange = this.onChange.bind(this);
             this.updateSuccess = this.updateSuccess.bind(this);
             this.updateError = this.updateError.bind(this);
+            this.handleFileUpload = this.handleFileUpload.bind(this);
+            this.onFile = this.onFile.bind(this);
             this.onPrint = this.onPrint.bind(this);
             this.onPublish = this.onPublish.bind(this);
             this.publishSuccess = this.publishSuccess.bind(this);
             this.publishError = this.publishError.bind(this);
             this.onKeyPress = this.onKeyPress.bind(this);
             this.onBlur = this.onBlur.bind(this);
+            this.onAttachmentDelete = this.onAttachmentDelete.bind(this);
+            this.rmSuccess = this.rmSuccess.bind(this);
+            this.rmError = this.rmError.bind(this);
+            this.onAccept = this.onAccept.bind(this);
+            this.onRefuse = this.onRefuse.bind(this);
+        }
+
+        getEvent(){
+                var user = User.getSession();
+                jquery.ajax({
+                type: 'GET',
+                url: "/mididec/api/v1.0/events/"+ this.props.match.params.id+'?loginkey='+user.loginkey,
+                success: this.success.bind(this),
+                error: this.error.bind(this),
+                contentType: "application/json",
+                dataType: 'json'
+                });
         }
 
         success(data){
@@ -70,6 +85,7 @@ class UpdateEvent extends React.Component{
         updateSuccess(data){
             this.props.onloading(false);
             this.showAlert(Text.text.event_add_success, 'success')
+            this.getEvent();
         }
 
         updateError(data){
@@ -167,6 +183,33 @@ class UpdateEvent extends React.Component{
                 this.setState(this.state);
         }
 
+        handleFileUpload(event){
+
+                this.props.onloading(true);
+                var user = User.getSession();
+                const file = event.target.files[0];
+                if (file == undefined) {
+                  this.props.onloading(false);
+                  return;
+                }
+                const formData = new FormData()
+                console.debug(event, file);
+                formData.append('attachment', file, file.name);
+                jquery.ajax({
+                type: 'POST',
+                url: "/mididec/api/v1.0/events/" + this.props.match.params.id+"/attachments?loginkey="+user.loginkey,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: this.updateSuccess,
+                error: this.updateError
+                });
+        }
+
+        onFile(){
+                document.getElementById('add_attachment').click();
+        }
+
         onBlur(e){
             if (FormQuery.isIos()) {
                     var fq = new FormQuery(this.state.values);
@@ -186,7 +229,51 @@ class UpdateEvent extends React.Component{
                         this.onAdd();
         }
 
+        onAttachmentDelete(attachment){
+                this.state.modal = true;
+                this.state.modalAttachment = attachment;
+                this.setState(this.state);
+        }
+
+        rmSuccess(data){
+                this.showAlert(Text.text.user_delete_success, 'success');
+                this.getEvent();
+        }
+
+        rmError(data){
+                var errorCode = data.responseJSON.code;
+                this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
+        }
+
+        onAccept(){
+                var user = User.getSession();
+                jquery.ajax({
+                type: 'DELETE',
+                url: "/mididec/api/v1.0/events/"+this.props.match.params.id+"/attachments",
+                data: JSON.stringify ({loginkey: user.loginkey, attachment:this.state.modalAttachment}),
+                success: this.rmSuccess,
+                error: this.rmError,
+                contentType: "application/json",
+                dataType: 'json'
+                });
+                this.state.modal = false;
+                this.setState(this.state);
+        }
+
+        onRefuse(){
+                this.state.modal = false;
+                this.state.modalAttachment = null;
+                this.setState(this.state);
+        }
+
         render() {
+            var attachments = '';
+            attachments = this.state.values.attachments.map((attachment) =>
+                    <AttachmentSummary key={attachment} attachment={attachment} onDelete={this.onAttachmentDelete}> {attachment} </AttachmentSummary>
+            );
+            var modalTitle = "";
+            if (this.state.modalAttachment)
+                    modalTitle = this.state.modalAttachment;
             return (
                 <div className='createevent'>
                     <Form className='form' onKeyPress={this.onKeyPress}>
@@ -223,11 +310,27 @@ class UpdateEvent extends React.Component{
                                     <Label for="organizer_email">{Text.text.event_organizer_email_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
                             </FormGroup>
+                            <FormGroup className='add_attachment'>
+                                        <Label>{Text.text.event_attachments_label}</Label>
+                                        {attachments}
+                                        <Button onClick={this.onFile}>{Text.text.add_attachment}</Button>
+                                        <Input onBlur={this.onBlur} className="file" type="file" id="add_attachment" name="add_attachment" onChange={this.handleFileUpload} accept="*"/>
+                            </FormGroup>
                             <Button color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>{Text.text.save}</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>{Text.text.cancel}</Button>{' '}
                             <Button color="warning" onClick={this.onPublish}>{Text.text.publish}</Button>{' '}
                             <Button color="warning" onClick={this.onPrint}>{Text.text.print}</Button>
                     </Form>
+                    <Modal isOpen={this.state.modal}>
+                            <ModalHeader toggle={this.toggle}>{modalTitle}</ModalHeader>
+                            <ModalBody>
+                                    {Text.text.attachment_delete_confirmation}
+                            </ModalBody>
+                            <ModalFooter>
+                                    <Button color="primary" onClick={this.onAccept}>{Text.text.yes}</Button>{' '}
+                                    <Button color="secondary" onClick={this.onRefuse}>{Text.text.no}</Button>
+                            </ModalFooter>
+                    </Modal>
                 </div>)
         }
 }

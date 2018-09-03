@@ -190,6 +190,44 @@ def publish_event(event_id):
         return return_error(se.code)
 
 
+@application.route(api + 'events/<event_id>/attachments/<attachment>', methods=['GET'])
+def get_event_attachment(event_id, attachment):
+    try:
+        session = Session({}, get_store(),
+                          request.args.get('loginkey'), config,
+                          request_server())
+        print('get attachment', attachment)
+        attachment_path = session.get_event_attachment(event_id, attachment)
+        return send_from_directory(os.path.dirname(attachment_path),
+                                   os.path.basename(attachment_path),
+                                   as_attachment=True)
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'events/<event_id>/attachments', methods=['POST'])
+def add_event_attachment(event_id):
+    try:
+        session = Session({}, get_store(),
+                          request.args.get('loginkey'), config,
+                          request_server())
+        attachment = request.files['attachment']
+        return jsonify(session.add_event_attachment(event_id, attachment))
+    except SessionError as se:
+        return return_error(se.code)
+
+
+@application.route(api + 'events/<event_id>/attachments', methods=['DELETE'])
+def delete_event_attachment(event_id):
+    try:
+        session = Session(request.json, get_store(),
+                          request.args.get('loginkey'), config,
+                          request_server())
+        return jsonify(session.remove_event_attachment(event_id))
+    except SessionError as se:
+        return return_error(se.code)
+
+
 @application.route(api + 'users', methods=['GET'])
 def get_users():
     session = Session({}, get_store(), request.args.get('loginkey'), config,
