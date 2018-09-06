@@ -175,13 +175,24 @@ class Event():
             self._store.attendees.delete(self.attendees[aidx].user_id, self._event_id)
             if len(self.waiting_attendees):
                 attendee = self.waiting_attendees[0]
-                self._store.waitings.delete(self.waiting_attendees[0].user_id, self._event_id)
-                self.register_attendee(attendee)
+                self._promote_waiting(attendee)
                 return attendee
             return user
         else:
             self._store.waitings.delete(self.waiting_attendees[widx].user_id, self._event_id)
             return user
+
+    def promote_waitings(self, number):
+        promotees = self.waiting_attendees
+        if len(self.waiting_attendees) >= number:
+            promotees = self.waiting_attendees[:number]
+        for promotee in promotees:
+            self._promote_waiting(promotee)
+        return promotees
+
+    def _promote_waiting(self, waiting):
+        self._store.waitings.delete(waiting.user_id, self._event_id)
+        self.register_attendee(waiting)
 
     def find_attendee(self, user):
         for i in range(len(self.attendees)):

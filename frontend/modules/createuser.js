@@ -259,7 +259,6 @@ class CreateUser extends React.Component{
                                                         <div>
                                                                 <Input onBlur={this.onBlur} invalid={!this.state.localValidation.phoneok} onChange={this.onChange} autoComplete='tel' type='text' name="phone" id="phone" placeholder="+15551234567" value={this.state.values.phone} />
                                                                 {phoneErrorMessage}
-
                                                         </div>
                                                 </FormGroup>
                                                 <FormGroup check  className='use'>

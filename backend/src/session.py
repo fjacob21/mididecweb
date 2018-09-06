@@ -41,7 +41,6 @@ class Session(object):
         self._server = server
         if loginkey:
             self._user = self._users.get(loginkey)
-        print(self._params)
         if 'loginkey' in params and self._params["loginkey"]:
             self._user = self._users.get(self._params["loginkey"])
 
@@ -152,17 +151,28 @@ class Session(object):
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventUpdateAccess(self, event).granted():
             raise SessionError(errors.ERROR_ACCESS_DENIED)
+        max_attendee = event.max_attendee
+        if 'max_attendee' in self._params:
+            max_attendee = int(self._params['max_attendee'])
+        if max_attendee < event.max_attendee and max_attendee < len(event.all_attendees):
+            raise SessionError(errors.ERROR_ATTENDEE_TOO_LOW)
 
         old_event = event.get_data()
         old_event = Event(self._store, event_id, static_data=old_event)
         date_changed = False
         location_changed = False
+        if max_attendee > event.max_attendee:
+            current_max_attendee = event.max_attendee
+            event.max_attendee = max_attendee
+            promotees = event.promote_waitings(max_attendee - current_max_attendee)
+            for promotee in promotees:
+                print('Send email', promotee)
+                self.send_promotee_email(event, promotee)
+        event.max_attendee = max_attendee
         if 'title' in self._params:
             event.title = self._params['title']
         if 'description' in self._params:
             event.description = self._params['description']
-        if 'max_attendee' in self._params:
-            event.max_attendee = self._params['max_attendee']
         if 'start' in self._params:
             start = self._params["start"]
             if start != event.start:
@@ -551,7 +561,6 @@ class Session(object):
         return {'result': True}
 
     def validate_reset_user_password(self):
-        print('validate')
         if not self._params:
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "request_id" not in self._params:
