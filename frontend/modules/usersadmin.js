@@ -94,6 +94,8 @@ class UsersAdmin extends React.Component{
         }
 
         render(){
+            //var us =  this.state.users.users.sort(sort_by('price'));
+                this.state.users.users.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase());
                 var users = this.state.users.users.map(user =>
                   <UserSummary key={user.user_id} user={user} onDelete={this.onDelete} onEdit={this.onEdit}/>
                 );
