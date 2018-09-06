@@ -37,5 +37,5 @@ Errors._messages[Errors.ERROR_NO_AVATAR] = "err_no_avatar_msg";
 Errors._messages[Errors.ERROR_INVALID_SMS_CODE] = "err_invalid_sms_code_msg";
 Errors._messages[Errors.ERROR_ATTACHMENT_PRESENT] = "err_attachment_present_msg";
 Errors._messages[Errors.ERROR_INVALID_ATTACHMENT] = "err_invalid_attachment_msg";
-Errors._messages[Errors.ERROR_ATTENDEE_TOO_LOW] = "err_attendee_too_loo_msg";
+Errors._messages[Errors.ERROR_ATTENDEE_TOO_LOW] = "err_attendee_too_low_msg";
 module.exports = Errors;

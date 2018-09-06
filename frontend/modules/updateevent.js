@@ -4,7 +4,7 @@ import User from './user'
 import createHistory from "history/createHashHistory"
 import Errors from './errors'
 import FormQuery from './formquery'
-import { Button, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter, FormFeedback  } from 'reactstrap';
 import Text from './localization/text'
 import AttachmentSummary from './attachmentsummary'
 
@@ -17,6 +17,9 @@ class UpdateEvent extends React.Component{
             this.state = {
                   modal: false,
                   valid: false,
+                  localValidation: {
+                          max_attendee: true
+                  },
                   values: { title: '',
                       description: '',
                       max_attendee: '20',
@@ -180,6 +183,7 @@ class UpdateEvent extends React.Component{
                 var isBefore = n > start;
                 if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '' && !isBefore)
                         this.state.valid = true;
+                this.updateLocalValidation();
                 this.setState(this.state);
         }
 
@@ -222,11 +226,26 @@ class UpdateEvent extends React.Component{
                             this.state.valid = true;
                     this.setState(this.state);
             }
+            else {
+                    this.updateLocalValidation(e.target.id);
+                    this.setState(this.state);
+            }
         }
 
         onKeyPress(e){
                 if (e.key == 'Enter' && this.state.valid)
                         this.onAdd();
+        }
+
+        updateLocalValidation(target){
+                if (target == 'max_attendee' || !target){
+                        this.state.localValidation.max_attendee = true;
+                        if (this.state.values.attendees.length > parseInt(this.state.values.max_attendee, 10)) {
+                                this.state.localValidation.max_attendee = false;
+                                this.state.valid = false;
+                        }
+                }
+                this.setState(this.state);
         }
 
         onAttachmentDelete(attachment){
@@ -274,6 +293,9 @@ class UpdateEvent extends React.Component{
             var modalTitle = "";
             if (this.state.modalAttachment)
                     modalTitle = this.state.modalAttachment;
+            var maxAttendeeErrorMessage = <div className='empty'>e</div>;
+            if (!this.state.localValidation.max_attendee)
+                    maxAttendeeErrorMessage = <FormFeedback>{Text.text.err_attendee_too_low_msg}</FormFeedback>
             return (
                 <div className='createevent'>
                     <Form className='form' onKeyPress={this.onKeyPress}>
@@ -295,8 +317,9 @@ class UpdateEvent extends React.Component{
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="durationString" id="durationString" placeholder="durationString" value={this.state.values.durationString} />
                             </FormGroup>
                             <FormGroup className='max_attendee'>
-                                    <Label for="max_attendee">{Text.text.event_max_attendee_label}</Label>
-                                    <Input onBlur={this.onBlur} onChange={this.onChange} type='text' name="max_attendee" id="max_attendee" placeholder="20" value={this.state.values.max_attendee} />
+                                    <Label for="max_attendee">{Text.text.event_max_attendee_label} </Label>
+                                    <Input onBlur={this.onBlur} onChange={this.onChange} invalid={!this.state.localValidation.max_attendee} type='text' name="max_attendee" id="max_attendee" placeholder="20" value={this.state.values.max_attendee} />
+                                    {maxAttendeeErrorMessage}
                             </FormGroup>
                             <FormGroup className='location'>
                                     <Label for="location">{Text.text.event_location_label}</Label>

@@ -153,7 +153,7 @@ class Session(object):
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         max_attendee = event.max_attendee
         if 'max_attendee' in self._params:
-            max_attendee = self._params['max_attendee']
+            max_attendee = int(self._params['max_attendee'])
         if max_attendee < event.max_attendee and max_attendee < len(event.all_attendees):
             raise SessionError(errors.ERROR_ATTENDEE_TOO_LOW)
 
@@ -166,7 +166,8 @@ class Session(object):
             event.max_attendee = max_attendee
             promotees = event.promote_waitings(max_attendee - current_max_attendee)
             for promotee in promotees:
-                 self.send_promotee_email(event, promotee)
+                print('Send email', promotee)
+                self.send_promotee_email(event, promotee)
         event.max_attendee = max_attendee
         if 'title' in self._params:
             event.title = self._params['title']
