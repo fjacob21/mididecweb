@@ -220,13 +220,13 @@ class Event():
         for attachment in attachments:
             result.append(attachment['path'])
         return result
-    
+
     def add_attachment(self, path):
         aidx = self.find_attachment(path)
         if aidx != -1:
             raise SessionError(errors.ERROR_ATTACHMENT_PRESENT)
         self._store.attachments.add(path, self.event_id)
-    
+
     def remove_attachment(self, path):
         aidx = self.find_attachment(path)
         if aidx == -1:
