@@ -103,5 +103,6 @@
         "err_invalid_attachment_msg": "Cet attachement n'existe pas",
         "event_attachments_label": "Attachements",
         "add_attachment": "Ajouter un attachement",
-        "attachment_delete_confirmation": "Etes-vous sur de vouloir effacer cet attachement"
+        "attachment_delete_confirmation": "Etes-vous sur de vouloir effacer cet attachement",
+        "err_attendee_too_loo_msg": "Il y a déja trop de personne enregistré pour dimunuer le nombre maximum de participants"
 }

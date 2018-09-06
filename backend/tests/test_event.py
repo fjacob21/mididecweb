@@ -123,6 +123,19 @@ def test_cancel_register():
     assert len(e.waiting_attendees) == 0
 
 
+def test_promote_waitings():
+    store = MemoryStore()
+    events = Events(store)
+    users = Users(store)
+    e = events.add("test", "test", max_attendee=3)
+    for i in range(10):
+        u1 = users.add("test@test.com"+str(i), 'name'+str(i), 'alias'+str(i), 'psw', 8)
+        e.register_attendee(u1)
+    e.max_attendee = 5
+    e.promote_waitings(2)
+    assert len(e.attendees) == 5
+
+
 def test_add_attachment():
     store = MemoryStore()
     events = Events(store)
