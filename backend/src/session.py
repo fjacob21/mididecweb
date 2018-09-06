@@ -537,7 +537,6 @@ class Session(object):
         return {'result': True}
 
     def send_email(self, email, users):
-        print('Send email', users[0].name)
         if (self._config and self._config.email_user and
            self._config.email_password and self._config.email_server):
             sender = EmailSender(self._config.email_user,
