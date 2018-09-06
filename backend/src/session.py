@@ -259,13 +259,15 @@ class Session(object):
 
     def send_publish_event_email(self, event):
         email = EventPublishEmail(event=event, server=self._server)
-        self.send_email(email, self._users.list)
+        users = [user for user in self._users.list if not event.is_attending(user)]
+        self.send_email(email, users)
 
     def send_publish_event_sms(self, event):
         if self._config and self._config.sms_sid and self._config.sms_token:
             body = EventTextGenerator(event, False).generate()
             res = True
-            for user in self._users.list:
+            users = [user for user in self._users.list if not event.is_attending(user)]
+            for user in users:
                 if (user.usesms and user.phone and user.validated and
                    user.smsvalidated):
                     sender = SmsSender(self._config.sms_sid,
