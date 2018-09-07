@@ -2,7 +2,7 @@
 import datetime
 from bcrypt_hash import BcryptHash
 from flask import Flask, jsonify, request, make_response
-from flask import Response, send_from_directory, redirect
+from flask import Response, send_from_directory, redirect, send_file
 from users import Users
 from user import USER_ACCESS_SUPER
 from logs import Logs
@@ -13,6 +13,8 @@ from session_exception import SessionError
 import os
 import errors
 from loggenerator import LogGenerator
+from PIL import Image, ExifTags
+from io import BytesIO
 
 
 inDebug = False
@@ -280,8 +282,31 @@ def get_user_avatar(user_id):
         session = Session({}, get_store(), request.args.get('loginkey'),
                           config, request_server())
         avatar_path = session.get_user_avatar(user_id)
-        return send_from_directory(os.path.dirname(avatar_path),
-                                   os.path.basename(avatar_path))
+        sizex = request.args.get('sizex')
+        sizey = request.args.get('sizey')
+        filter = request.args.get('filter')
+        img = Image.open(avatar_path)
+        if img._getexif():
+            exif = [(ExifTags.TAGS[k], v) for k, v in img._getexif().items()
+                    if k in ExifTags.TAGS]
+            if 'Orientation' not in exif:
+                img = img
+            elif exif['Orientation'] == 3:
+                img = img.rotate(180, expand=True)
+            elif exif['Orientation'] == 6:
+                img = img.rotate(270, expand=True)
+            elif exif['Orientation'] == 8:
+                img = img.rotate(90, expand=True)
+        if sizex and sizey:
+            img.thumbnail((int(sizex), int(sizey)))
+        if filter:
+            r, g, b = img.split()
+            zeroimg = Image.new('L', img.size, color=0)
+            img = Image.merge("RGB", (r, zeroimg, zeroimg))
+        img_io = BytesIO()
+        img.save(img_io, 'PNG')
+        img_io.seek(0)
+        return send_file(img_io, mimetype='image/png')
     except SessionError as se:
         return return_error(se.code)
 
