@@ -7,7 +7,7 @@ class AttendeeIcon extends React.Component{
         }
 
         render(){
-                var avatar = <i className="material-icons md-light attendee-avatar-default">account_circle</i>
+                var avatar = <i className="material-icons md-light attendee-avatar">account_circle</i>
                 if (this.props.attendee.have_avatar) {
                         var avatar_path = "/mididec/api/v1.0/users/" + this.props.attendee.user_id+"/avatar?sizex=100&sizey=110&id=" + new Date().getTime();
                         avatar = <img src={avatar_path} className="attendee-avatar"/>
