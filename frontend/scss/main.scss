@@ -234,10 +234,16 @@ body {
         font-size: 70px;
 }
 .attendee-avatar{
-        font-size: 70px;
+        font-size: 100%;
         width: 70%;
         height: 60%;
         margin: 5px;
+}
+.useradmin-icon {
+        height: 30px;
+        width: 30px;
+        margin: 10px;
+        font-size: 25px;
 }
 .presence {
         .presence-title {

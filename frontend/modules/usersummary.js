@@ -2,6 +2,7 @@ import React from 'react'
 import createHistory from "history/createHashHistory"
 import jquery from 'jquery'
 import User from './user'
+import AttendeeIcon from './attendeeicon'
 import { Table, NavLink, Card, CardTitle, CardText, Button } from 'reactstrap';
 
 const history = createHistory();
@@ -38,6 +39,7 @@ class UserSummary extends React.Component {
                         btRemove = <div className='user-bt' onClick={this.onDelete}><i className="material-icons md-light">delete</i></div>
                 return (
                   <div className='user-summary'>
+                      <AttendeeIcon key={this.props.user.user_id} attendee={this.props.user} noname className='useradmin-icon'/>
                       <div className='user-name'>{this.props.user.name}</div>
                       <div className='user-email'>{this.props.user.email}</div>
                       <div className='user-lastlogin'>{lastlogin}</div>
