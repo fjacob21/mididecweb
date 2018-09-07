@@ -286,7 +286,7 @@ def get_user_avatar(user_id):
         sizey = request.args.get('sizey')
         filter = request.args.get('filter')
         img = Image.open(avatar_path)
-        if img._getexif():
+        if '_getexif' in dir(img) and img._getexif():
             exif = [(ExifTags.TAGS[k], v) for k, v in img._getexif().items()
                     if k in ExifTags.TAGS]
             if 'Orientation' not in exif:
