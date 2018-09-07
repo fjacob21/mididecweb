@@ -293,7 +293,7 @@ class UpdateUser extends React.Component{
                         aliasErrorMessage = <FormFeedback>{Text.text.alias_already_used_msg}</FormFeedback>
                 var avatar = <i className="material-icons md-light attendee-avatar-default">account_circle</i>
                 if (this.state.values.have_avatar) {
-                        var avatar_path = "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?" + new Date().getTime();
+                        var avatar_path = "/mididec/api/v1.0/users/" + this.props.match.params.id+"/avatar?sizex=100&sizey=110&id=" + new Date().getTime();
                         avatar = <img src={avatar_path} className="attendee-icon"/>
                 }
                 var smsvalidation = "";

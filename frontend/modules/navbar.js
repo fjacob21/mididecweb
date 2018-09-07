@@ -158,7 +158,7 @@ class Navbar extends React.Component{
                 if (user){
                         var avatar = <i className="material-icons md-light">account_circle</i>
                         if (user.have_avatar) {
-                                var avatar_path = "/mididec/api/v1.0/users/" + user.user_id+"/avatar?" + new Date().getTime();
+                                var avatar_path = "/mididec/api/v1.0/users/" + user.user_id+"/avatar?sizex=20&sizey=20&id=" + new Date().getTime();
                                 avatar = <img src={avatar_path} className="nav-avatar"/>
                         }
                         userlink = (    <UncontrolledDropdown nav inNavbar>
