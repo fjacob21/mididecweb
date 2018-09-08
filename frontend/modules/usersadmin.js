@@ -6,6 +6,7 @@ import Errors from './errors'
 import { Table, NavLink, Card, CardTitle, CardText, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import createHistory from "history/createHashHistory"
 import Text from './localization/text'
+import removeAccents from 'remove-accents'
 
 const history = createHistory();
 
@@ -94,8 +95,13 @@ class UsersAdmin extends React.Component{
         }
 
         render(){
-            //var us =  this.state.users.users.sort(sort_by('price'));
-                this.state.users.users.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase());
+                this.state.users.users.sort(function(a, b){
+                                                var x = removeAccents(a.name.toLowerCase());
+                                                var y = removeAccents(b.name.toLowerCase());
+                                                if (x < y) {return -1;}
+                                                if (x > y) {return 1;}
+                                                return 0;
+                                            });
                 var users = this.state.users.users.map(user =>
                   <UserSummary key={user.user_id} user={user} onDelete={this.onDelete} onEdit={this.onEdit}/>
                 );
