@@ -38,6 +38,16 @@ class EventSmall extends React.Component{
                     attendees = this.props.event.attendees.map((attendee) =>
                             <AttendeeIcon key={attendee.user_id} attendee={attendee} className='attendee-icon'/>
                     );
+                var waintings = '';
+                if (user && (user.isManager || user.isSuperUser)) {
+                  var waitingslist = this.props.event.waitings.map((waiting) =>
+                          <AttendeeIcon key={waiting.user_id} attendee={waiting} className='attendee-icon'/>
+                  );
+                  waintings = (<div><div className='attendees-title'>{Text.text.event_waitings_label}</div>
+                  <div className='attendeesgrid'>
+                          {waitingslist}
+                  </div></div>);
+                }
                 var eventurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + "/attachments/";
                 if (user)
                     attachments = this.props.event.attachments.map((attachment) =>
@@ -77,6 +87,7 @@ class EventSmall extends React.Component{
                                 <div className='attendeesgrid'>
                                         {attendees}
                                 </div>
+                                {waintings}
                                 <div className='attachments-title'>{Text.text.event_attachments_label}</div>
                                 <div className='attachmentsgrid'>
                                         {attachments}
