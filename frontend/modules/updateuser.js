@@ -73,7 +73,6 @@ class UpdateUser extends React.Component{
         }
 
         success(data){
-                console.debug('seccess');
                 this.state.values = data.user;
                 this.state.values.smscode = '';
                 this.state.values.password = '';

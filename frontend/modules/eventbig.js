@@ -43,6 +43,16 @@ class EventBig extends React.Component{
                     attachments = this.props.event.attachments.map((attachment) =>
                             <a key={attachment} href={eventurl+attachment} className='attachment-item'>{attachment}</a>
                     );
+                var waintings = '';
+                if (user && (user.isManager || user.isSuperUser)) {
+                  var waitingslist = this.props.event.waitings.map((waiting) =>
+                          <AttendeeIcon key={waiting.user_id} attendee={waiting} className='attendee-icon'/>
+                  );
+                  waintings = (<div><div className='attendees-title'>{Text.text.event_waitings_label}</div>
+                  <div className='attendeesgrid'>
+                          {waitingslist}
+                  </div></div>);
+                }
                 var registerPanel = <RegisterPanel onRegister={this.onRegister} disabled={this.props.disableRegister}/>
                 if (this.props.event.find_attendee(user))
                     registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} disabled={this.props.disableRegister}/>
@@ -68,6 +78,7 @@ class EventBig extends React.Component{
                                                 <div className='attendeesgrid'>
                                                         {attendees}
                                                 </div>
+                                                {waintings}
                                                 <div className='attachments-title'>{Text.text.event_attachments_label}</div>
                                                 <div className='attachmentsgrid'>
                                                         {attachments}
