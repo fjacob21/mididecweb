@@ -19,7 +19,7 @@ class AttendeeIcon extends React.Component{
                 return (
                         <div className={className}>
                                 {avatar}
-                                {alias}
+                                <div className='attendeeicon-name'>{alias}</div>
                         </div>
                 );
         }
