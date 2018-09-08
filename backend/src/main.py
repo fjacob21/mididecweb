@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import datetime
 from bcrypt_hash import BcryptHash
 from flask import Flask, jsonify, request, make_response
 from flask import Response, send_from_directory, redirect, send_file
@@ -13,7 +12,7 @@ from session_exception import SessionError
 import os
 import errors
 from loggenerator import LogGenerator
-from PIL import Image, ExifTags
+from PIL import Image, ExifTags, ImageDraw, ImageOps
 from io import BytesIO
 
 
@@ -300,9 +299,16 @@ def get_user_avatar(user_id):
         if sizex and sizey:
             img.thumbnail((int(sizex), int(sizey)))
         if filter:
-            r, g, b = img.split()
-            zeroimg = Image.new('L', img.size, color=0)
-            img = Image.merge("RGB", (r, zeroimg, zeroimg))
+            # r, g, b = img.split()
+            # zeroimg = Image.new('L', img.size, color=0)
+            # img = Image.merge("RGB", (r, zeroimg, zeroimg))
+            size = (img.size[0], img.size[0]) #(128, 128)
+            mask = Image.new('L', size, 0)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((0, 0) + size, fill=255)
+            output = ImageOps.fit(img, mask.size, centering=(0.5, 0.5))
+            output.putalpha(mask)
+            img = output
         img_io = BytesIO()
         img.save(img_io, 'PNG')
         img_io.seek(0)
