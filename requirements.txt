@@ -8,3 +8,4 @@ flask
 ua_parser
 requests
 beautifulsoup4
+pillow
