@@ -1,5 +1,5 @@
 from codec import EventJsonEncoder, EventsJsonEncoder
-from codec import UsersJsonEncoder, UserJsonEncoder
+from codec import UsersJsonEncoder, UserJsonEncoder, LogsJsonEncoder
 from datetime import datetime, timedelta
 from email_sender import EmailSender
 from sms_sender import SmsSender
@@ -9,7 +9,7 @@ from bcrypt_hash import BcryptHash
 from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
-from access import EventUpdateAccess, UserResetPasswordAccess
+from access import EventUpdateAccess, UserResetPasswordAccess, LogsAccess
 from event import ATTENDEE_LIST, WAITING_LIST
 from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
@@ -19,6 +19,7 @@ import os
 from events import Events
 from event import Event
 from users import Users
+from logs import Logs
 from passwordresetrequests import PasswordResetRequests
 from email_generators import generate_email
 from email_generators import UserValidationEmail, EventPublishEmail
@@ -35,6 +36,7 @@ class Session(object):
         self._loginkey = loginkey
         self._events = Events(store)
         self._users = Users(store)
+        self._logs = Logs(store)
         self._reset_password_requests = PasswordResetRequests(store)
         self._user = None
         self._config = config
@@ -55,6 +57,34 @@ class Session(object):
     @property
     def users(self):
         return self._users
+
+    def get_logs(self):
+        logs_dict = LogsJsonEncoder(self._logs).encode('dict')
+        browsers = {}
+        cities = {}
+        oss = {}
+        if not LogsAccess(self).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        for log in self._logs.list:
+            if log.browser not in browsers:
+                browsers[log.browser] = {'count': 1, 'versions': {log.browser_version: 1}}
+            else:
+                browsers[log.browser]['count'] += 1
+                if log.browser_version not in browsers[log.browser]['versions']:
+                    browsers[log.browser]['versions'][log.browser_version] = 1
+                else:
+                    browsers[log.browser]['versions'][log.browser_version] += 1
+            if log.city not in cities:
+                cities[log.city] = 1
+            else:
+                cities[log.city] += 1
+            if log.os not in oss:
+                oss[log.os] = {'count': 1, 'versions': {log.os_version: 1}}
+            if log.os_version not in oss[log.os]['versions']:
+                oss[log.os]['versions'][log.os_version] = 1
+            else:
+                oss[log.os]['versions'][log.os_version] += 1
+        return {'logs': logs_dict, 'browsers': browsers, 'cities': cities, 'os': oss}
 
     def get_events(self):
         complete = EventGetCompleteAccess(self).granted()
