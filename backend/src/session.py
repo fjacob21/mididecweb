@@ -26,6 +26,10 @@ from email_generators import UserValidationEmail, EventPublishEmail
 from email_generators import UserPromoteEmail, UserEventConfirmEmail
 from email_generators import EventDateChangedEmail, EventLocationChangedEmail
 from email_generators import UserEventWaitEmail, UserResetPasswordEmail
+from fpdf import FPDF
+from flask import make_response
+from PIL import Image, ExifTags, ImageDraw, ImageOps
+
 
 class Session(object):
 
@@ -85,6 +89,62 @@ class Session(object):
             else:
                 oss[log.os]['versions'][log.os_version] += 1
         return {'logs': logs_dict, 'browsers': browsers, 'cities': cities, 'os': oss}
+
+    def get_event_presences(self, event_id):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        user = self._users.get(event.organizer_name)
+        pdf = FPDF()
+        pdf.add_page()
+
+        i = 0
+        pdf.set_line_width(0.5)
+        pdf.set_draw_color(0, 0, 0)
+        start = datetime.strptime(event.start, "%Y-%m-%dT%H:%M:%SZ")
+        pdf.set_font('Arial', 'B', size=15)
+        print(pdf.w, pdf.font_size)
+        pdf.cell(200, 10, txt=event.title, ln=1, align="C")
+        pdf.cell(200, 10, txt=start.strftime("%d %B %Y"), ln=2, align="C")
+        pdf.cell(200, 10, txt=user.name, ln=3, align="C")
+        offy = 50
+        offx = 20
+        pdf.set_font("Arial", '', size=12)
+        maxname = 0
+        for attendee in event.attendees:
+            txt = attendee.name
+            w = pdf.get_string_width(txt)
+            if w > maxname:
+                maxname = w
+        w = 10
+        h = 10
+        hm = 5
+        wm = 5
+        di = 0
+        for attendee in event.attendees:
+            if attendee.avatar_path:
+                img = Image.open(attendee.avatar_path)
+                print(img.format)
+                name = os.path.basename(attendee.avatar_path).split('.')[0]
+                img.save('../data/img/users/' + name + '.png')
+                pdf.image('../data/img/users/' + name + '.png', x=0+offx, y=di*(h+hm)+offy, w=w, h=h)
+            txt = str(i) + ' - ' + attendee.name
+            pdf.text(x = offx + w + (1 * wm), y=di * (h + hm) + offy + h / 2, txt=txt)
+            pdf.line(x1=offx+w+maxname+10+(2*wm), y1=di*(h+hm)+offy+h, x2=offx+w+maxname+100, y2=di*(h+hm)+offy+h)
+            pdf.rect(x = offx+w+maxname+100+(3*wm), y=di*(h+hm)+offy, w=w, h=h)
+
+            if i % 16 == 15:
+                pdf.add_page()
+                di = 0
+                offy = 5
+            i += 1
+            di += 1
+
+        p = pdf.output(dest='S')
+        response = make_response(p.encode('latin-1'))
+        response.headers.set('Content-Disposition', 'attachment', filename='presences.pdf')
+        response.headers.set('Content-Type', 'application/pdf')
+        return response
 
     def get_events(self):
         complete = EventGetCompleteAccess(self).granted()

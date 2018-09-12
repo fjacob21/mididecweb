@@ -89,6 +89,21 @@ def get_events():
     return jsonify(session.get_events())
 
 
+@application.route(api + 'events/<event_id>/presences')
+def get_event_presences(event_id):
+    try:
+        session = Session({}, get_store(), request.args.get('loginkey'),
+                          config, request_server())
+        return session.get_event_presences(event_id)
+        return Response(
+            session.get_event_presences(event_id),
+            mimetype="application/pdf",
+            headers={"Content-disposition":
+                     "attachment; filename=presences.pdf"})
+    except SessionError as se:
+        return return_error(se.code)
+
+
 @application.route(api + 'events/<event_id>')
 def get_event(event_id):
     try:
