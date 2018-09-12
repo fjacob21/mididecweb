@@ -72,6 +72,16 @@ def after_request(response):
     return response
 
 
+@application.route(api + 'logs')
+def get_logs():
+    try:
+        session = Session({}, get_store(), request.args.get('loginkey'), config,
+                          request_server())
+        return jsonify(session.get_logs())
+    except SessionError as se:
+        return return_error(se.code)
+
+
 @application.route(api + 'events')
 def get_events():
     session = Session({}, get_store(), request.args.get('loginkey'), config,
