@@ -38,8 +38,22 @@ class Home extends React.Component{
 
         render(){
                 const n = new Date();
-                const next = this.state.events.events.filter(event => new Date(event.start) >= n);
-                const prev = this.state.events.events.filter(event => new Date(event.start) < n);
+                var next = this.state.events.events.filter(event => new Date(event.start) >= n);
+                var prev = this.state.events.events.filter(event => new Date(event.start) < n);
+                next.sort(function(a, b){
+                        var x = new Date(a.start);
+                        var y = new Date(b.start);
+                        if (x < y) {return 1;}
+                        if (x > y) {return -1;}
+                        return 0;
+                    });
+                prev.sort(function(a, b){
+                        var x = new Date(a.start);
+                        var y = new Date(b.start);
+                        if (x < y) {return 1;}
+                        if (x > y) {return -1;}
+                        return 0;
+                        });
                 var nextItems = <div className='nothing-label'>{Text.text.none}</div>;
                 if(next.length > 0) {
                     nextItems = next.map((event) =>
