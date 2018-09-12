@@ -41,3 +41,9 @@ jspm_packages
 *.ipynb_checkpoints
 *.pytest_cache
 .DS_Store
+
+backend/data
+frontend/js
+frontend/css
+backend/.cache
+package-lock.json
