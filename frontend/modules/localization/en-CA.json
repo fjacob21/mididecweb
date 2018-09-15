@@ -104,5 +104,6 @@
         "add_attachment": "Add attachment",
         "attachment_delete_confirmation": "Are you sure you want to delete this attachment",
         "err_attendee_too_low_msg": "Cannot decrease maximum attendee number because there is already too much people registered",
-        "event_waitings_label": "Waitings"
+        "event_waitings_label": "Waitings",
+        "presences": "Presences"
 }
