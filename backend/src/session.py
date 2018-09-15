@@ -1,5 +1,6 @@
 from codec import EventJsonEncoder, EventsJsonEncoder
 from codec import UsersJsonEncoder, UserJsonEncoder, LogsJsonEncoder
+from codec import EventPresencesPdfEncoder
 from datetime import datetime, timedelta
 from email_sender import EmailSender
 from sms_sender import SmsSender
@@ -10,25 +11,22 @@ from access import UserAddAccess, UserGetCompleteAccess, UserUpdateAccess
 from access import UserRemoveAccess, EventGetCompleteAccess, EventAddAccess
 from access import EventRemoveAccess, EventRegisterAccess, EventPublishAccess
 from access import EventUpdateAccess, UserResetPasswordAccess, LogsAccess
+from access import EventPresencesAccess
 from event import ATTENDEE_LIST, WAITING_LIST
 from jinja2 import Environment, FileSystemLoader
 from session_exception import SessionError
 import errors
-import locale
 import os
 from events import Events
 from event import Event
 from users import Users
 from logs import Logs
 from passwordresetrequests import PasswordResetRequests
-from email_generators import generate_email
 from email_generators import UserValidationEmail, EventPublishEmail
 from email_generators import UserPromoteEmail, UserEventConfirmEmail
 from email_generators import EventDateChangedEmail, EventLocationChangedEmail
 from email_generators import UserEventWaitEmail, UserResetPasswordEmail
-from fpdf import FPDF
 from flask import make_response
-from PIL import Image, ExifTags, ImageDraw, ImageOps
 
 
 class Session(object):
@@ -71,7 +69,8 @@ class Session(object):
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         for log in self._logs.list:
             if log.browser not in browsers:
-                browsers[log.browser] = {'count': 1, 'versions': {log.browser_version: 1}}
+                browsers[log.browser] = {'count': 1, 'versions':
+                                         {log.browser_version: 1}}
             else:
                 browsers[log.browser]['count'] += 1
                 if log.browser_version not in browsers[log.browser]['versions']:
@@ -88,61 +87,20 @@ class Session(object):
                 oss[log.os]['versions'][log.os_version] = 1
             else:
                 oss[log.os]['versions'][log.os_version] += 1
-        return {'logs': logs_dict, 'browsers': browsers, 'cities': cities, 'os': oss}
+        return {'logs': logs_dict, 'browsers': browsers, 'cities': cities,
+                'os': oss}
 
     def get_event_presences(self, event_id):
         event = self._events.get(event_id)
         if not event:
             raise SessionError(errors.ERROR_INVALID_EVENT)
+        if not EventPresencesAccess(self, event).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+
         user = self._users.get(event.organizer_name)
-        pdf = FPDF()
-        pdf.add_page()
-
-        i = 0
-        pdf.set_line_width(0.5)
-        pdf.set_draw_color(0, 0, 0)
-        start = datetime.strptime(event.start, "%Y-%m-%dT%H:%M:%SZ")
-        pdf.set_font('Arial', 'B', size=15)
-        print(pdf.w, pdf.font_size)
-        pdf.cell(200, 10, txt=event.title, ln=1, align="C")
-        pdf.cell(200, 10, txt=start.strftime("%d %B %Y"), ln=2, align="C")
-        pdf.cell(200, 10, txt=user.name, ln=3, align="C")
-        offy = 50
-        offx = 20
-        pdf.set_font("Arial", '', size=12)
-        maxname = 0
-        for attendee in event.attendees:
-            txt = attendee.name
-            w = pdf.get_string_width(txt)
-            if w > maxname:
-                maxname = w
-        w = 10
-        h = 10
-        hm = 5
-        wm = 5
-        di = 0
-        for attendee in event.attendees:
-            if attendee.avatar_path:
-                img = Image.open(attendee.avatar_path)
-                print(img.format)
-                name = os.path.basename(attendee.avatar_path).split('.')[0]
-                img.save('../data/img/users/' + name + '.png')
-                pdf.image('../data/img/users/' + name + '.png', x=0+offx, y=di*(h+hm)+offy, w=w, h=h)
-            txt = str(i) + ' - ' + attendee.name
-            pdf.text(x = offx + w + (1 * wm), y=di * (h + hm) + offy + h / 2, txt=txt)
-            pdf.line(x1=offx+w+maxname+10+(2*wm), y1=di*(h+hm)+offy+h, x2=offx+w+maxname+100, y2=di*(h+hm)+offy+h)
-            pdf.rect(x = offx+w+maxname+100+(3*wm), y=di*(h+hm)+offy, w=w, h=h)
-
-            if i % 16 == 15:
-                pdf.add_page()
-                di = 0
-                offy = 5
-            i += 1
-            di += 1
-
-        p = pdf.output(dest='S')
-        response = make_response(p.encode('latin-1'))
-        response.headers.set('Content-Disposition', 'attachment', filename='presences.pdf')
+        pdfcodec = EventPresencesPdfEncoder(event, user)
+        p = pdfcodec.encode()
+        response = make_response(p)
         response.headers.set('Content-Type', 'application/pdf')
         return response
 

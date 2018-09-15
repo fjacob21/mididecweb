@@ -145,6 +145,11 @@ class UpdateEvent extends React.Component{
                 history.replace("/events/"+this.props.match.params.id+"/presence");
         }
 
+        onPdf() {
+            var presencesurl = '/mididec/api/v1.0/events/' + this.props.event.event_id + '/presences';
+            history.replace(presencesurl);
+        }
+
         onPublish() {
             var user = User.getSession();
             this.state.values['loginkey'] = user.loginkey
@@ -343,6 +348,7 @@ class UpdateEvent extends React.Component{
                             <Button color="secondary" onClick={this.onCancel}>{Text.text.cancel}</Button>{' '}
                             <Button color="warning" onClick={this.onPublish}>{Text.text.publish}</Button>{' '}
                             <Button color="warning" onClick={this.onPrint}>{Text.text.print}</Button>
+                            <Button color="warning" onClick={this.onPdf}>{Text.text.print}</Button>
                     </Form>
                     <Modal isOpen={this.state.modal}>
                             <ModalHeader toggle={this.toggle}>{modalTitle}</ModalHeader>

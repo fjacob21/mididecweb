@@ -46,7 +46,9 @@ class Presence extends React.Component{
         }
 
         onPrint() {
-                window.print();
+                var user = User.getSession();
+                var presencesurl = '/mididec/api/v1.0/events/' + this.state.event.event_id + '/presences?loginkey='+user.loginkey;
+                window.open(presencesurl, 'blank');
         }
 
         showAlert(message, color='success'){
@@ -56,7 +58,8 @@ class Presence extends React.Component{
         render(){
                 var user = User.getSession();
                 var attendees = "";
-                if (user && this.state.event)
+                var presencesurl = "";
+                if (user && this.state.event){
                     attendees = this.state.event.attendees.map((attendee) =>
                             <div key={attendee.user_id} className='presence-item'>
                               <div className='presence-icon-item'><AttendeeIcon className='presence-icon' attendee={attendee} noname/></div>
@@ -64,6 +67,7 @@ class Presence extends React.Component{
                               <div className='presence-sign-item'><div className='presence-sign'></div></div>
                             </div>
                     );
+                }
                 return (
                         <div className='presence'>
                                 <div className='presence-title'>{Text.text.presence}</div>
