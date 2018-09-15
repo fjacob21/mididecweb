@@ -5,6 +5,7 @@ from .events_json_encoder import EventsJsonEncoder
 from .event_json_encoder import EventJsonEncoder
 from .logs_json_encoder import LogsJsonEncoder
 from .log_json_encoder import LogJsonEncoder
+from .event_presences_pdf_encoder import EventPresencesPdfEncoder
 
 __all__ = [
     AttendeeJsonEncoder,
@@ -13,4 +14,5 @@ __all__ = [
     UserJsonEncoder,
     UsersJsonEncoder,
     LogJsonEncoder,
-    LogsJsonEncoder]
+    LogsJsonEncoder,
+    EventPresencesPdfEncoder]

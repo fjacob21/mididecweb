@@ -9,6 +9,7 @@ from .access_event_remove import EventRemoveAccess
 from .access_event_register import EventRegisterAccess
 from .access_event_publish import EventPublishAccess
 from .access_event_update import EventUpdateAccess
+from .access_event_presences import EventPresencesAccess
 from .access_logs import LogsAccess
 
 __all__ = [
@@ -23,4 +24,5 @@ __all__ = [
     EventRegisterAccess,
     EventPublishAccess,
     EventUpdateAccess,
+    EventPresencesAccess,
     LogsAccess]
