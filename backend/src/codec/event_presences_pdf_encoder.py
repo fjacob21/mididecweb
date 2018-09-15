@@ -70,7 +70,7 @@ class EventPresencesPdfEncoder(object):
         offy = self._pdf.y
         offx = self._pdf.x
         di = 0
-        i = 0
+        i = 1
         y = offy
         self._pdf.set_font("Arial", '', size=12)
         for attendee in self._event.attendees:
@@ -117,7 +117,7 @@ class EventPresencesPdfEncoder(object):
     def _calculate_max_namesize(self):
         self._pdf.set_font("Arial", '', size=12)
         maxname = 0
-        i = 0
+        i = 1
         for attendee in self._event.attendees:
             txt = str(i) + ' - ' + attendee.name
             w = self._pdf.get_string_width(txt)
