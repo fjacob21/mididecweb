@@ -40,7 +40,7 @@ class UpdateEvent extends React.Component{
             this.updateError = this.updateError.bind(this);
             this.handleFileUpload = this.handleFileUpload.bind(this);
             this.onFile = this.onFile.bind(this);
-            this.onPrint = this.onPrint.bind(this);
+            this.onPresences = this.onPresences.bind(this);
             this.onPublish = this.onPublish.bind(this);
             this.publishSuccess = this.publishSuccess.bind(this);
             this.publishError = this.publishError.bind(this);
@@ -141,7 +141,7 @@ class UpdateEvent extends React.Component{
                 history.goBack();
         }
 
-        onPrint() {
+        onPresences() {
                 history.replace("/events/"+this.props.match.params.id+"/presence");
         }
 
@@ -347,8 +347,7 @@ class UpdateEvent extends React.Component{
                             <Button color="primary" onClick={this.onUpdate} disabled={!this.state.valid}>{Text.text.save}</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>{Text.text.cancel}</Button>{' '}
                             <Button color="warning" onClick={this.onPublish}>{Text.text.publish}</Button>{' '}
-                            <Button color="warning" onClick={this.onPrint}>{Text.text.print}</Button>
-                            <Button color="warning" onClick={this.onPdf}>{Text.text.print}</Button>
+                            <Button color="warning" onClick={this.onPresences}>{Text.text.presences}</Button>
                     </Form>
                     <Modal isOpen={this.state.modal}>
                             <ModalHeader toggle={this.toggle}>{modalTitle}</ModalHeader>

@@ -105,5 +105,6 @@
         "add_attachment": "Ajouter un attachement",
         "attachment_delete_confirmation": "Etes-vous sur de vouloir effacer cet attachement",
         "err_attendee_too_low_msg": "Il y a déja trop de personne enregistré pour dimunuer le nombre maximum de participants",
-        "event_waitings_label": "Liste d'attente"
+        "event_waitings_label": "Liste d'attente",
+        "presences": "Présences"
 }
