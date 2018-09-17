@@ -565,10 +565,21 @@ class Session(object):
         user = self._users.get(user_id)
         if not user:
             raise SessionError(errors.ERROR_INVALID_LOGIN)
+        register = ''
+        event = None
+        if 'register' in self._params:
+            register = self._params['register']
+            event = self._events.get(register)
+            if not event:
+                raise SessionError(errors.ERROR_INVALID_EVENT)
         password = BcryptHash(password, user.password.encode()).encrypt()
         loginkey = user.login(password, ip)
         user_dict = UserJsonEncoder(user, False, True).encode('dict')
         user_dict['loginkey'] = loginkey
+        if event:
+            print('register', register)
+            event.register_attendee(user)
+            return {'user': user_dict, 'register': register}
         return {'user': user_dict}
 
     def logout(self, user_id):

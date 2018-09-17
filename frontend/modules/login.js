@@ -7,6 +7,7 @@ import Errors from './errors'
 import FormQuery from './formquery'
 import { Button, Form, FormGroup, Label, Input, Card, CardTitle } from 'reactstrap';
 import Text from './localization/text'
+import queryString from 'query-string';
 
 const history = createHistory();
 
@@ -57,6 +58,9 @@ class Login extends React.Component{
         }
 
         onLogin() {
+            let params = queryString.parse(this.props.location.search);
+            if (params.register != undefined)
+              this.state.values['register'] = params.register;
             this.props.onloading(true);
             jquery.ajax({
             type: 'POST',
@@ -72,7 +76,10 @@ class Login extends React.Component{
         loginSuccess(data){
             this.props.onloading(false);
             sessionStorage.setItem('userinfo', JSON.stringify(data.user));
-            history.replace("/");
+            if (data.register == undefined)
+              history.replace("/");
+            else
+              history.replace("/events/"+data.register);
         }
 
         loginError(data){
