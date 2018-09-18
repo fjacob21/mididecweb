@@ -102,7 +102,7 @@ class EventPresencesPdfEncoder(object):
             y += h + hm
 
             self._pdf.set_y(y)
-            if self._pdf.y >= self._pdf.h:
+            if self._pdf.y + (h + hm) >= self._pdf.h:
                 self._pdf.add_page()
                 di = 0
                 offy = 5
