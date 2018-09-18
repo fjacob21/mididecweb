@@ -2,6 +2,7 @@ from datetime import datetime
 from fpdf import FPDF
 from PIL import Image
 import os
+import math
 
 
 class EventPresencesPdfEncoder(object):
@@ -40,9 +41,14 @@ class EventPresencesPdfEncoder(object):
         self._pdf.ln(self._pdf.font_size*2)
 
     def print_info(self):
+        durationHour = math.floor(self._event.duration / 3600);
+        durationMinute = math.floor((self._event.duration - (durationHour*3600))/60);
+        durationString = str(durationHour) + 'h' + str(durationMinute);
+        print(durationString)
         start = datetime.strptime(self._event.start, "%Y-%m-%dT%H:%M:%SZ")
-        self._print_title('Title:', self._event.title)
+        self._print_title('Titre:', self._event.title)
         self._print_title('Date:', start.strftime("%d %B %Y"))
+        self._print_title('Durée:', durationString)
         self._print_title('Organisateur:', self._organizer.name)
 
     def _print_title(self, title, value):
