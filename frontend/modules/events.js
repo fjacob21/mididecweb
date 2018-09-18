@@ -57,7 +57,7 @@ class Events extends React.Component{
         onRegister(userinfo){
             var user = User.getSession();
             if (!user) {
-                history.replace("/login");
+                history.replace("/login?register="+this.props.match.params.id);
             }
             else {
                 this.props.onloading(true);
