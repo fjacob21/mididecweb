@@ -42,7 +42,7 @@ class SqliteUsers():
             r = self._conn.execute("select * from users where user_id=?", t)
             rec = r.fetchall()[0]
             return self.create_object(rec)
-        except Exception as e:
+        except Exception:
             return None
 
     def update(self, user_id, email, name, alias, psw, phone, useemail, usesms,
@@ -93,6 +93,24 @@ class SqliteUsers():
             self._conn.commit()
         except Exception:
             pass
+
+    def backup(self):
+        return ('users', self.get_all())
+
+    def restore(self, backup):
+        users = backup['users']
+        for user in users:
+            fields = ''
+            values = ''
+            for field in list(user):
+                fields += field + ','
+                values += '"' + str(user[field]) + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into users ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
 
     def create_object(self, rec):
         user = {}

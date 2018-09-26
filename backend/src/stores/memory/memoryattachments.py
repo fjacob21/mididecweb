@@ -8,6 +8,12 @@ class MemoryAttachments():
         attendee = {'path': path, 'event_id': event_id}
         self._attachments.append(attendee)
 
+    def get_alls(self):
+        attendees = []
+        for attendee in self._attachments:
+            attendees.append(attendee)
+        return attendees
+
     def get_all(self, event_id):
         attendees = []
         for attendee in self._attachments:
@@ -32,6 +38,12 @@ class MemoryAttachments():
 
     def clean(self):
         self.reset()
+
+    def backup(self):
+        return ('attachments', self._attachments)
+
+    def restore(self, backup):
+        self._attachments = backup['attachments']
 
     def index(self, path, event_id):
         i = 0

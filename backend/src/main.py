@@ -48,6 +48,14 @@ def get_store():
     return SqliteStore(config.database)
 
 
+def upgrade_store():
+    print('upgrade store')
+    store = get_store()
+    backup = store.backup()
+    store.reset()
+    store.restore(backup)
+
+
 def return_error(code):
     error = {}
     error['code'] = code
@@ -487,6 +495,7 @@ def request_server():
 
 
 set_root()
+upgrade_store()
 
 if __name__ == '__main__':
     inDebug = True

@@ -42,6 +42,12 @@ class MemoryUsers():
     def clean(self):
         self.reset()
 
+    def backup(self):
+        return ('users', self._users)
+
+    def restore(self, backup):
+        self._users = backup['users']
+
     def create_object(self, user_id, email, name, alias, psw, phone, useemail,
                       usesms, profile, access, validated=False, smsvalidated=False, lastlogin='', loginkey='', avatar_path='', create_date='', smscode=''):
         if not create_date:

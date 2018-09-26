@@ -17,7 +17,7 @@ class SqliteLogins():
             r = self._conn.execute("select * from logins where loginkey=?", t)
             rec = r.fetchall()[0]
             return self.create_object(rec)
-        except Exception as e:
+        except Exception:
             return None
 
     def get_user(self, user_id):
@@ -77,6 +77,24 @@ class SqliteLogins():
             self._conn.commit()
         except Exception:
             pass
+
+    def restore(self, backup):
+        logins = backup['logins']
+        for login in logins:
+            fields = ''
+            values = ''
+            for field in list(login):
+                fields += field + ','
+                values += '"' + str(login[field]) + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into logins ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
+
+    def backup(self):
+        return ('logins', self.get_all())
 
     def create_object(self, rec):
         login = {}

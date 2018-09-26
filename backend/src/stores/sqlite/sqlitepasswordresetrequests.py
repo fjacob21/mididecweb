@@ -69,6 +69,24 @@ class SqlitePasswordResetRequests():
         except Exception:
             pass
 
+    def backup(self):
+        return ('reset_password_requests', self.get_all())
+
+    def restore(self, backup):
+        reset_password_requests = backup['reset_password_requests']
+        for reset_password_request in reset_password_requests:
+            fields = ''
+            values = ''
+            for field in list(reset_password_request):
+                fields += field + ','
+                values += '"' + str(reset_password_request[field]) + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into reset_password_requests ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
+
     def create_object(self, rec):
         request = {}
         request['request_id'] = rec[0]

@@ -8,6 +8,12 @@ class MemoryAttendees():
         attendee = {'user_id': user_id, 'event_id': event_id}
         self._attendees.append(attendee)
 
+    def get_alls(self):
+        attendees = []
+        for attendee in self._attendees:
+            attendees.append(attendee)
+        return attendees
+
     def get_all(self, event_id):
         attendees = []
         for attendee in self._attendees:
@@ -39,6 +45,12 @@ class MemoryAttendees():
 
     def clean(self):
         self.reset()
+
+    def backup(self):
+        return ('attendees', self._attendees)
+
+    def restore(self, backup):
+        self._attendees = backup['attendees']
 
     def index(self, user_id, event_id):
         i = 0

@@ -33,6 +33,12 @@ class MemoryLogs():
     def clean(self):
         self.reset()
 
+    def backup(self):
+        return ('logs', self._logs)
+
+    def restore(self, backup):
+        self._logs = backup['logs']
+
     def create_object(self, log_id, date, ip, os, os_version, browser,
                       browser_version, continent, country, country_emoji,
                       region, city):

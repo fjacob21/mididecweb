@@ -11,6 +11,18 @@ class SqliteAttendees():
             self.create_table()
         self.insert_object(user_id, event_id)
 
+    def get_alls(self):
+        try:
+            r = self._conn.execute("select * from attendees")
+            res = r.fetchall()
+            result = []
+            for rec in res:
+                result.append(self.create_object(rec))
+            return result
+        except Exception as e:
+            print('get_all', e)
+            return []
+
     def get_all(self, event_id):
         try:
             t = (event_id,)
@@ -58,6 +70,24 @@ class SqliteAttendees():
             self._conn.commit()
         except Exception:
             pass
+
+    def backup(self):
+        return ('attendees', self.get_alls())
+
+    def restore(self, backup):
+        attendees = backup['attendees']
+        for attendee in attendees:
+            fields = ''
+            values = ''
+            for field in list(attendee):
+                fields += field + ','
+                values += '"' + attendee[field] + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into attendees ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
 
     def create_object(self, rec):
         attendee = {}

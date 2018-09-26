@@ -22,7 +22,7 @@ class SqliteLogs():
             for rec in res:
                 result.append(self.create_object(rec))
             return result
-        except Exception as e:
+        except Exception:
             return []
 
     def get(self, log_id):
@@ -44,6 +44,24 @@ class SqliteLogs():
             self._conn.commit()
         except Exception:
             pass
+
+    def backup(self):
+        return ('logs', self.get_all())
+
+    def restore(self, backup):
+        logs = backup['logs']
+        for log in logs:
+            fields = ''
+            values = ''
+            for field in list(log):
+                fields += field + ','
+                values += '"' + str(log[field]) + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into logs ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
 
     def create_object(self, rec):
         event = {}

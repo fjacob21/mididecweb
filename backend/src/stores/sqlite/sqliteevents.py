@@ -52,7 +52,7 @@ class SqliteEvents():
                 sql += 'duration=? ,'
                 sql += 'location=? ,'
                 sql += 'organizer_name=? ,'
-                sql += 'organizer_email=? '
+                sql += 'organizer_email=? ,'
                 sql += 'where event_id=?'
                 self._conn.execute(sql, obj)
                 self._conn.commit()
@@ -77,6 +77,24 @@ class SqliteEvents():
             self._conn.commit()
         except Exception:
             pass
+
+    def backup(self):
+        return ('events', self.get_all())
+
+    def restore(self, backup):
+        events = backup['events']
+        for event in events:
+            fields = ''
+            values = ''
+            for field in list(event):
+                fields += field + ','
+                values += '"' + str(event[field]) + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into events ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
 
     def create_object(self, rec):
         event = {}

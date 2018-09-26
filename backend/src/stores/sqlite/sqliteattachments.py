@@ -11,6 +11,18 @@ class SqliteAttachments():
             self.create_table()
         self.insert_object(path, event_id)
 
+    def get_alls(self):
+        try:
+            r = self._conn.execute("select * from attachments")
+            res = r.fetchall()
+            result = []
+            for rec in res:
+                result.append(self.create_object(rec))
+            return result
+        except Exception as e:
+            print('get_alls', e)
+            return []
+
     def get_all(self, event_id):
         try:
             t = (event_id,)
@@ -50,6 +62,24 @@ class SqliteAttachments():
             self._conn.commit()
         except Exception:
             pass
+
+    def backup(self):
+        return ('attachments', self.get_alls())
+
+    def restore(self, backup):
+        attachments = backup['attachments']
+        for attachment in attachments:
+            fields = ''
+            values = ''
+            for field in list(attachment):
+                fields += field + ','
+                values += '"' + attachment[field] + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into attachments ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
 
     def create_object(self, rec):
         attendee = {}

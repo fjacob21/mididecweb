@@ -8,6 +8,12 @@ class MemoryWaitings():
         waiting = {'user_id': user_id, 'event_id': event_id}
         self._waitings.append(waiting)
 
+    def get_alls(self):
+        waitings = []
+        for waiting in self._waitings:
+            waitings.append(waiting)
+        return waitings
+
     def get_all(self, event_id):
         waitings = []
         for waiting in self._waitings:
@@ -39,6 +45,12 @@ class MemoryWaitings():
 
     def clean(self):
         self.reset()
+
+    def backup(self):
+        return ('waitings', self._waitings)
+
+    def restore(self, backup):
+        self._waitings = backup['waitings']
 
     def index(self, user_id, event_id):
         i = 0

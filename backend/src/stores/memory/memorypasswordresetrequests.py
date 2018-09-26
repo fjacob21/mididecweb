@@ -38,6 +38,12 @@ class MemoryPasswordResetRequests():
     def clean(self):
         self.reset()
 
+    def backup(self):
+        return ('reset_password_requests', self._requests)
+
+    def restore(self, backup):
+        self._requests = backup['reset_password_requests']
+
     def create_object(self, request_id, date, username, email, accepted=''):
         request = {}
         request['request_id'] = request_id

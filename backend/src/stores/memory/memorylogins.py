@@ -42,6 +42,12 @@ class MemoryLogins():
     def clean(self):
         self.reset()
 
+    def backup(self):
+        return ('logins', self._logins)
+
+    def restore(self, backup):
+        self._logins = backup['logins']
+
     def index(self, loginkey):
         i = 0
         for login in self._logins:

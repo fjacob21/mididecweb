@@ -54,5 +54,35 @@ class SqliteStore():
         self.logs._conn = self._conn
         self.reset_password_requests._conn = self._conn
 
+    def backup(self):
+        tables = {}
+        backup = self.events.backup()
+        tables[backup[0]] = backup[1]
+        backup = self.attendees.backup()
+        tables[backup[0]] = backup[1]
+        backup = self.waitings.backup()
+        tables[backup[0]] = backup[1]
+        backup = self.attachments.backup()
+        tables[backup[0]] = backup[1]
+        backup = self.users.backup()
+        tables[backup[0]] = backup[1]
+        backup = self.logins.backup()
+        tables[backup[0]] = backup[1]
+        backup = self.logs.backup()
+        tables[backup[0]] = backup[1]
+        backup = self.reset_password_requests.backup()
+        tables[backup[0]] = backup[1]
+        return tables
+
+    def restore(self, backup):
+        self.events.restore(backup)
+        self.attendees.restore(backup)
+        self.waitings.restore(backup)
+        self.attachments.restore(backup)
+        self.users.restore(backup)
+        self.logins.restore(backup)
+        self.logs.restore(backup)
+        self.reset_password_requests.restore(backup)
+
     def close(self):
         self._conn.close()

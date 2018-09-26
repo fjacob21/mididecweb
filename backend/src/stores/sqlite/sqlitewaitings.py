@@ -9,6 +9,17 @@ class SqliteWaitings():
     def add(self, user_id, event_id):
         self.insert_object(user_id, event_id)
 
+    def get_alls(self):
+        try:
+            r = self._conn.execute("select * from waitings")
+            res = r.fetchall()
+            result = []
+            for rec in res:
+                result.append(self.create_object(rec))
+            return result
+        except Exception:
+            return []
+
     def get_all(self, event_id):
         try:
             t = (event_id, )
@@ -18,7 +29,7 @@ class SqliteWaitings():
             for rec in res:
                 result.append(self.create_object(rec))
             return result
-        except Exception as e:
+        except Exception:
             return []
 
     def delete(self, user_id, event_id):
@@ -55,6 +66,24 @@ class SqliteWaitings():
             self._conn.commit()
         except Exception:
             pass
+
+    def backup(self):
+        return ('waitings', self.get_alls())
+
+    def restore(self, backup):
+        waitings = backup['waitings']
+        for waiting in waitings:
+            fields = ''
+            values = ''
+            for field in list(waiting):
+                fields += field + ','
+                values += '"' + waiting[field] + '",'
+            fields = fields[:-1]
+            values = values[:-1]
+            sql = "insert into waitings ({fields}) VALUES ({values})"
+            sql = sql.format(fields=fields, values=values)
+            self._conn.execute(sql)
+            self._conn.commit()
 
     def create_object(self, rec):
         attendee = {}

@@ -6,6 +6,8 @@ from .generic_store_users_tests import test_users
 from .generic_store_logins_tests import test_logins
 from .generic_store_logs_tests import test_logs
 from .generic_store_reset_password_requests_tests import test_reset_password_requests
+from .generic_store_backup_tests import test_backup
+from .generic_store_restore_tests import test_restore
 
 
 def store_tests(store):
@@ -26,4 +28,8 @@ def store_tests(store):
     test_logs(store.logs)
     store.reset()
     test_reset_password_requests(store.reset_password_requests)
+    store.reset()
+    test_backup(store)
+    store.reset()
+    test_restore(store)
     store.reset()

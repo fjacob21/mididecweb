@@ -25,14 +25,14 @@ class MemoryEvents():
         return None
 
     def update(self, title, description, max_attendee, start, duration,
-               location, organizer_name, organizer_email, event_id):
+               location, organizer_name, organizer_email, event_id, lunch):
         event = self.get(event_id)
         if event:
             current = self._events[self.index(event_id)]
             obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
                                      organizer_email, event_id,
-                                     current['owner_id'], current['create_date'])
+                                     current['owner_id'], current['create_date'], lunch)
             self._events[self.index(event_id)] = obj
 
     def delete(self, event_id):
@@ -46,9 +46,15 @@ class MemoryEvents():
     def clean(self):
         self.reset()
 
+    def backup(self):
+        return ('events', self._events)
+
+    def restore(self, backup):
+        self._events = backup['events']
+
     def create_object(self, title, description, max_attendee, start, duration,
                       location, organizer_name, organizer_email, event_id,
-                      owner_id, create_date=''):
+                      owner_id, create_date='', lunch=''):
         if not create_date:
             create_date_dt = datetime.now(pytz.timezone("America/New_York"))
             create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -64,6 +70,7 @@ class MemoryEvents():
         event['organizer_email'] = organizer_email
         event['owner_id'] = owner_id
         event['create_date'] = create_date
+        event['lunch'] = lunch
         return event
 
     def index(self, event_id):
