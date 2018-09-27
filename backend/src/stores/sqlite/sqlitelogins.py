@@ -5,6 +5,8 @@ class SqliteLogins():
         self._conn = conn
         if not self.is_table_exist():
             self.create_table()
+        else:
+            self.update_schema()
 
     def add(self, user_id, loginkey, ip):
         if not self.is_table_exist():
@@ -17,7 +19,7 @@ class SqliteLogins():
             r = self._conn.execute("select * from logins where loginkey=?", t)
             rec = r.fetchall()[0]
             return self.create_object(rec)
-        except Exception as e:
+        except Exception:
             return None
 
     def get_user(self, user_id):
@@ -101,5 +103,49 @@ class SqliteLogins():
             return False
 
     def create_table(self):
-        self._conn.execute("create table logins(user_id, loginkey, ip)")
+        self._conn.execute(self._get_create_string())
         self._conn.commit()
+
+    def update_schema(self):
+        fields = self._get_fields()
+        dbfields = self._get_db_fields()
+        if len(fields) != len(dbfields):
+            print('Need to update schema')
+            recs = self.get_all()
+            self.reset()
+            for rec in recs:
+                create_fields = ''
+                values = ''
+                for field in list(rec):
+                    if field in fields:
+                        create_fields += field + ','
+                        values += '"' + str(rec[field]) + '",'
+                create_fields = create_fields[:-1]
+                values = values[:-1]
+                sql = "insert into logins ({fields}) VALUES ({values})"
+                sql = sql.format(fields=create_fields, values=values)
+                self._conn.execute(sql)
+                self._conn.commit()
+
+    def _get_fields(self):
+        return ['user_id', 'loginkey', 'ip']
+
+    def _get_db_fields(self):
+        try:
+            r = self._conn.execute('PRAGMA table_info(logins);')
+            fieldsrec = r.fetchall()
+            fields = []
+            for rec in fieldsrec:
+                fields.append(rec[1])
+            return fields
+        except Exception:
+            return []
+
+    def _get_create_string(self):
+        sql = 'create table logins ('
+        for field in self._get_fields():
+            sql += field + ', '
+        sql = sql[:-2]
+        sql += ')'
+        print(sql)
+        return sql
