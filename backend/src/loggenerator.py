@@ -2,6 +2,7 @@ import datetime
 from ua_parser import user_agent_parser
 import requests
 
+
 class LogGenerator(object):
 
     def __init__(self, ip, user_agent):
@@ -68,6 +69,25 @@ class LogGenerator(object):
         return useragent
 
     def fetch_geo_info(self):
+        if self.is_ipstack_available():
+            return self.fetch_geo_info_ipstack()
+        else:
+            return self.fetch_geo_info_ipapi()
+
+    def is_ipstack_available(self):
+        try:
+            url = 'http://api.ipstack.com/check'
+            url += '?access_key=98e04078598f19c362b9dfa2405885fe'
+            reply = requests.get(url)
+            if reply.ok:
+                result = reply.json()
+                if result['success'] == 'true':
+                    return True
+                return False
+        except Exception:
+            return False
+
+    def fetch_geo_info_ipstack(self):
         geoinfo = self.default_geo_info()
         try:
             url = 'http://api.ipstack.com/'
@@ -90,7 +110,25 @@ class LogGenerator(object):
                     geoinfo['country'] = geoinfo_dict['country_name']
                 if 'continent_name' in geoinfo_dict:
                     geoinfo['continent'] = geoinfo_dict['continent_name']
-        except:
+        except Exception:
+            pass
+        return geoinfo
+
+    def fetch_geo_info_ipapi(self):
+        geoinfo = self.default_geo_info()
+        try:
+            url = 'http://ip-api.com/json/'
+            url += '{0}'.format(self._ip)
+            reply = requests.get(url)
+            if reply.ok:
+                geoinfo_dict = reply.json()
+                if 'regionName' in geoinfo_dict:
+                    geoinfo['region'] = geoinfo_dict['regionName']
+                if 'city' in geoinfo_dict:
+                    geoinfo['city'] = geoinfo_dict['city']
+                if 'country' in geoinfo_dict:
+                    geoinfo['country'] = geoinfo_dict['country']
+        except Exception:
             pass
         return geoinfo
 

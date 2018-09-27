@@ -11,6 +11,7 @@ class LogsJsonEncoder():
         result = {}
         result['count'] = self._logs.count
         logs = []
+        print('Begin logs encoding')
         for log in self._logs.list:
             logs.append(LogJsonEncoder(log).encode('dict'))
         result['logs'] = logs

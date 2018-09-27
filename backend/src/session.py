@@ -61,22 +61,26 @@ class Session(object):
         return self._users
 
     def get_logs(self):
-        logs_dict = LogsJsonEncoder(self._logs).encode('dict')
+        print('Get logs')
+        if not LogsAccess(self).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        #logs_dict = LogsJsonEncoder(self._logs).encode('dict')
         browsers = {}
         cities = {}
         oss = {}
-        if not LogsAccess(self).granted():
-            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        print('process logs')
         for log in self._logs.list:
             if log.browser not in browsers:
                 browsers[log.browser] = {'count': 1, 'versions':
-                                         {log.browser_version: 1}}
+                                         {log.browser_version: 1},
+                                         'city': [log.city]}
             else:
                 browsers[log.browser]['count'] += 1
                 if log.browser_version not in browsers[log.browser]['versions']:
                     browsers[log.browser]['versions'][log.browser_version] = 1
                 else:
                     browsers[log.browser]['versions'][log.browser_version] += 1
+                browsers[log.browser]['city'].append(log.city)
             if log.city not in cities:
                 cities[log.city] = 1
             else:
@@ -87,7 +91,7 @@ class Session(object):
                 oss[log.os]['versions'][log.os_version] = 1
             else:
                 oss[log.os]['versions'][log.os_version] += 1
-        return {'logs': logs_dict, 'browsers': browsers, 'cities': cities,
+        return {'browsers': browsers, 'cities': cities,
                 'os': oss}
 
     def get_event_presences(self, event_id):
