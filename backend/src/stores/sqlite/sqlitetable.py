@@ -7,7 +7,6 @@ class SqliteTable (object):
         else:
             self.update_schema()
 
-    
     def reset(self):
         self.clean()
         self.create_table()
@@ -23,9 +22,21 @@ class SqliteTable (object):
         obj = {}
         fields = self._get_fields()
         for i in range(len(rec)):
-            obj[fields[i]] = rec[i]
+            obj[fields[i]] = self._create_object_field(fields[i], rec[i])
         return obj
-    
+
+    def _create_object_field(self, field, value):
+        schema = self._get_schema()
+        ftype = schema[field]['type']
+        if ftype == 'bool':
+            if value == 'True':
+                return True
+            return False
+        elif ftype == 'int':
+            return int(value)
+        else:
+            return str(value)
+
     def is_table_exist(self):
         try:
             r = self._conn.execute('SELECT name FROM sqlite_master where type="table" and name="{table}"'.format(table=self._name))
@@ -36,7 +47,7 @@ class SqliteTable (object):
     def create_table(self):
         self._conn.execute(self._get_create_string())
         self._conn.commit()
-    
+
     def update_schema(self):
         fields = self._get_fields()
         dbfields = self._get_db_fields()
@@ -61,6 +72,9 @@ class SqliteTable (object):
     def _get_fields(self):
         return list(self._fields.keys())
 
+    def _get_schema(self):
+        return self._fields
+
     def _get_db_fields(self):
         try:
             r = self._conn.execute('PRAGMA table_info({table})'.format(table=self._name))
@@ -74,13 +88,18 @@ class SqliteTable (object):
 
     def _get_create_string(self):
         sql = 'create table {table} ('.format(table=self._name)
+        schema = self._get_schema()
         for field in self._get_fields():
-            sql += field + ', '
+            sql += field
+            sql += ' TEXT'
+            if 'default' in schema[field]:
+                sql += " DEFAULT '" + str(schema[field]['default']) + "'"
+            sql += ' , '
         sql = sql[:-2]
         sql += ')'
         print(sql)
         return sql
-    
+
     def _get_alls(self):
         try:
             r = self._conn.execute('select * from {table}'.format(table=self._name))
