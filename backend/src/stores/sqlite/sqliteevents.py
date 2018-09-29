@@ -1,15 +1,25 @@
 from datetime import datetime
 import pytz
+from .sqlitetable import SqliteTable
 
 
-class SqliteEvents():
+class SqliteEvents(SqliteTable):
 
     def __init__(self, conn):
-        self._conn = conn
-        if not self.is_table_exist():
-            self.create_table()
-        else:
-            self.update_schema()
+        self._name = 'events'
+        self._fields = [{'name': 'event_id', 'type': 'str', 'default': ''},
+                        {'name': 'title', 'type': 'str', 'default': ''},
+                        {'name': 'description', 'type': 'str', 'default': ''},
+                        {'name': 'max_attendee', 'type': 'int', 'default': 20},
+                        {'name': 'start', 'type': 'str', 'default': ''},
+                        {'name': 'duration', 'type': 'int', 'default': 3600},
+                        {'name': 'location', 'type': 'str', 'default': ''},
+                        {'name': 'organizer_name', 'type': 'str', 'default': ''},
+                        {'name': 'organizer_email', 'type': 'str', 'default': ''},
+                        {'name': 'owner_id', 'type': 'str', 'default': ''},
+                        {'name': 'create_date', 'type': 'str', 'default': ''}
+                        ]
+        super().__init__(conn)
 
     def create(self, title, description, max_attendee, start, duration,
                location, organizer_name, organizer_email, event_id, owner_id):
@@ -20,7 +30,7 @@ class SqliteEvents():
 
     def get_all(self):
         try:
-            r = self._conn.execute("select * from events")
+            r = self._conn.execute("select * from {table}".format(table=self._name))
             res = r.fetchall()
             result = []
             for rec in res:
@@ -32,7 +42,7 @@ class SqliteEvents():
     def get(self, event_id):
         try:
             t = (event_id,)
-            r = self._conn.execute("select * from events where event_id=?", t)
+            r = self._conn.execute("select * from {table} where event_id=?".format(table=self._name), t)
             rec = r.fetchall()[0]
             return self.create_object(rec)
         except Exception:
@@ -46,7 +56,7 @@ class SqliteEvents():
                    duration, location, organizer_name,
                    organizer_email, event_id)
             try:
-                sql = 'update events set '
+                sql = 'update {table} set '.format(table=self._name)
                 sql += 'title=? ,'
                 sql += 'description=? ,'
                 sql += 'max_attendee=? ,'
@@ -64,43 +74,17 @@ class SqliteEvents():
     def delete(self, event_id):
         try:
             t = (event_id,)
-            self._conn.execute("delete from events where event_id=?", t)
+            self._conn.execute("delete from {table} where event_id=?".format(table=self._name), t)
             self._conn.commit()
         except Exception:
             pass
-
-    def reset(self):
-        self.clean()
-        self.create_table()
-
-    def clean(self):
-        try:
-            self._conn.execute("DROP TABLE events")
-            self._conn.commit()
-        except Exception:
-            pass
-
-    def create_object(self, rec):
-        event = {}
-        event['event_id'] = rec[0]
-        event['title'] = rec[1]
-        event['description'] = rec[2]
-        event['max_attendee'] = int(rec[3])
-        event['start'] = rec[4]
-        event['duration'] = int(rec[5])
-        event['location'] = rec[6]
-        event['organizer_name'] = rec[7]
-        event['organizer_email'] = rec[8]
-        event['owner_id'] = rec[9]
-        event['create_date'] = rec[10]
-        return event
 
     def insert_object(self, title, description, max_attendee, start, duration,
                       location, organizer_name, organizer_email, event_id,
                       owner_id):
         create_date_dt = datetime.now(pytz.timezone("America/New_York"))
         create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
-        sql = "insert into events VALUES ("
+        sql = "insert into {table} VALUES (".format(table=self._name)
         sql += '"' + event_id + '", '
         sql += '"' + title + '", '
         sql += '"' + description + '", '
@@ -114,60 +98,3 @@ class SqliteEvents():
         sql += '"' + create_date + '") '
         self._conn.execute(sql)
         self._conn.commit()
-
-    def is_table_exist(self):
-        try:
-            r = self._conn.execute('SELECT name FROM sqlite_master where type="table" and name="events"')
-            return len(r.fetchall()) == 1
-        except Exception:
-            return False
-
-    def create_table(self):
-        self._conn.execute(self._get_create_string())
-        self._conn.commit()
-
-    def update_schema(self):
-        fields = self._get_fields()
-        dbfields = self._get_db_fields()
-        if len(fields) != len(dbfields):
-            print('Need to update schema')
-            recs = self.get_all()
-            self.reset()
-            for rec in recs:
-                create_fields = ''
-                values = ''
-                for field in list(rec):
-                    if field in fields:
-                        create_fields += field + ','
-                        values += '"' + str(rec[field]) + '",'
-                create_fields = create_fields[:-1]
-                values = values[:-1]
-                sql = "insert into events ({fields}) VALUES ({values})"
-                sql = sql.format(fields=create_fields, values=values)
-                self._conn.execute(sql)
-                self._conn.commit()
-
-    def _get_fields(self):
-        return ['event_id', 'title', 'description', 'max_attendee', 'start',
-                'duration', 'location', 'organizer_name', 'organizer_email',
-                'owner_id', 'create_date']
-
-    def _get_db_fields(self):
-        try:
-            r = self._conn.execute('PRAGMA table_info(events);')
-            fieldsrec = r.fetchall()
-            fields = []
-            for rec in fieldsrec:
-                fields.append(rec[1])
-            return fields
-        except Exception:
-            return []
-
-    def _get_create_string(self):
-        sql = 'create table events ('
-        for field in self._get_fields():
-            sql += field + ', '
-        sql = sql[:-2]
-        sql += ')'
-        print(sql)
-        return sql
