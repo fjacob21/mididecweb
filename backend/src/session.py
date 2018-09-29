@@ -183,9 +183,12 @@ class Session(object):
         event_id = ''
         if "event_id" in self._params:
             event_id = self._params["event_id"]
+        not_training = ''
+        if "not_training" in self._params:
+            not_training = self._params["not_training"]
         e = self._events.add(title, description, max_attendee, start, duration,
                              location, organizer_name, organizer_email,
-                             event_id, self._user)
+                             event_id, self._user, not_training)
         return {'event': EventJsonEncoder(e, True).encode('dict')}
 
     def remove_event(self, event_id):
@@ -225,6 +228,9 @@ class Session(object):
             event.title = self._params['title']
         if 'description' in self._params:
             event.description = self._params['description']
+        if 'not_training' in self._params:
+            print('Update not training')
+            event.not_training = self._params['not_training']
         if 'start' in self._params:
             start = self._params["start"]
             if start != event.start:

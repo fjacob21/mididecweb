@@ -17,16 +17,17 @@ class SqliteEvents(SqliteTable):
                         {'name': 'organizer_name', 'type': 'str', 'default': ''},
                         {'name': 'organizer_email', 'type': 'str', 'default': ''},
                         {'name': 'owner_id', 'type': 'str', 'default': ''},
-                        {'name': 'create_date', 'type': 'str', 'default': ''}
+                        {'name': 'create_date', 'type': 'str', 'default': ''},
+                        {'name': 'not_training', 'type': 'bool', 'default': False}
                         ]
         super().__init__(conn)
 
     def create(self, title, description, max_attendee, start, duration,
-               location, organizer_name, organizer_email, event_id, owner_id):
+               location, organizer_name, organizer_email, event_id, owner_id, not_training=False):
         if not self.get(event_id):
             self.insert_object(title, description, max_attendee, start,
                                duration, location, organizer_name,
-                               organizer_email, event_id, owner_id)
+                               organizer_email, event_id, owner_id, not_training)
 
     def get_all(self):
         try:
@@ -49,12 +50,13 @@ class SqliteEvents(SqliteTable):
             return None
 
     def update(self, title, description, max_attendee, start, duration,
-               location, organizer_name, organizer_email, event_id):
+               location, organizer_name, organizer_email, not_training, event_id):
         event = self.get(event_id)
         if event:
             obj = (title, description, max_attendee, start,
                    duration, location, organizer_name,
-                   organizer_email, event_id)
+                   organizer_email, str(not_training), event_id)
+            print('Update event', not_training, obj)
             try:
                 sql = 'update {table} set '.format(table=self._name)
                 sql += 'title=? ,'
@@ -64,12 +66,13 @@ class SqliteEvents(SqliteTable):
                 sql += 'duration=? ,'
                 sql += 'location=? ,'
                 sql += 'organizer_name=? ,'
-                sql += 'organizer_email=? '
+                sql += 'organizer_email=? ,'
+                sql += 'not_training=? '
                 sql += 'where event_id=?'
                 self._conn.execute(sql, obj)
                 self._conn.commit()
-            except Exception:
-                pass
+            except Exception as e:
+                print('Update event except', e)
 
     def delete(self, event_id):
         try:
@@ -81,7 +84,7 @@ class SqliteEvents(SqliteTable):
 
     def insert_object(self, title, description, max_attendee, start, duration,
                       location, organizer_name, organizer_email, event_id,
-                      owner_id):
+                      owner_id, not_training):
         create_date_dt = datetime.now(pytz.timezone("America/New_York"))
         create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
         sql = "insert into {table} VALUES (".format(table=self._name)
@@ -95,6 +98,7 @@ class SqliteEvents(SqliteTable):
         sql += '"' + organizer_name + '", '
         sql += '"' + organizer_email + '", '
         sql += '"' + owner_id + '", '
-        sql += '"' + create_date + '") '
+        sql += '"' + create_date + '", '
+        sql += '"' + str(not_training) + '") '
         self._conn.execute(sql)
         self._conn.commit()

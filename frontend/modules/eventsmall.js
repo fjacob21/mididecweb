@@ -6,6 +6,7 @@ import RegisterStatusPanel from './registerstatuspanel'
 import AttendeeIcon from './attendeeicon'
 import Text from './localization/text'
 import Autolinker from 'autolinker'
+import { Alert } from 'reactstrap';
 
 class EventSmall extends React.Component{
         constructor(props) {
@@ -63,6 +64,11 @@ class EventSmall extends React.Component{
                             {attachmentslist}
                     </div></div>);
                 }
+                var notTraining = '';
+                if (this.props.event.not_training)
+                  notTraining = (<Alert className='error' color='danger' isOpen='true' transitionappeartimeout={150} transitionappeartimeout={150}>
+                        {Text.text.event_not_training_label}
+                </Alert>);
                 var registerPanel = <RegisterPanel onRegister={this.onRegister} disabled={this.props.disableRegister}/>
                 if (this.props.event.find_attendee(user))
                     registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} disabled={this.props.disableRegister} />
@@ -70,6 +76,7 @@ class EventSmall extends React.Component{
                     registerPanel = <RegisterStatusPanel status='waiting' onCancel={this.onCancel} disabled={this.props.disableRegister}/>
                 return (
                         <div className='eventsmall'>
+                                {notTraining}
                                 <div className='title'>{this.props.event.title}</div>
 
                                 <div className='detail'>

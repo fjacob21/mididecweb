@@ -24,6 +24,8 @@ class EventJsonEncoder():
         result['organizer_name'] = self._event.organizer_name
         result['owner_id'] = self._event.owner_id
         result['create_date'] = self._event.create_date
+        result['not_training'] = self._event.not_training
+        print('event codec', self._event.not_training)
         if self._complete:
             result['organizer_email'] = self._event.organizer_email
         if self._show_attendee:

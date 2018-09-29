@@ -29,7 +29,7 @@ class Event():
                                       data['description'], data['max_attendee'],
                                       data['start'], data['duration'],
                                       data['location'], data['organizer_name'],
-                                      data['organizer_email'], self._event_id)
+                                      data['organizer_email'], data['not_training'], self._event_id)
 
     @property
     def owner_id(self):
@@ -124,6 +124,16 @@ class Event():
     def organizer_email(self, value):
         data = self.get_data()
         data['organizer_email'] = value
+        self.update_data(data)
+
+    @property
+    def not_training(self):
+        return self.get_data()['not_training']
+
+    @not_training.setter
+    def not_training(self, value):
+        data = self.get_data()
+        data['not_training'] = value
         self.update_data(data)
 
     def __eq__(self, value):

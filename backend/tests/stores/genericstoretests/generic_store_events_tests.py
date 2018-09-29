@@ -1,7 +1,7 @@
 
 def generate_event(events):
     events.create('test', 'test', 20, '2018-04-26T13:00:00Z', 3600, 'test',
-                  'test', 'test@test.com', 'test', 'owner_id')
+                  'test', 'test@test.com', 'test', 'owner_id', 'False')
 
 
 def test_events(events):
@@ -36,7 +36,7 @@ def test_events_event(events):
 def test_update(events):
     generate_event(events)
     events.update('test2', 'test', 20, '2018-04-26T13:00:00Z', 3600, 'test',
-                  'test', 'test@test.com', 'test')
+                  'test', 'test@test.com', False, 'test')
     assert len(events.get_all()) == 1
     event = events.get_all()[0]
     assert event

@@ -8,11 +8,11 @@ class MemoryEvents():
         self._events = []
 
     def create(self, title, description, max_attendee, start, duration,
-               location, organizer_name, organizer_email, event_id, owner_id):
+               location, organizer_name, organizer_email, event_id, owner_id, not_training=False):
         if not self.get(event_id):
             obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
-                                     organizer_email, event_id, owner_id)
+                                     organizer_email, event_id, owner_id, not_training)
             self._events.append(obj)
 
     def get_all(self):
@@ -25,14 +25,14 @@ class MemoryEvents():
         return None
 
     def update(self, title, description, max_attendee, start, duration,
-               location, organizer_name, organizer_email, event_id):
+               location, organizer_name, organizer_email, not_training, event_id):
         event = self.get(event_id)
         if event:
             current = self._events[self.index(event_id)]
             obj = self.create_object(title, description, max_attendee, start,
                                      duration, location, organizer_name,
                                      organizer_email, event_id,
-                                     current['owner_id'], current['create_date'])
+                                     current['owner_id'], not_training, current['create_date'])
             self._events[self.index(event_id)] = obj
 
     def delete(self, event_id):
@@ -48,7 +48,7 @@ class MemoryEvents():
 
     def create_object(self, title, description, max_attendee, start, duration,
                       location, organizer_name, organizer_email, event_id,
-                      owner_id, create_date=''):
+                      owner_id, not_training, create_date=''):
         if not create_date:
             create_date_dt = datetime.now(pytz.timezone("America/New_York"))
             create_date = create_date_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -63,6 +63,7 @@ class MemoryEvents():
         event['organizer_name'] = organizer_name
         event['organizer_email'] = organizer_email
         event['owner_id'] = owner_id
+        event['not_training'] = not_training
         event['create_date'] = create_date
         return event
 
