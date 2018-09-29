@@ -50,6 +50,10 @@ class Event {
             return this._event.owner_id;
         }
 
+        get not_training(){
+            return this._event.not_training;
+        }
+
         get attendees(){
             var attendees = [];
             for (let attendee of this._event.attendees)

@@ -29,6 +29,7 @@ class UpdateEvent extends React.Component{
                       location: '3b6',
                       organizer_name: user.alias,
                       organizer_email: user.email,
+                      not_training: false,
                       attachments: []}
             };
             var user = User.getSession();
@@ -51,6 +52,7 @@ class UpdateEvent extends React.Component{
             this.rmError = this.rmError.bind(this);
             this.onAccept = this.onAccept.bind(this);
             this.onRefuse = this.onRefuse.bind(this);
+            this.onCheck = this.onCheck.bind(this);
         }
 
         getEvent(){
@@ -139,6 +141,17 @@ class UpdateEvent extends React.Component{
 
         onCancel() {
                 history.goBack();
+        }
+
+        onCheck(e){
+                this.state.values[e.target.id] = e.target.checked;
+                var n = new Date(Date.now());
+                var start = new Date(this.state.values.startDate + "T" + this.state.values.time + 'Z');
+                start = new Date(start.setTime( start.getTime() + start.getTimezoneOffset()*60*1000 ));
+                var isBefore = n > start;
+                if (this.state.values.title != '' && this.state.values.description != '' && this.state.values.startDate != '' && !isBefore)
+                        this.state.valid = true;
+                this.setState(this.state);
         }
 
         onPresences() {
@@ -337,6 +350,12 @@ class UpdateEvent extends React.Component{
                             <FormGroup className='organizer_email'>
                                     <Label for="organizer_email">{Text.text.event_organizer_email_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
+                            </FormGroup>
+                            <FormGroup check>
+                                    <Label>
+                                            <Input onBlur={this.onBlur} onChange={this.onCheck} type='checkbox' id="not_training" checked={this.state.values.not_training} />
+                                            {Text.text.event_not_training_label}
+                                    </Label>
                             </FormGroup>
                             <FormGroup className='add_attachment'>
                                         <Label>{Text.text.event_attachments_label}</Label>

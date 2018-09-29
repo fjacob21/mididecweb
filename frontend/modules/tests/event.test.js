@@ -17,6 +17,7 @@ test('A class to keep event info', () => {
                     organizer_name:'organizer_name',
                     organizer_email:'organizer_email',
                     owner_id: '123',
+                    not_training: false,
                     attendees:[userinfo],
                     waitings:[userinfo],
                     attachments:['file.txt']
@@ -35,6 +36,7 @@ test('A class to keep event info', () => {
   expect(event.location).toBe('location');
   expect(event.organizer_name).toBe('organizer_name');
   expect(event.organizer_email).toBe('organizer_email');
+  expect(event.not_training).toBe(false);
   expect(event.attendees.constructor.name).toBe('Array');
   expect(event.attendees.length).toBe(1);
   expect(event.attendees[0].constructor.name).toBe('User');

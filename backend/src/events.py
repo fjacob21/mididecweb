@@ -12,7 +12,7 @@ class Events():
 
     def add(self, title, description, max_attendee=None, start=None,
             duration=None, location='', organizer_name='', organizer_email="",
-            event_id='', owner=None):
+            event_id='', owner=None, not_training=False):
         owner_id = ''
         if owner:
             owner_id = owner.user_id
@@ -28,7 +28,7 @@ class Events():
         duration_second = duration.total_seconds()
         self._store.events.create(title, description, max_attendee, startstr,
                                   duration_second, location, organizer_name,
-                                  organizer_email, event_id, owner_id)
+                                  organizer_email, event_id, owner_id, not_training)
         return Event(self._store, event_id)
 
     def generate_event_id(self, start, title):

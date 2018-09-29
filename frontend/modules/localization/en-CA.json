@@ -46,6 +46,7 @@
         "event_details_label": "Description",
         "event_attendees_label": "Attendees",
         "event_add_to_calendar_label": "Add to calendar",
+        "event_not_training_label": "Not a training",
         "event_register_success_msg": "You are now registered for this event",
         "event_register_already_registered_msg": "You are already registered for this event",
         "event_register_waiting_msg": "Sorry there is no more spot left for this event! But you are now on the waiting list",

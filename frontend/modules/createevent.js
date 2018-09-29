@@ -23,7 +23,9 @@ class CreateEvent extends React.Component{
                       durationString: '1h00',
                       location: '3b6',
                       organizer_name: user.alias,
-                      organizer_email: user.email}
+                      organizer_email: user.email,
+                      not_training: false
+                     }
             };
             this.onCancel = this.onCancel.bind(this);
             this.onAdd = this.onAdd.bind(this);
@@ -32,6 +34,7 @@ class CreateEvent extends React.Component{
             this.addError = this.addError.bind(this);
             this.onKeyPress = this.onKeyPress.bind(this);
             this.onBlur = this.onBlur.bind(this);
+            this.onCheck = this.onCheck.bind(this);
         }
 
         addSuccess(data){
@@ -88,6 +91,11 @@ class CreateEvent extends React.Component{
 
         onCancel() {
                 history.goBack();
+        }
+
+        onCheck(e){
+                this.state.values[e.target.id] = e.target.checked;
+                this.setState(this.state);
         }
 
         onChange(e) {
@@ -163,6 +171,12 @@ class CreateEvent extends React.Component{
                             <FormGroup className='organizer_email'>
                                     <Label for="organizer_email">{Text.text.event_organizer_email_label}</Label>
                                     <Input onBlur={this.onBlur} onChange={this.onChange} type='email' name="organizer_email" id="organizer_email" placeholder="organizer_email" value={this.state.values.organizer_email} />
+                            </FormGroup>
+                            <FormGroup check>
+                                    <Label>
+                                            <Input onBlur={this.onBlur} onChange={this.onCheck} type='checkbox' id="not_training" checked={this.state.values.not_training} />
+                                            {Text.text.event_not_training_label}
+                                    </Label>
                             </FormGroup>
                             <Button color="primary" onClick={this.onAdd} disabled={!this.state.valid}>{Text.text.event_add_add_bt_label}</Button>{' '}
                             <Button color="secondary" onClick={this.onCancel}>{Text.text.cancel}</Button>

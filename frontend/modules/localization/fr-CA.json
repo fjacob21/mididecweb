@@ -46,6 +46,7 @@
         "event_details_label": "Détail",
         "event_attendees_label": "Participants",
         "event_add_to_calendar_label": "Ajouter au calendrier",
+        "event_not_training_label": "N'est pas un training",
         "event_register_success_msg": "Vous êtes maintenant inscrit a cette événement",
         "event_register_already_registered_msg": "'Vous êtes déja inscrit a cette événement",
         "event_register_waiting_msg": "Malheureusement il ne reste plus de place disponible! Vous etes par contre sur la liste d'attente.",
