@@ -70,10 +70,16 @@ class SqliteTable (object):
                 self._conn.commit()
 
     def _get_fields(self):
-        return list(self._fields.keys())
+        fields = []
+        for field in self._fields:
+            fields.append(field['name'])
+        return fields
 
     def _get_schema(self):
-        return self._fields
+        schema = {}
+        for field in self._fields:
+            schema[field['name']] = {'type': field['type'], 'default': field['default']}
+        return schema
 
     def _get_db_fields(self):
         try:
@@ -97,7 +103,7 @@ class SqliteTable (object):
             sql += ' , '
         sql = sql[:-2]
         sql += ')'
-        print(sql)
+        #print(sql)
         return sql
 
     def _get_alls(self):

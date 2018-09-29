@@ -6,7 +6,7 @@ class TableTest(SqliteTable):
 
     def __init__(self, conn):
         self._name = 'tablename'
-        self._fields = {'fieldname': {'type': 'bool', 'default': False}}
+        self._fields = [{'name': 'fieldname', 'type': 'bool', 'default': False}]
         super().__init__(conn)
 
     def add(self, value):
@@ -25,10 +25,10 @@ class TableTestNew(SqliteTable):
 
     def __init__(self, conn):
         self._name = 'tablename'
-        self._fields = {'fieldname': {'type': 'bool', 'default': False},
-                        'newfield': {'type': 'str', 'default': ''},
-                        'newfield2': {'type': 'bool', 'default': False}
-                        }
+        self._fields = [{'name': 'fieldname', 'type': 'bool', 'default': False},
+                        {'name': 'newfield', 'type': 'str', 'default': ''},
+                        {'name': 'newfield2', 'type': 'bool', 'default': False}
+                        ]
         super().__init__(conn)
 
     def add(self, value, value2):
@@ -67,7 +67,7 @@ def test_sqlite_table_fields():
     table = TableTest(_create_conn())
     assert table
     assert table.is_table_exist()
-    fields = table._fields
+    fields = table._get_schema()
     assert table
     assert len(fields) == 1
     assert fields['fieldname']
@@ -103,13 +103,13 @@ def test_sqlite_table_update_schema():
     table = TableTest(conn)
     assert table
     assert table.is_table_exist()
-    fields = table._fields
+    fields = table._get_schema()
     assert fields['fieldname']
     table.add(True)
     tablenew = TableTestNew(conn)
     assert tablenew
     assert tablenew.is_table_exist()
-    fieldsnew = tablenew._fields
+    fieldsnew = tablenew._get_schema()
     assert fieldsnew['fieldname']
     assert fieldsnew['newfield']
     assert fieldsnew['newfield2']
