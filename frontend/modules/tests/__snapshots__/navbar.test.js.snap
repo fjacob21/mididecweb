@@ -120,7 +120,7 @@ exports[`Link changes the class when hovered 1`] = `
             className="home-link nav-link"
             onClick={[Function]}
           >
-            Connection
+            Connexion
           </a>
         </li>
         
