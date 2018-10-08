@@ -74,6 +74,15 @@ class EventSmall extends React.Component{
                     registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} disabled={this.props.disableRegister} />
                 else if (this.props.event.find_waiting(user))
                     registerPanel = <RegisterStatusPanel status='waiting' onCancel={this.onCancel} disabled={this.props.disableRegister}/>
+                var register = "";
+                const n = new Date();
+                console.debug(new Date(this.props.event.start), n);
+                if (new Date(this.props.event.start) >= n) {
+                        register = (<div className='register'>
+                                        {registerPanel}
+                                    </div>);
+                }
+
                 return (
                         <div className='eventsmall'>
                                 {notTraining}
@@ -83,9 +92,7 @@ class EventSmall extends React.Component{
                                         <div className='detaillabel'> {Text.text.event_details_label} </div>
                                         <div className='description' dangerouslySetInnerHTML={linkedText}/>
                                 </div>
-                                <div className='register'>
-                                        {registerPanel}
-                                </div>
+                                {register}
                                 <div className='duration'>
                                         <img className='timeicon' src='res/drawables/time-icon.png'></img>
                                         <div className='timetext'>

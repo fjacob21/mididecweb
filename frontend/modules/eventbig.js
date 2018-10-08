@@ -74,6 +74,14 @@ class EventBig extends React.Component{
                     registerPanel = <RegisterStatusPanel status='attending' onCancel={this.onCancel} disabled={this.props.disableRegister}/>
                 else if (this.props.event.find_waiting(user))
                     registerPanel = <RegisterStatusPanel status='waiting' onCancel={this.onCancel} disabled={this.props.disableRegister} />
+                var register = "";
+                const n = new Date();
+                console.debug(new Date(this.props.event.start), n);
+                if (new Date(this.props.event.start) >= n) {
+                        register = (<div className='register'>
+                                        {registerPanel}
+                                </div>);
+                }
                 return (
                         <div className='eventbig'>
                                 {notTraining}
@@ -83,9 +91,7 @@ class EventBig extends React.Component{
                                                 <div className='title'> {this.props.event.title} </div>
                                                 <div className='organizer'> {Text.text.event_organizer_label} {this.props.event.organizer_name} </div>
                                         </div>
-                                        <div className='head-register'>
-                                                {registerPanel}
-                                        </div>
+                                        {register}
                                 </div>
                                 <div className='body'>
                                         <div className='detail'>
