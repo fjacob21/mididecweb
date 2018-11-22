@@ -1,0 +1,31 @@
+.navs {
+    width: 100%;
+    background-color: #002a5c;
+  }
+
+  .navbars {
+    background-color: #FFFFFF;
+    display: flex;
+    align-content: center;
+    width: 100%;
+    padding: 0px;
+
+    .logo {
+            width: 50px;
+            cursor: pointer;
+    }
+
+    .home-link {
+            cursor:pointer;
+            color: #FFFFFF;
+            font-weight: bolder;
+    }
+
+    .subscribe-link {
+            cursor:pointer;
+    }
+    .nav-avatar{
+            width: 20px;
+            height: 20px;
+    }
+}

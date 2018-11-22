@@ -1,0 +1,38 @@
+.event-item{
+    display: flex;
+    flex-direction: row;
+    border: 1px black solid;
+    margin: 5px;
+    width: 100%;
+    border-radius: 5px;
+
+    .event-title {
+            display: flex;
+            margin: 5px;
+            width: 100%;
+    }
+
+    .user-email {
+            display: flex;
+            margin: 5px;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+    }
+    .user-lastlogin {
+            display: flex;
+            margin: 5px;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+    }
+    .user-logged {
+            display: flex;
+            margin: 5px;
+    }
+    .event-bt {
+            display: flex;
+            margin: 5px;
+            cursor: pointer;
+    }
+}

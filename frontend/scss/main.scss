@@ -13,179 +13,22 @@ body {
         flex-direction: column;
         flex: 1 0 auto;
 }
-#app {
-        margin:0;
-        padding:0;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        flex: 1 0 auto;
-}
 
 .empty {
         visibility: hidden;
-}
-.app {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        flex: 1 0 auto;
-}
-.home {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-        .next-events{
-                display: flex;
-                font-size: 2em;
-        }
-}
-
-.spinners {
-    z-index: 2000;
-    position: fixed;
-    align-self: center;
-    top: 10px;
-}
-
-.navs {
-  width: 100%;
-  background-color: #002a5c;
-}
-
-.footer {
-        display: flex;
-        flex-shrink: 0;
-        width: 100%;
-        color: white;
-        height: 10%;
-        background-color: #002a5c;
-
-        .footer-copyright{
-                display: flex;
-                margin-top: auto;
-                margin-bottom: auto;
-                margin-left: auto;
-                margin-right: 10px;
-        }
-        .footer-issue{
-                display: flex;
-                margin-top: auto;
-                margin-bottom: auto;
-                margin-left: 10px;
-                .footer-issue-link{
-                        display: flex;
-                        color: white;
-                }
-        }
-        .footer-contrib{
-                display: flex;
-                margin-top: auto;
-                margin-bottom: auto;
-                margin-left: 10px;
-                .footer-contrib-link{
-                        display: flex;
-                        color: white;
-                }
-        }
-}
-
-.event-detail-link {
-        cursor:pointer;
-}
-
-.navbars {
-        background-color: #FFFFFF;
-        display: flex;
-        align-content: center;
-        width: 100%;
-        padding: 0px;
-
-        .logo {
-                width: 50px;
-                cursor: pointer;
-        }
-
-        .home-link {
-                cursor:pointer;
-                color: #FFFFFF;
-                font-weight: bolder;
-        }
-
-        .subscribe-link {
-                cursor:pointer;
-        }
-        .nav-avatar{
-                width: 20px;
-                height: 20px;
-        }
 }
 
 .required {
         color: red;
 }
 
-.error {
+.nothing-label {
         display: flex;
-        padding-top: 80px;
-        position: fixed;
-        width: 100%;
-        z-index: 1;
-}
-
-.content {
-        display: flex;
-        flex-direction: column;
-        flex: 1 0 auto;
-        padding-top: 90px;
-        padding-left: 1rem;
-}
-
-.event-summary {
-        display: flex;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        width: 90%;
-        max-width: 500px;
-        cursor: pointer;
-
-        .es-title{
-                font-size: 1.0em;
-        }
-        .es-start-long {
-                font-size: 0.5em;
-        }
-        .es-attendees {
-                font-size: 0.5em;
-                color: rgba(0,0,0,0.5);
-        }
 }
 
 .phone {
     display: flex;
     flex-direction: row;
-}
-
-.smsvalidation {
-        display: flex;
-        flex-direction: column;
-
-        .smsinput {
-            display: flex;
-            flex-direction: row;
-            margin-left: 5px;
-
-            .smscode{
-                margin-left: 5px;
-            }
-            .smvalidatebt{
-                margin-left: 5px;
-            }
-            .smssendbt{
-                margin-left: 5px;
-            }
-        }
 }
 
 .attendees-title {
@@ -218,100 +61,23 @@ body {
         margin: 3px;
 }
 
-.attendeeicon {
-        display: flex;
-        flex-direction: column;
-        border-radius: 15px;
-        background-color: white;
-        align-items: center;
-}
+
 .attendee-icon {
         height: 110px;
         width: 100px;
         margin: 10px;
         font-size: 70px;
 }
+
 .attendee-avatar-default{
         font-size: 70px;
 }
+
 .attendee-avatar{
         font-size: 100%;
         width: 70%;
         height: 60%;
         margin: 5px;
-}
-.attendeeicon-name{
-        font-size: 20%;
-}
-.useradmin-icon {
-        height: 30px;
-        width: 30px;
-        margin: 10px;
-        font-size: 25px;
-}
-.presence {
-        .presence-title {
-                display: flex;
-                font-size: 2em;
-        }
-        .presence-item {
-                height: auto;
-                width: auto;
-                display: flex;
-                flex-direction: row;
-                margin: 5px;
-                .presence-icon-item {
-                        width: 70px;
-                        height: 70px;
-                        .presence-icon {
-                                height: 70px;
-                                width: 70px;
-                                font-size: 50px;
-                                margin: 0;
-                        }
-                }
-                .presence-name-item {
-                        display: flex;
-                        width: 150px;
-                        height: 20px;
-                        margin: 5px;
-                }
-                .presence-present-item {
-                        display: flex;
-                        width: 100px;
-                        height: 20px;
-                        margin: 5px;
-                }
-                .presence-present-cb-item {
-                        display: flex;
-                        width: 100px;
-                        height: 20px;
-                        margin: 0px;
-                        margin-top: 5px;
-                }
-                .presence-present-time-item {
-                        display: flex;
-                        width: 200px;
-                        height: 20px;
-                        margin: 5px;
-                }
-                .presence-sign-item {
-                        width: 200px;
-                        height: 20px;
-                        margin: 5px;
-                        .presence-sign {
-                                border-bottom: 1px solid black;
-                                width: 200px;
-                                height: 20px;
-                                margin: 5px;
-                        }
-                }
-        }
-}
-
-.attendee-item {
-        align-items: center;
-
 }
 
 .file {
@@ -319,64 +85,6 @@ body {
         opacity:0;
         z-index:99;
         height: 0;
-}
-.login {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        align-items: center;
-        max-height: 300px;
-}
-
-.resetpsw {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        align-items: center;
-        max-height: 300px;
-}
-.notlognav {
-        display: flex;
-        flex-direction: row;
-}
-
-.createuser {
-        display: flex;
-        flex-direction: column;
-         width: 100%;
-         align-items: center;
-         .createuser-card {
-                width: 75%;
-                min-width: 250px;
-         }
-}
-
-.updateuser {
-        display: flex;
-        flex-direction: column;
-         width: 100%;
-         align-items: center;
-         .updateuser-card {
-                width: 75%;
-                min-width: 250px;
-
-                .updateuser-form{
-                        .bt-update{
-                                margin-right: 20px;
-                        }
-                }
-         }
-}
-
-.createevent {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-
-        .form {
-            max-width: 400px;
-        }
 }
 
 .events {
@@ -386,375 +94,22 @@ body {
         flex-direction: column;
 }
 
-.eventsadmin{
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-}
-
-.usersadmin{
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-}
-
-.event-item{
-        display: flex;
-        flex-direction: row;
-        border: 1px black solid;
-        margin: 5px;
-        width: 100%;
-        border-radius: 5px;
-
-        .event-title {
-                display: flex;
-                margin: 5px;
-                width: 100%;
-        }
-
-        .user-email {
-                display: flex;
-                margin: 5px;
-                width: 0;
-                height: 0;
-                visibility: hidden;
-        }
-        .user-lastlogin {
-                display: flex;
-                margin: 5px;
-                width: 0;
-                height: 0;
-                visibility: hidden;
-        }
-        .user-logged {
-                display: flex;
-                margin: 5px;
-        }
-        .event-bt {
-                display: flex;
-                margin: 5px;
-                cursor: pointer;
-        }
-}
-
-.user-summary{
-        display: flex;
-        flex-direction: row;
-        border: 1px black solid;
-        margin: 5px;
-        width: 100%;
-        border-radius: 5px;
-
-        .user-name {
-                display: flex;
-                margin: 5px;
-                width: 40%;
-        }
-
-        .user-email {
-                display: flex;
-                margin: 5px;
-                width: 0;
-                height: 0;
-                visibility: hidden;
-        }
-        .user-lastlogin {
-                display: flex;
-                margin: 5px;
-                width: 0;
-                height: 0;
-                visibility: hidden;
-        }
-        .user-action{
-                display: flex;
-                position: absolute;
-                right: 20px;
-
-                .user-logged {
-                        display: flex;
-                        margin: 5px;
-                }
-                .user-bt {
-                        display: flex;
-                        margin: 5px;
-                        cursor: pointer;
-                }
-        }
-}
-
-.attachment-summary{
-        display: flex;
-        flex-direction: row;
-        border: 1px black solid;
-        margin: 5px;
-        width: 100%;
-        border-radius: 5px;
-        justify-content: space-between;
-
-        .attachment-name {
-                display: flex;
-                margin: 5px;
-                width: 40%;
-        }
-        .attachment-action{
-                display: flex;
-                //position: absolute;
-                //right: 20px;
-
-                .attachment-bt {
-                        display: flex;
-                        margin: 5px;
-                        cursor: pointer;
-                }
-        }
-}
-
-.eventsmall {
-        display: flex;
-        flex-direction: column;
-        visibility: visible;
-        height: 100%;
-        width: 100%;
-
-        .title{
-                font-size: 2em;
-                display: flex;
-                margin-bottom: 10%;
-        }
-
-        .register {
-                display: flex;
-                margin-bottom: 10%
-        }
-
-        .detail{
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                margin-bottom: 10%;
-
-                .detaillabel{
-                        font-size: 1.5em;
-                        display: flex;
-                }
-
-                .description{
-                        font-size: 1em;
-                        display: flex;
-                }
-        }
-
-        .duration{
-                font-size: 1em;
-                display: flex;
-                flex-direction: row;
-                margin-bottom: 10%;
-                align-items: center;
-
-                .timeicon{
-                        width: 40px;
-                        height: 40px;
-                        margin-right: 10px;
-                }
-                .timetext{
-                        display: flex;
-                        flex-direction: column;
-                        .date{
-
-                        }
-                        .time{
-
-                        }
-                }
-        }
-
-        .location{
-                font-size: 1em;
-                display: flex;
-                flex-direction: row;
-                margin-bottom: 5px;
-                align-items: center;
-
-                .locationicon{
-                        width: 40px;
-                        height: 40px;
-                        margin-right: 10px;
-                }
-                .locationtext{
-                        display: flex;
-                        flex-direction: column;
-                        text-align: center;
-                        vertical-align: middle;
-                }
-        }
-}
-
-.eventbig{
-        display: flex;
-        flex-direction: initial;
-        height: 100%;
-        width: 100%;
-        visibility: hidden;
-        height: 0;
-
-        .head {
-                display: flex;
-                flex-direction: row;
-                //margin-top: 20px;
-                margin-left: 20px;
-                height: 100%;
-                max-height: 150px;
-
-                .head-info {
-                        display: flex;
-                        flex-direction: column;
-                        margin-right: 20px;
-
-                        .start{
-                                font-size: 1em;
-                                display: flex;
-                                //margin: 5px;
-                        }
-
-                        .title{
-                                font-size: 2em;
-                                display: flex;
-                                //margin: 5px;
-                        }
-                        .organizer{
-                                font-size: 1em;
-                                display: flex;
-                                //margin: 20px;
-                        }
-                }
-                .head-register {
-                        padding-left: 30px;
-                }
-        }
-
-        .body {
-                padding-top: 20px;
-                padding-left: 20px;
-                background-color: #f6f7f8;
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                height: 100%;
-
-                .detail{
-                        display: flex;
-                        flex-direction: column;
-                        width: 60%;
-                        padding-left: 30px;
-                        padding-right: 30px;
-
-                        .detaillabel{
-                                font-size: 20px;
-                                display: flex;
-                        }
-
-                        .description{
-                                font-size: 15px;
-                                display: flex;
-                        }
-                }
-
-                .info{
-                        display: flex;
-                        flex-direction: column;
-                        background-color: white;
-                        margin: 5px;
-                        width: 30%;
-                        height: 200px;
-                        border-radius: 10px;
-
-                        .duration{
-                                font-size: 15px;
-                                display: flex;
-                                flex-direction: row;
-                                margin: 5px;
-                                align-items: center;
-
-                                .timeicon{
-                                        width: 40px;
-                                        height: 40px;
-                                        margin: 10px;
-                                }
-                                .timetext{
-                                        display: flex;
-                                        flex-direction: column;
-                                        .date{
-
-                                        }
-                                        .time{
-
-                                        }
-                                }
-                        }
-
-                        .location{
-                                font-size: 15px;
-                                display: flex;
-                                flex-direction: row;
-                                margin: 5px;
-                                align-items: center;
-
-                                .locationicon{
-                                        width: 40px;
-                                        height: 40px;
-                                        margin: 10px;
-                                }
-                                .locationtext{
-                                        display: flex;
-                                        flex-direction: column;
-                                        text-align: center;
-                                        vertical-align: middle;
-                                }
-                        }
-                }
-        }
-
-}
-
-@media (min-width: 800px) {
-        .event-summary {
-
-                .es-title{
-                        font-size: 1.5em;
-                }
-                .es-start-long {
-                        font-size: 1em;
-                }
-                .es-attendees {
-                        font-size: 1em;
-                }
-        }
-
-        .eventsmall {
-                visibility: hidden;
-                height: 0;
-                flex-direction: initial;
-        }
-
-        .eventbig {
-                visibility: visible;
-                height: 100%;
-                flex-direction: column;
-        }
-
-        .user-summary{
-
-                .user-email {
-                        display: flex;
-                        margin: 5px;
-                        width: 300px;
-                        visibility: visible;
-                }
-                .user-lastlogin {
-                        display: flex;
-                        margin: 5px;
-                        width: 200px;
-                        visibility: visible;
-                }
-        }
-}
+@import 'app';
+@import 'home';
+@import 'navbar';
+@import 'presence';
+@import 'eventbig';
+@import 'eventsmall';
+@import 'eventsummary';
+@import 'login';
+@import 'usersummary';
+@import 'eventitem';
+@import 'attachmentsummary';
+@import 'attendeeicon';
+@import 'changeuserpassword';
+@import 'createevent';
+@import 'updateuser';
+@import 'createuser';
+@import 'resetuserpassword';
+@import 'usersadmin';
+@import 'eventsadmin';
