@@ -1,0 +1,34 @@
+.event-summary {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 90%;
+    max-width: 500px;
+    cursor: pointer;
+
+    .es-title{
+            font-size: 1.0em;
+    }
+    .es-start-long {
+            font-size: 0.5em;
+    }
+    .es-attendees {
+            font-size: 0.5em;
+            color: rgba(0,0,0,0.5);
+    }
+}
+
+@media (min-width: 800px) {
+    .event-summary {
+
+            .es-title{
+                    font-size: 1.5em;
+            }
+            .es-start-long {
+                    font-size: 1em;
+            }
+            .es-attendees {
+                    font-size: 1em;
+            }
+    }
+}

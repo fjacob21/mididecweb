@@ -1,0 +1,75 @@
+#app {
+    margin:0;
+    padding:0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+}
+
+.app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+}
+
+.error {
+    display: flex;
+    padding-top: 80px;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
+
+.spinners {
+    z-index: 2000;
+    position: fixed;
+    align-self: center;
+    top: 10px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    padding-top: 90px;
+    padding-left: 1rem;
+}
+
+.footer {
+    display: flex;
+    flex-shrink: 0;
+    width: 100%;
+    color: white;
+    height: 10%;
+    background-color: #002a5c;
+
+    .footer-copyright{
+            display: flex;
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-left: auto;
+            margin-right: 10px;
+    }
+    .footer-issue{
+            display: flex;
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-left: 10px;
+            .footer-issue-link{
+                    display: flex;
+                    color: white;
+            }
+    }
+    .footer-contrib{
+            display: flex;
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-left: 10px;
+            .footer-contrib-link{
+                    display: flex;
+                    color: white;
+            }
+    }
+}

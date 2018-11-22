@@ -1,0 +1,59 @@
+.presence {
+    .presence-title {
+            display: flex;
+            font-size: 2em;
+    }
+    .presence-item {
+            height: auto;
+            width: auto;
+            display: flex;
+            flex-direction: row;
+            margin: 5px;
+            .presence-icon-item {
+                    width: 70px;
+                    height: 70px;
+                    .presence-icon {
+                            height: 70px;
+                            width: 70px;
+                            font-size: 50px;
+                            margin: 0;
+                    }
+            }
+            .presence-name-item {
+                    display: flex;
+                    width: 150px;
+                    height: 20px;
+                    margin: 5px;
+            }
+            .presence-present-item {
+                    display: flex;
+                    width: 100px;
+                    height: 20px;
+                    margin: 5px;
+            }
+            .presence-present-cb-item {
+                    display: flex;
+                    width: 100px;
+                    height: 20px;
+                    margin: 0px;
+                    margin-top: 5px;
+            }
+            .presence-present-time-item {
+                    display: flex;
+                    width: 200px;
+                    height: 20px;
+                    margin: 5px;
+            }
+            .presence-sign-item {
+                    width: 200px;
+                    height: 20px;
+                    margin: 5px;
+                    .presence-sign {
+                            border-bottom: 1px solid black;
+                            width: 200px;
+                            height: 20px;
+                            margin: 5px;
+                    }
+            }
+    }
+}

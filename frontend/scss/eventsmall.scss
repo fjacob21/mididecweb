@@ -1,0 +1,87 @@
+.eventsmall {
+    display: flex;
+    flex-direction: column;
+    visibility: visible;
+    height: 100%;
+    width: 100%;
+
+    .title{
+            font-size: 2em;
+            display: flex;
+            margin-bottom: 10%;
+    }
+
+    .register {
+            display: flex;
+            margin-bottom: 10%
+    }
+
+    .detail{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 10%;
+
+            .detaillabel{
+                    font-size: 1.5em;
+                    display: flex;
+            }
+
+            .description{
+                    font-size: 1em;
+                    display: flex;
+            }
+    }
+
+    .duration{
+            font-size: 1em;
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 10%;
+            align-items: center;
+
+            .timeicon{
+                    width: 40px;
+                    height: 40px;
+                    margin-right: 10px;
+            }
+            .timetext{
+                    display: flex;
+                    flex-direction: column;
+                    .date{
+
+                    }
+                    .time{
+
+                    }
+            }
+    }
+
+    .location{
+            font-size: 1em;
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 5px;
+            align-items: center;
+
+            .locationicon{
+                    width: 40px;
+                    height: 40px;
+                    margin-right: 10px;
+            }
+            .locationtext{
+                    display: flex;
+                    flex-direction: column;
+                    text-align: center;
+                    vertical-align: middle;
+            }
+    }
+}
+
+@media (min-width: 800px) {
+    .eventsmall {
+        visibility: hidden;
+        height: 0;
+        flex-direction: initial;
+    }
+}

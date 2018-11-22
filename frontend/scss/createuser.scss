@@ -1,0 +1,10 @@
+.createuser {
+    display: flex;
+    flex-direction: column;
+     width: 100%;
+     align-items: center;
+     .createuser-card {
+            width: 75%;
+            min-width: 250px;
+     }
+}

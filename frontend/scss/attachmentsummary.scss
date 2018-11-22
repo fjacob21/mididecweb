@@ -1,0 +1,26 @@
+.attachment-summary{
+    display: flex;
+    flex-direction: row;
+    border: 1px black solid;
+    margin: 5px;
+    width: 100%;
+    border-radius: 5px;
+    justify-content: space-between;
+
+    .attachment-name {
+            display: flex;
+            margin: 5px;
+            width: 40%;
+    }
+    .attachment-action{
+            display: flex;
+            //position: absolute;
+            //right: 20px;
+
+            .attachment-bt {
+                    display: flex;
+                    margin: 5px;
+                    cursor: pointer;
+            }
+    }
+}

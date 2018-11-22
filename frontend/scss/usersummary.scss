@@ -1,0 +1,69 @@
+.user-summary{
+    display: flex;
+    flex-direction: row;
+    border: 1px black solid;
+    margin: 5px;
+    width: 100%;
+    border-radius: 5px;
+
+    .user-name {
+            display: flex;
+            margin: 5px;
+            width: 40%;
+    }
+
+    .user-email {
+            display: flex;
+            margin: 5px;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+    }
+    .user-lastlogin {
+            display: flex;
+            margin: 5px;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+    }
+    .user-action{
+            display: flex;
+            position: absolute;
+            right: 20px;
+
+            .user-logged {
+                    display: flex;
+                    margin: 5px;
+            }
+            .user-bt {
+                    display: flex;
+                    margin: 5px;
+                    cursor: pointer;
+            }
+    }
+}
+
+.useradmin-icon {
+        height: 30px;
+        width: 30px;
+        margin: 10px;
+        font-size: 25px;
+}
+
+@media (min-width: 800px) {
+    .user-summary{
+
+            .user-email {
+                    display: flex;
+                    margin: 5px;
+                    width: 300px;
+                    visibility: visible;
+            }
+            .user-lastlogin {
+                    display: flex;
+                    margin: 5px;
+                    width: 200px;
+                    visibility: visible;
+            }
+    }
+}
