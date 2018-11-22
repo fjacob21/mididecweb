@@ -59,7 +59,7 @@ def test_register_attendee():
     u = users.add("test@test.com", 'name', 'alias', 'psw', 8)
     res = e.register_attendee(u)
     assert len(e.attendees) == 1
-    assert e.attendees[0] == u
+    assert e.attendees[0].user_id == u.user_id
     assert res == ATTENDEE_LIST
 
 
@@ -72,7 +72,7 @@ def test_double_register_attendee():
     res1 = e.register_attendee(u)
     res2 = e.register_attendee(u)
     assert len(e.attendees) == 1
-    assert e.attendees[0] == u
+    assert e.attendees[0].user_id == u.user_id
     assert res1 == ATTENDEE_LIST
     assert res2 == ALREADY_ATTENDEE_LIST
 
@@ -87,10 +87,10 @@ def test_max_attendee():
     res1 = e.register_attendee(u1)
     res2 = e.register_attendee(u2)
     assert len(e.attendees) == 1
-    assert e.attendees[0] == u1
+    assert e.attendees[0].user_id == u1.user_id
     assert res1 == ATTENDEE_LIST
     assert len(e.waiting_attendees) == 1
-    assert e.waiting_attendees[0] == u2
+    assert e.waiting_attendees[0].user_id == u2.user_id
     assert res2 == WAITING_LIST
 
 
@@ -104,15 +104,15 @@ def test_cancel_register():
     res1 = e.register_attendee(u1)
     res2 = e.register_attendee(u2)
     assert len(e.attendees) == 1
-    assert e.attendees[0] == u1
+    assert e.attendees[0].user_id == u1.user_id
     assert res1 == ATTENDEE_LIST
     assert len(e.waiting_attendees) == 1
-    assert e.waiting_attendees[0] == u2
+    assert e.waiting_attendees[0].user_id == u2.user_id
     assert res2 == WAITING_LIST
     e.cancel_registration(u1)
     assert len(e.attendees) == 1
     assert len(e.waiting_attendees) == 0
-    assert e.attendees[0] == u2
+    assert e.attendees[0].user_id == u2.user_id
     e.cancel_registration(u2)
     assert len(e.attendees) == 0
     assert len(e.waiting_attendees) == 0

@@ -70,6 +70,7 @@
     "register_status_registered": "登録済み",
     "register_status_waitinglist": "待機リスト",
     "unregister": "登録を解除する",
+    "event_published": "L'événement 騁公表",
     "save": "セーブ",
     "publish": "公開する",
     "update_success": "アップデート成功",
@@ -106,5 +107,6 @@
     "attachment_delete_confirmation": "この添付ファイルを削除してもよろしいですか？",
     "err_attendee_too_low_msg": "既に登録されている人が多すぎるため最大出席者数を減らすことはできません",
     "event_waitings_label": "待つ",
-    "presences": "プレゼンス"
+    "presences": "プレゼンス",
+    "present_time": "出勤時間"
 }

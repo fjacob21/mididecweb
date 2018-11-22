@@ -70,6 +70,7 @@
     "register_status_registered": "مسجل",
     "register_status_waitinglist": "في قائمة الانتظار",
     "unregister": "إلغاء تسجيل",
+    "event_published": "l'événement a été بوبلييه",
     "save": "حفظ",
     "publish": "نشر",
     "update_success": "نجاح التحديث",
@@ -106,5 +107,6 @@
     "attachment_delete_confirmation": "هل أنت متأكد من أنك تريد حذف هذا المرفق",
     "err_attendee_too_low_msg": "لا يمكن تقليل عدد الحضور الأقصى نظرًا لوجود عدد كبير جدًا من الأشخاص المسجلين",
     "event_waitings_label": "Waitings",
-    "presences": "الوجود"
+    "presences": "الوجود",
+    "present_time": "وقت الحضور"
 }

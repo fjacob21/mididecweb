@@ -64,6 +64,14 @@ class User {
                 return this._userinfo.email;
         }
 
+        get present(){
+                return this._userinfo.present;
+        }
+
+        get presentTime(){
+                return this._userinfo.present_time;
+        }
+
         get have_avatar(){
                 return this._userinfo.have_avatar;
         }

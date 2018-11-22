@@ -303,6 +303,26 @@ class Session(object):
         email = UserPromoteEmail(event=event, server=self._server)
         self.send_email(email, [promotee])
 
+    def present_event(self, event_id):
+        event = self._events.get(event_id)
+        if not event:
+            raise SessionError(errors.ERROR_INVALID_EVENT)
+        if not self._params:
+            raise SessionError(errors.ERROR_INVALID_REQUEST)
+        if not EventPublishAccess(self, event).granted():
+            raise SessionError(errors.ERROR_ACCESS_DENIED)
+        if "user_id" not in self._params or "present" not in self._params:
+            raise SessionError(errors.ERROR_MISSING_PARAMS)
+        user_id = self._params["user_id"]
+        present = self._params["present"]
+        print(user_id, present)
+        user = self._users.get(user_id)
+        if not user:
+            raise SessionError(errors.ERROR_INVALID_USER)
+        result = event.present_attendee(user, present)
+        return {'result': result,
+                'event': EventJsonEncoder(event, True).encode('dict')}
+
     def publish_event(self, event_id):
         event = self._events.get(event_id)
         if not event:

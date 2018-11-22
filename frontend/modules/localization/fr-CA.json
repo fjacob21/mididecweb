@@ -107,5 +107,6 @@
     "attachment_delete_confirmation": "Êtes-vous sûr de vouloir effacer cette pièce jointe",
     "err_attendee_too_low_msg": "Il y a déjà trop de personnes enregistrées pour diminuer le nombre maximum de participants",
     "event_waitings_label": "Liste d'attente",
-    "presences": "Présences"
+    "presences": "Présences",
+    "present_time": "Heure de présence"
 }

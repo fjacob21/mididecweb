@@ -5,7 +5,7 @@ import User from './user'
 import createHistory from "history/createHashHistory"
 import AttendeeIcon from './attendeeicon'
 import Errors from './errors'
-import { Table, Button } from 'reactstrap';
+import { Input, Button } from 'reactstrap';
 import Text from './localization/text'
 var PrintTemplate = require ('react-print');
 
@@ -32,9 +32,13 @@ class Presence extends React.Component{
                 dataType: 'json'
                 });
                 this.onPrint = this.onPrint.bind(this);
+                this.onCheck = this.onCheck.bind(this);
+                this.success = this.success.bind(this);
+                this.error = this.error.bind(this);
         }
 
         success(data){
+                console.debug(data);
                 this.state.event = new Event(data.event);
                 this.state.invalid = false;
                 this.setState(this.state);
@@ -43,6 +47,21 @@ class Presence extends React.Component{
         error(data){
                 var errorCode = data.responseJSON.code;
                 this.showAlert(Errors.getErrorMessage(errorCode), 'danger');
+        }
+
+        onCheck(e){
+                console.debug(e.target.id);
+                var user = User.getSession();
+                var data = {'user_id': e.target.id, 'present': e.target.checked, 'loginkey': user.loginkey};
+                jquery.ajax({
+                        type: 'POST',
+                        url: "/mididec/api/v1.0/events/" + this.props.match.params.id + '/present',
+                        data: JSON.stringify (data),
+                        success: this.success,
+                        error: this.error,
+                        contentType: "application/json",
+                        dataType: 'json'
+                        });
         }
 
         onPrint() {
@@ -60,12 +79,19 @@ class Presence extends React.Component{
                 var attendees = "";
                 var presencesurl = "";
                 if (user && this.state.event){
-                    attendees = this.state.event.attendees.map((attendee) =>
-                            <div key={attendee.user_id} className='presence-item'>
-                              <div className='presence-icon-item'><AttendeeIcon className='presence-icon' attendee={attendee} noname/></div>
-                              <div className='presence-name-item'>{attendee.name}</div>
-                              <div className='presence-sign-item'><div className='presence-sign'></div></div>
-                            </div>
+                        var attendees = this.state.event.attendees.filter(attendee => attendee.name != '');
+                        attendees.sort(function(a, b){
+                                if (a.name > b.name) {return 1;}
+                                if (a.name < b.name) {return -1;}
+                                return 0;
+                            });
+                        attendees = attendees.map((attendee) =>
+                                <div key={attendee.user_id} className='presence-item'>
+                                <div className='presence-icon-item'><AttendeeIcon className='presence-icon' attendee={attendee} noname/></div>
+                                <div className='presence-name-item'>{attendee.name}</div>
+                                <div className='presence-present-item'><Input className='presence-present-cb-item' onChange={this.onCheck} type='checkbox' id={attendee.user_id} checked={attendee.present} /></div>
+                                <div className='presence-present-time-item'>{attendee.presentTime}</div>
+                                </div>
                     );
                 }
                 return (
@@ -74,7 +100,8 @@ class Presence extends React.Component{
                                 <div className='presence-item'>
                                         <div className='presence-icon-item'></div>
                                         <div className='presence-name-item'>{Text.text.name}</div>
-                                        <div className='presence-sign-item'>{Text.text.signature}</div>
+                                        <div className='presence-present-item'>{Text.text.presences}</div>
+                                        <div className='presence-present-time-item'>{Text.text.present_time}</div>
                                 </div>
                                 {attendees}
                                 <Button color="warning" onClick={this.onPrint}>{Text.text.print}</Button>
