@@ -1,6 +1,7 @@
 import json
 import os
 from .user_json_encoder import UserJsonEncoder
+from .attendee_json_encoder import AttendeeJsonEncoder
 
 
 class EventJsonEncoder():
@@ -31,7 +32,7 @@ class EventJsonEncoder():
         if self._show_attendee:
             attendees = []
             for a in self._event.attendees:
-                attendees.append(UserJsonEncoder(a, self._complete).encode('dict'))
+                attendees.append(AttendeeJsonEncoder(a).encode('dict'))
             result['attendees'] = attendees
             waitings = []
             for a in self._event.waiting_attendees:

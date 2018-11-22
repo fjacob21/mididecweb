@@ -271,7 +271,27 @@ body {
                         }
                 }
                 .presence-name-item {
+                        display: flex;
                         width: 150px;
+                        height: 20px;
+                        margin: 5px;
+                }
+                .presence-present-item {
+                        display: flex;
+                        width: 100px;
+                        height: 20px;
+                        margin: 5px;
+                }
+                .presence-present-cb-item {
+                        display: flex;
+                        width: 100px;
+                        height: 20px;
+                        margin: 0px;
+                        margin-top: 5px;
+                }
+                .presence-present-time-item {
+                        display: flex;
+                        width: 200px;
                         height: 20px;
                         margin: 5px;
                 }

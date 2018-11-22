@@ -70,6 +70,7 @@
     "register_status_registered": "Eingetragen",
     "register_status_waitinglist": "Auf der Warteliste",
     "unregister": "Abmelden",
+    "event_published": "L ' événement a été publié",
     "save": "sparen",
     "publish": "Veröffentlichen",
     "update_success": "Aktualisieren Sie den Erfolg",
@@ -106,5 +107,6 @@
     "attachment_delete_confirmation": "Möchten Sie diesen Anhang wirklich löschen?",
     "err_attendee_too_low_msg": "Die maximale Teilnehmerzahl kann nicht verringert werden, da bereits zu viele Personen registriert sind",
     "event_waitings_label": "Wartezeiten",
-    "presences": "Presences"
+    "presences": "Presences",
+    "present_time": "Anwesenheitszeit"
 }

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from attendee import Attendee
 from user import User
 from session_exception import SessionError
 import errors
@@ -148,7 +149,7 @@ class Event():
         result = []
         attendees = self._store.attendees.get_all(self._event_id)
         for attendee in attendees:
-            result.append(User(self._store, attendee['user_id']))
+            result.append(Attendee(self._store, attendee['user_id'], self._event_id))
         return result
 
     @property
@@ -222,6 +223,15 @@ class Event():
             if attendee.user_id == user.user_id:
                 return True
         return False
+
+    def present_attendee(self, user, present):
+        aidx = self.find_attendee(user)
+        if aidx == -1:
+            raise SessionError(errors.ERROR_NOT_REGISTERED)
+        print('present', user.user_id, present)
+        self._store.attendees.update(user.user_id, self.event_id, present)
+        return True
+
 
     @property
     def attachments(self):

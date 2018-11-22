@@ -21,6 +21,10 @@ class Config(object):
         return data
 
     @property
+    def users(self):
+        return self.load_config_file()['users']
+
+    @property
     def root(self):
         return self.load_config_file()['root']
 

@@ -70,6 +70,7 @@
     "register_status_registered": "зарегистрированный",
     "register_status_waitinglist": "В списке ожидания",
     "unregister": "Разрегистрировать",
+    "event_published": "Л'éвéнемент Été Опубликовано LeTransmuteur",
     "save": "Сохранить",
     "publish": "Публиковать",
     "update_success": "Обновление успеха",
@@ -106,5 +107,6 @@
     "attachment_delete_confirmation": "Вы действительно хотите удалить это приложение",
     "err_attendee_too_low_msg": "Невозможно уменьшить максимальный номер участника, так как зарегистрировано слишком много людей",
     "event_waitings_label": "Waitings",
-    "presences": "Присутствия"
+    "presences": "Присутствия",
+    "present_time": "Время посещаемости"
 }

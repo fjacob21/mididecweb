@@ -43,6 +43,27 @@ def set_root():
         root.validated = True
     store.close()
 
+def add_users():
+    store = get_store()
+    users = Users(store)
+    config_users = config.users
+    for user in config_users:
+        password = BcryptHash(user['password']).encrypt()
+        if users.get(user['user_id']):
+            u = users.get(user['user_id'])
+            u.email = user['email']
+            u.name = user['name']
+            u.alias = user['alias']
+            u.password = password
+            u.validated = True
+        else:
+            print('Add user', user['user_id'])
+            u = users.add(user['email'], user['name'],
+                            user['alias'], password, '', False, False,
+                            access=USER_ACCESS_SUPER,
+                            user_id=user['user_id'])
+            u.validated = True
+    store.close()
 
 def get_store():
     return SqliteStore(config.database)
@@ -205,6 +226,18 @@ def unregister_event(event_id):
     except SessionError as se:
         return return_error(se.code)
 
+
+@application.route(api + 'events/<event_id>/present', methods=['POST'])
+def present_event(event_id):
+    try:
+        if not request.json:
+            return return_error(errors.ERROR_INVALID_REQUEST)
+        session = Session(request.json, get_store(),
+                          request.args.get('loginkey'), config,
+                          request_server())
+        return jsonify(session.present_event(event_id))
+    except SessionError as se:
+        return return_error(se.code)
 
 @application.route(api + 'events/<event_id>/publish', methods=['POST'])
 def publish_event(event_id):
@@ -487,6 +520,7 @@ def request_server():
 
 
 set_root()
+add_users()
 
 if __name__ == '__main__':
     inDebug = True

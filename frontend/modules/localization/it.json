@@ -70,6 +70,7 @@
     "register_status_registered": "Registrato",
     "register_status_waitinglist": "Sulla lista d'attesa",
     "unregister": "Annullare la registrazione",
+    "event_published": "L'événement a été Publié",
     "save": "Salvare",
     "publish": "Pubblicare",
     "update_success": "Aggiornamento riuscito",
@@ -106,5 +107,6 @@
     "attachment_delete_confirmation": "Sei sicuro di voler eliminare questo allegato",
     "err_attendee_too_low_msg": "Non è possibile ridurre il numero massimo di partecipanti perché ci sono già troppe persone registrate",
     "event_waitings_label": "attese",
-    "presences": "presenze"
+    "presences": "presenze",
+    "present_time": "Tempo di partecipazione"
 }

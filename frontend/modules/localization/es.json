@@ -70,6 +70,7 @@
     "register_status_registered": "Registrado",
     "register_status_waitinglist": "En la lista de espera",
     "unregister": "Anular el registro",
+    "event_published": "L'événement a été publié",
     "save": "Salvar",
     "publish": "Publicar",
     "update_success": "Actualización de éxito",
@@ -106,5 +107,6 @@
     "attachment_delete_confirmation": "¿Seguro que quieres eliminar este archivo adjunto?",
     "err_attendee_too_low_msg": "No se puede disminuir el número máximo de asistentes porque ya hay demasiadas personas registradas",
     "event_waitings_label": "Esperas",
-    "presences": "Presencias"
+    "presences": "Presencias",
+    "present_time": "Tiempo de asistencia"
 }
