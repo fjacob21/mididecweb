@@ -22,7 +22,10 @@ class Config(object):
 
     @property
     def users(self):
-        return self.load_config_file()['users']
+        configs = self.load_config_file()
+        if 'users' not in configs:
+            return []
+        return configs['users']
 
     @property
     def root(self):

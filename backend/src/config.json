@@ -9,6 +9,7 @@
             "email": "mididecouverte@gmail.com",
             "password":  "test"
         },
+    "users": [],
     "sms": {
         "sid": "",
         "token": ""
