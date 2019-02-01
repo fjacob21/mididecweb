@@ -27,6 +27,7 @@ from email_generators import UserPromoteEmail, UserEventConfirmEmail
 from email_generators import EventDateChangedEmail, EventLocationChangedEmail
 from email_generators import UserEventWaitEmail, UserResetPasswordEmail
 from flask import make_response
+import logger
 
 
 class Session(object):
@@ -61,14 +62,15 @@ class Session(object):
         return self._users
 
     def get_logs(self):
-        print('Get logs')
+        logger.get().info('Get logs')
         if not LogsAccess(self).granted():
+            logger.get().error('Get logs access denied login:{0}'.format(self._user.user_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         logs_dict = LogsJsonEncoder(self._logs).encode('dict')
         browsers = {}
         cities = {}
         oss = {}
-        print('process logs')
+        logger.get().info('process logs')
         for log in self._logs.list:
             if log.browser not in browsers:
                 browsers[log.browser] = {'count': 1, 'versions':
@@ -97,8 +99,10 @@ class Session(object):
     def get_event_presences(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Get event presences invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventPresencesAccess(self, event).granted():
+            logger.events().error('Get event presences access denied login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         user = self._users.get(event.organizer_name)
@@ -116,6 +120,7 @@ class Session(object):
     def get_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Get event invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         complete = EventGetCompleteAccess(self, event).granted()
         show_details = False
@@ -127,12 +132,14 @@ class Session(object):
     def get_event_ical(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Get event ical invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         return iCalGenerator(event).generate()
 
     def get_event_jinja(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Get event jinja invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
 
         old_event = event.get_data()
@@ -153,9 +160,11 @@ class Session(object):
 
     def add_event(self):
         if "title" not in self._params or "description" not in self._params:
+            logger.events().error('Add event missing params login:{0} event:{1}'.format(self._user.user_id, self._params["title"]))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
 
         if not EventAddAccess(self).granted():
+            logger.events().error('Add event access denied login:{0} event:{1}'.format(self._user.user_id, self._params["title"]))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         title = self._params["title"]
@@ -194,8 +203,10 @@ class Session(object):
     def remove_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Remove event invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventRemoveAccess(self, event).granted():
+            logger.events().error('Remove event access denied login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         self._events.remove(event_id)
         return {'result': True}
@@ -203,13 +214,16 @@ class Session(object):
     def update_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Update event invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventUpdateAccess(self, event).granted():
+            logger.events().error('Update event access denied login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         max_attendee = event.max_attendee
         if 'max_attendee' in self._params:
             max_attendee = int(self._params['max_attendee'])
         if max_attendee < event.max_attendee and max_attendee < len(event.all_attendees):
+            logger.events().error('Update event attendee too low login:{0} event:{1} max:{2} attendees:{3}'.format(self._user.user_id, event_id, max_attendee, len(event.all_attendees)))
             raise SessionError(errors.ERROR_ATTENDEE_TOO_LOW)
 
         old_event = event.get_data()
@@ -221,7 +235,7 @@ class Session(object):
             event.max_attendee = max_attendee
             promotees = event.promote_waitings(max_attendee - current_max_attendee)
             for promotee in promotees:
-                print('Send email', promotee)
+                logger.events().info('Send email to promotee {0} for event {1}'.format(promotee.user_id, event_id))
                 self.send_promotee_email(event, promotee)
         event.max_attendee = max_attendee
         if 'title' in self._params:
@@ -229,7 +243,7 @@ class Session(object):
         if 'description' in self._params:
             event.description = self._params['description']
         if 'not_training' in self._params:
-            print('Update not training')
+            logger.events().info('Update not training field')
             event.not_training = self._params['not_training']
         if 'start' in self._params:
             start = self._params["start"]
@@ -263,10 +277,13 @@ class Session(object):
     def register_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Register event invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not self._params:
+            logger.events().error('Register event invalid request login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not EventRegisterAccess(self, event).granted():
+            logger.get().error('Register event access denied login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         result = event.register_attendee(self.user)
         if result == ATTENDEE_LIST or result == WAITING_LIST:
@@ -286,10 +303,13 @@ class Session(object):
     def unregister_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Unregister event invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not self._params:
+            logger.events().error('Unregister event invalid request login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not self.user:
+            logger.events().error('Unregister event need to be login login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_LOGIN_NEEDED)
         promotee = event.cancel_registration(self.user)
         if promotee and promotee != self.user:
@@ -306,16 +326,19 @@ class Session(object):
     def present_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Present event invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not self._params:
+            logger.events().error('Present event invalid request login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not EventPublishAccess(self, event).granted():
+            logger.get().error('Present event access denied login:{0} event:{1} user:{2}'.format(self._user.user_id, event_id, self._params["user_id"]))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         if "user_id" not in self._params or "present" not in self._params:
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         user_id = self._params["user_id"]
         present = self._params["present"]
-        print(user_id, present)
+        logger.get().info('Present {1} user {0} at event {2}'.format(user_id, present, event_id))
         user = self._users.get(user_id)
         if not user:
             raise SessionError(errors.ERROR_INVALID_USER)
@@ -326,10 +349,13 @@ class Session(object):
     def publish_event(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Publish event invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventPublishAccess(self, event).granted():
+            logger.get().error('Publish event access denied login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         if not self._params:
+            logger.events().error('Publish event invalid request login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         self.send_publish_event_email(event)
         self.send_publish_event_sms(event)
@@ -353,11 +379,13 @@ class Session(object):
                                        event.title, body)
                     res = sender.send()
             if not res:
+                logger.events().error('Publish event send sms login:{0} event:{1}'.format(self._user.user_id, event.event_id))
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
 
     def get_event_attachment(self, event_id, attachment):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Get event attachment invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         event_path = '../data/events/' + event.event_id
         attachment_path = event_path + '/' + attachment
@@ -369,8 +397,10 @@ class Session(object):
     def add_event_attachment(self, event_id, attachment):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Add event attachment invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not EventUpdateAccess(self, event).granted():
+            logger.get().error('Add event attachment access denied login:{0} event:{1} attachment:{2}'.format(self._user.user_id, event_id, attachment.filename))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         event_path = '../data/events/' + event.event_id
         attachment_path = event_path + '/' + attachment.filename
@@ -382,12 +412,16 @@ class Session(object):
     def remove_event_attachment(self, event_id):
         event = self._events.get(event_id)
         if not event:
+            logger.events().error('Remove event attachment invalid event login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_EVENT)
         if not self._params:
+            logger.events().error('Remove event attachment invalid request login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not EventUpdateAccess(self, event).granted():
+            logger.get().error('Remove event attachment access denied login:{0} event:{1} attachment:{2}'.format(self._user.user_id, event_id, self._params['attachment']))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         if 'attachment' not in self._params:
+            logger.events().error('Remove event invalid request missing attachment field login:{0} event:{1}'.format(self._user.user_id, event_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         attachment = self._params['attachment']
         event_path = '../data/events/' + event.event_id
@@ -404,6 +438,7 @@ class Session(object):
     def get_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Get user invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         complete = UserGetCompleteAccess(self, user).granted()
         user_dict = UserJsonEncoder(user, complete).encode('dict')
@@ -412,21 +447,26 @@ class Session(object):
     def get_user_avatar(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Get user avatar invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         if not user.avatar_path:
+            logger.users().error('Get user avatar no avatar login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_NO_AVATAR)
         return user.avatar_path
 
     def add_user(self):
         if not self._params:
+            logger.users().error('Add user invalid request login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if ('email' not in self._params or
             'name' not in self._params or
             'alias' not in self._params or
            'password' not in self._params):
+            logger.users().error('Add user invalid request missing fields login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
 
         if not UserAddAccess(self).granted():
+            logger.users().error('Add user access denied login:{0}'.format(self._user.user_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         email = self._params["email"]
@@ -448,9 +488,11 @@ class Session(object):
             profile = self._params['profile']
         user = self._users.get(email)
         if user:
+            logger.users().error('Add user invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         user = self._users.get(alias)
         if user:
+            logger.users().error('Add user invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         user = self._users.add(email, name, alias, password, phone, useemail,
                                usesms, profile)
@@ -469,6 +511,7 @@ class Session(object):
     def validate_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Validate user invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         user.validated = True
         env = Environment(loader=FileSystemLoader('emails'))
@@ -478,8 +521,10 @@ class Session(object):
     def sendcode(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Send user code invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         if not UserAddAccess(self).granted():
+            logger.users().error('Send user code access denied login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         code = user.generate_sms_code()
         self.send_sms_code(user, code)
@@ -494,23 +539,29 @@ class Session(object):
                                        'validation code', code)
                     res = sender.send()
             if not res:
+                logger.users().error('Send user sms code login:{0} user:{1}'.format(self._user.user_id, user.user_id))
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
 
     def validatecode(self, user_id):
         if not self._params:
+            logger.users().error('Validate user code invalid request login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Validate user code invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         if not UserAddAccess(self).granted():
+            logger.users().error('Validate user code access denied login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         if 'smscode' not in self._params:
+            logger.users().error('Validate user code invalid request missing smscode field login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         smscode = self._params["smscode"]
         return {'result': user.validate_sms_code(smscode)}
 
     def validate_user_info(self):
         if not self._params:
+            logger.users().error('Validate user info invalid request login:{0}'.format(self._user.user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
 
         user_id = ''
@@ -537,8 +588,10 @@ class Session(object):
     def remove_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Remove user invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         if not UserRemoveAccess(self, user).granted():
+            logger.get().error('Remove user access denied login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         if user.avatar_path:
             os.remove(user.avatar_path)
@@ -548,8 +601,10 @@ class Session(object):
     def update_user(self, user_id):
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Update user invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         if not UserUpdateAccess(self, user).granted():
+            logger.get().error('Update user access denied login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
 
         if 'email' in self._params:
@@ -578,8 +633,10 @@ class Session(object):
     def update_user_avatar(self, user_id, avatar):
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Update user avatar invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_USER)
         if not UserUpdateAccess(self, user).granted():
+            logger.get().error('Update user avatar access denied login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_ACCESS_DENIED)
         avatar_path = '../data/img/users/' + user.user_id + '.jpg'
         user.avatar_path = avatar_path
@@ -588,12 +645,15 @@ class Session(object):
 
     def login(self, user_id, ip=''):
         if not self._params:
+            logger.users().error('Login user invalid request login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "password" not in self._params:
+            logger.users().error('Login user invalid request missing password field login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         password = self._params["password"]
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Login user invalid login login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_LOGIN)
         register = ''
         event = None
@@ -601,6 +661,7 @@ class Session(object):
             register = self._params['register']
             event = self._events.get(register)
             if not event:
+                logger.events().error('Register user to event invalid event login:{0} user:{1} event:{2}'.format(self._user.user_id, user_id, register))
                 raise SessionError(errors.ERROR_INVALID_EVENT)
         password = BcryptHash(password, user.password.encode()).encrypt()
         loginkey = user.login(password, ip)
@@ -614,14 +675,18 @@ class Session(object):
 
     def logout(self, user_id):
         if not self._params:
+            logger.users().error('Logout user invalid request login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "loginkey" not in self._params:
+            logger.users().error('Logout user invalid request missing loginkey login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         loginkey = self._params["loginkey"]
         user = self._users.get(user_id)
         if not user:
+            logger.users().error('Logout user invalid user login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if not user.logout(loginkey):
+            logger.users().error('Logout user invalid loginkey login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         return {'result': True}
 
@@ -634,10 +699,12 @@ class Session(object):
                                  email,
                                  self._config.email_server)
             if not sender.send():
+                logger.users().error('Send user email login:{0}'.format(self._user.user_id))
                 raise SessionError(errors.ERROR_SENDING_EMAIL)
 
     def reset_user_password(self):
         if not self._params:
+            logger.users().error('Reset user password invalid request login:{0}'.format(self._user.user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         username = ''
         if 'username' in self._params:
@@ -653,8 +720,10 @@ class Session(object):
 
     def validate_reset_user_password(self):
         if not self._params:
+            logger.users().error('Validate user reset password invalid request login:{0}'.format(self._user.user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "request_id" not in self._params:
+            logger.users().error('Validate user reset password invalid request missing request_id field login:{0}'.format(self._user.user_id))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         request_id = self._params["request_id"]
         req = self._reset_password_requests.get(request_id)
@@ -664,14 +733,18 @@ class Session(object):
 
     def change_user_password(self):
         if not self._params:
+            logger.users().error('Change user password invalid request login:{0}'.format(self._user.user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         if "request_id" not in self._params:
+            logger.users().error('Change user password invalid request missing request_id field login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         if "password" not in self._params:
+            logger.users().error('Change user password invalid request missing password field login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_MISSING_PARAMS)
         request_id = self._params["request_id"]
         req = self._reset_password_requests.get(request_id)
         if not req:
+            logger.users().error('Change user password invalid request not a valid request login:{0} user:{1}'.format(self._user.user_id, user_id))
             raise SessionError(errors.ERROR_INVALID_REQUEST)
         user = self._users.get(req.username)
         password = self._params["password"]

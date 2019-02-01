@@ -6,6 +6,8 @@ from PIL import Image, ExifTags, ImageDraw, ImageOps
 from session import Session
 from session_exception import SessionError
 import ws
+import logger
+
 
 config = Config()
 users_page = Blueprint('users_page', __name__,
@@ -13,6 +15,7 @@ users_page = Blueprint('users_page', __name__,
 
 @users_page.route(ws.api + 'users', methods=['GET'])
 def get_users():
+    logger.webapi().info('GET users - Get all users')
     session = Session({}, ws.get_store(), request.args.get('loginkey'), config,
                       ws.request_server())
     return jsonify(session.get_users())
@@ -20,6 +23,7 @@ def get_users():
 
 @users_page.route(ws.api + 'users', methods=['POST'])
 def add_user():
+    logger.webapi().info('POST users - Add new user')
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -33,6 +37,7 @@ def add_user():
 
 @users_page.route(ws.api + 'users/validate', methods=['POST'])
 def validate_user_info():
+    logger.webapi().info('POST users/validate - Validate user')
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -46,6 +51,7 @@ def validate_user_info():
 
 @users_page.route(ws.api + 'users/<user_id>', methods=['GET'])
 def get_user(user_id):
+    logger.webapi().info('GET users/{0} - Get user info'.format(user_id))
     try:
         session = Session({}, ws.get_store(), request.args.get('loginkey'),
                           config, ws.request_server())
@@ -56,6 +62,7 @@ def get_user(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>/avatar', methods=['GET'])
 def get_user_avatar(user_id):
+    logger.webapi().info('GET users/{0}/avatar - Get user avatar'.format(user_id))
     try:
         session = Session({}, ws.get_store(), request.args.get('loginkey'),
                           config, ws.request_server())
@@ -98,6 +105,7 @@ def get_user_avatar(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>/validate', methods=['GET'])
 def get_user_validate(user_id):
+    logger.webapi().info('GET users/{0}/validate - Get user validation'.format(user_id))
     try:
         session = Session({}, ws.get_store(), request.args.get('loginkey'),
                           config, ws.request_server())
@@ -108,6 +116,7 @@ def get_user_validate(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>/sendcode', methods=['POST'])
 def send_user_code(user_id):
+    logger.webapi().info('POST users/{0}/sendcode - Send user code'.format(user_id))
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -120,6 +129,7 @@ def send_user_code(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>/validatecode', methods=['POST'])
 def validate_user_code(user_id):
+    logger.webapi().info('POST users/{0}/validatecode - Validate user code'.format(user_id))
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -132,6 +142,7 @@ def validate_user_code(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>', methods=['POST'])
 def update_user(user_id):
+    logger.webapi().info('POST users/{0} - Update user info'.format(user_id))
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -145,6 +156,7 @@ def update_user(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>/avatar', methods=['POST'])
 def update_user_avatar(user_id):
+    logger.webapi().info('POST users/{0}/avatar - Change user avatar'.format(user_id))
     try:
         session = Session({}, ws.get_store(),
                           request.args.get('loginkey'), config,
@@ -157,6 +169,7 @@ def update_user_avatar(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>/login', methods=['POST'])
 def login(user_id):
+    logger.webapi().info('POST users/{0}/login - User login'.format(user_id))
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -170,6 +183,7 @@ def login(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>/logout', methods=['POST'])
 def logout(user_id):
+    logger.webapi().info('POST users/{0}/logout - User logout'.format(user_id))
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -183,6 +197,7 @@ def logout(user_id):
 
 @users_page.route(ws.api + 'users/<user_id>', methods=['DELETE'])
 def rm_user(user_id):
+    logger.webapi().info('DELETE users/{0} - Delete user'.format(user_id))
     try:
         params = {}
         if request.json:
@@ -196,6 +211,7 @@ def rm_user(user_id):
 
 @users_page.route(ws.api + 'users/resetpsw', methods=['POST'])
 def reset_user_password():
+    logger.webapi().info('POST users/resetpsw - Send user reset password')
     try:
         if not request.json:
             return ws.return_error(errors.ERROR_INVALID_REQUEST)
@@ -209,6 +225,7 @@ def reset_user_password():
 
 @users_page.route(ws.api + 'users/resetpsw/validate', methods=['POST'])
 def validate_reset_user_password():
+    logger.webapi().info('POST users/resetpsw/validate - Validate user password reset code')
     if not request.json:
         return ws.return_error(errors.ERROR_INVALID_REQUEST)
     session = Session(request.json, ws.get_store(), request.args.get('loginkey'),
@@ -218,6 +235,7 @@ def validate_reset_user_password():
 
 @users_page.route(ws.api + 'users/resetpsw/change', methods=['POST'])
 def change_user_password():
+    logger.webapi().info('POST users/resetpsw/change - Change user password')
     session = Session(request.json, ws.get_store(),
                       request.args.get('loginkey'), config,
                       request.url_root)

@@ -13,15 +13,18 @@ import ws
 from ws_logs import logs_page
 from ws_events import events_page
 from ws_users import users_page
-
+import logger
 
 config = Config()
+logger.init(maxBytes=config.logsize, backupCount=config.logcount)
+logger.get().info(' Mididec starting ============================================')
 application = Flask(__name__, static_url_path='')
 application.register_blueprint(logs_page)
 application.register_blueprint(events_page)
 application.register_blueprint(users_page)
 
 def init_folders():
+    logger.get().info('Init default folders')
     os.makedirs('../data', exist_ok=True)
     os.makedirs('../data/img', exist_ok=True)
     os.makedirs('../data/img/users', exist_ok=True)
@@ -32,12 +35,14 @@ def set_root():
     users = Users(store)
     password = BcryptHash(config.root['password']).encrypt()
     if users.get(config.root['user_id']):
+        logger.users().info('Update existing root user')
         root = users.get(config.root['user_id'])
         root.email = config.root['email']
         root.name = config.root['name']
         root.alias = config.root['alias']
         root.password = password
     else:
+        logger.users().info('Add new root user')
         root = users.add(config.root['email'], config.root['name'],
                          config.root['alias'], password, '', False, False,
                          access=USER_ACCESS_SUPER,
@@ -53,6 +58,7 @@ def add_users():
     for user in config_users:
         password = BcryptHash(user['password']).encrypt()
         if users.get(user['user_id']):
+            logger.users().info('Update user {0}'.format(user['user_id']))
             u = users.get(user['user_id'])
             u.email = user['email']
             u.name = user['name']
@@ -60,7 +66,7 @@ def add_users():
             u.password = password
             u.validated = True
         else:
-            print('Add user', user['user_id'])
+            logger.users().info('Add user {0}'.format(user['user_id']))
             u = users.add(user['email'], user['name'],
                             user['alias'], password, '', False, False,
                             access=USER_ACCESS_SUPER,
@@ -77,6 +83,13 @@ def before_request():
     store = ws.get_store()
     logs = Logs(store)
     logs.add(log['ip'], log['os'], log['os_version'], log['browser'], log['browser_version'], log['continent'], log['is_eu'], log['country'], log['country_emoji'], log['region'], log['city'])
+
+
+@application.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
 
 
 @application.route('/html/<path:path>')

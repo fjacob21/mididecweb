@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from session import Session
 from session_exception import SessionError
 import ws
+import logger
 
 config = Config()
 logs_page = Blueprint('logs_page', __name__,
@@ -10,6 +11,7 @@ logs_page = Blueprint('logs_page', __name__,
 
 @logs_page.route(ws.api + 'logs')
 def get_logs():
+    logger.webapi().info('GET logs - Get all web api logs')
     try:
         session = Session({}, ws.get_store(), request.args.get('loginkey'), config,
                           ws.request_server())
