@@ -18,6 +18,11 @@
         "server": "smtp.gmail.com",
         "user": "",
         "password": ""
+    },
+    "logfile":{
+        "file": "./mididec.log",
+        "size": 4096,
+        "count": 2
     }
 
 }

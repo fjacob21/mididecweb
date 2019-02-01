@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+import logger
 
 class EmailSender():
 
@@ -41,7 +41,9 @@ class EmailSender():
             text = msg.as_string()
             server.sendmail(fromaddr, toaddr, text)
             server.quit()
+            logger.get().info('Send email user:{0} email:{1}'.format(user.user_id, toaddr))
             return True
         except Exception as e:
             print(e)
+            logger.get().error('Send email user:{0} email:{1} ex:{2}'.format(user.user_id, toaddr, e))
             return False

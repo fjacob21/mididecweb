@@ -54,3 +54,24 @@ class Config(object):
     @property
     def email_password(self):
         return self.load_config_file()['email']['password']
+    
+    @property
+    def logfile(self):
+        configs = self.load_config_file()
+        if 'logfile' not in configs:
+            return './mididec.log'
+        return configs['logfile']['file']
+    
+    @property
+    def logsize(self):
+        configs = self.load_config_file()
+        if 'logfile' not in configs:
+            return 4096
+        return configs['logfile']['size']
+    
+    @property
+    def logcount(self):
+        configs = self.load_config_file()
+        if 'logfile' not in configs:
+            return 2
+        return configs['logfile']['count']
